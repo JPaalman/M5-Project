@@ -1,0 +1,25 @@
+import spidev
+import time
+
+spi = spidev.SpiDev()
+spi.open(0,0)
+spi.max_speed_hz = 100000
+value = 0
+to_send = [value]
+try:
+	while True:
+		resp = spi.xfer2(to_send)
+		print("sent:")
+		print(value)
+		value = value + 1
+		to_send = [value]
+		print("reponse: ")
+		respString = " ".join(str(x) for x in resp)
+		print(respString + " | " + "{0:b}".format(int(float(respString))))
+		time.sleep(1)
+	#end while
+except KeyboardInterrupt:
+	print("closing on keyboard interrupt")
+	spi.close()
+#end try
+
