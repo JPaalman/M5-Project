@@ -14,7 +14,7 @@ try:
 		print(value)
 		value = value + 1
 		to_send = [value]
-		print("response: " + resp[0])
+		print("response:")
 		respString = " ".join(str(x) for x in resp)
 		print(respString + " | " + "{0:b}".format(int(float(respString))))
 		time.sleep(1)
