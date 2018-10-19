@@ -1,42 +1,80 @@
-import pygame
-from pygame.locals import *
-import color as c
-import player
+import pygame as pg
+from settings import *
+from sprites import *
 
-pygame.init()
-clock = pygame.time.Clock()
+class Game:
+    def __init__(self):
+        # initialize game window
+        pg.init()
+        pg.mixer.init()
+        self.clock = pg.time.Clock()
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        pg.display.set_caption(TITLE)
+        self.running = True
 
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
-caption = 'Platformer'
+    def new(self):
+        # start new game
+        self.all_sprites = pg.sprite.Group()
+        self.platforms = pg.sprite.Group()
+        self.player = Player(self)
+        self.all_sprites.add(self.player)
+        for plat in PLATFORM_LIST:
+            p = Platform(*plat)
+            self.all_sprites.add(p)
+            self.platforms.add(p)
+        self.run()
 
-mainSurface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT),0 ,32)
-pygame.display.set_caption(caption)
+    def run(self):
+        # game loop
+        self.playing = True
+        while self.playing:
+            self.clock.tick(FPS)
+            self.events()
+            self.update()
+            self.draw()
 
-myPlayer = player.Player(mainSurface)
-myPlayer.rect.centerx = mainSurface.get_width() / 2
-myPlayer.rect.centery = mainSurface.get_height() / 2
+    def update(self):
+        # game loop updates
+        self.all_sprites.update()
+        if self.player.vel.y > 0:
+            # check for collision between player and platforms
+            hits = pg.sprite.spritecollide(self.player, self.platforms, False)
+            if hits:
+                self.player.pos.y = hits[0].rect.top + 1
+                self.player.vel.y = 0
 
-while True:
-    for event in pygame.event.get():
-        print(event)
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            quit()
-    mainSurface.fill(c.white)
 
-    if pygame.key.get_pressed()[K_UP]:
-        myPlayer.moveUp()
-    if pygame.key.get_pressed()[K_DOWN]:
-        myPlayer.moveDown()
-    if pygame.key.get_pressed()[K_RIGHT]:
-        myPlayer.moveRight()
-    if pygame.key.get_pressed()[K_LEFT]:
-        myPlayer.moveLeft()
+    def events(self):
+        # game loop event
+        for event in pg.event.get():
+            # check for close window event
+            if event.type == pg.QUIT:
+                if self.playing:
+                    self.playing = False
+                self.running = False
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_SPACE:
+                    self.player.jump()
 
-    mainSurface.blit(myPlayer.image, myPlayer.rect)
-    pygame.display.update()
+    def draw(self):
+        # game loop draw
+        self.screen.fill(WHITE)
+        self.all_sprites.draw(self.screen)
+        #after drawing everything, update the screen
+        pg.display.flip()
 
-    clock.tick(60)
+    def show_start_screen(self):
+        # game start screen
+        pass
 
-main()
+    def show_go_screen(self):
+        # game over / continue
+        pass
+
+g = Game()
+g.show_start_screen()
+while g.running:
+    g.new()
+    g.show_go_screen()
+
+pg.quit()
