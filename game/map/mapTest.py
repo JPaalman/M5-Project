@@ -12,7 +12,7 @@ caption = 'Platformer'
 mainSurface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT),0 ,32)
 pygame.display.set_caption(caption)
 
-map = Map("Map1")
+map = Map("MapTemplate")
 tilemap = map.getMap()
 
 MAPHEIGHT = 6

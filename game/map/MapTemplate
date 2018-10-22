@@ -1,0 +1,20 @@
+# <- this character is used for comments
+# No comments can be placed inbetween the lines for the Mapdata
+# Map name
+NAME=dust_2
+# Map tile dimensions (int)
+HEIGHT=6
+WIDTH=8
+# Mapdata: bytes represented by chars in ASCII encoding.
+# Characters past the height or width will be ignored
+# Missing characters before the height or width limit will be assumed as spaces (' ')
+W      W
+W      W
+W      W
+W      W
+W      W
+GGGGGGGG
+!MAPEND
+# Tiledata: x and y coordinate of a tile, and the data that you want to add
+# x,y and data are represented 4 byte integers.
+3,5=123
