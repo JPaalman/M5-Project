@@ -1,6 +1,5 @@
 import pygame
-from pygame.locals import *
-from map import *
+import game.map as mp
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -12,8 +11,8 @@ caption = 'Platformer'
 mainSurface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT),0 ,32)
 pygame.display.set_caption(caption)
 
-map = Map("MapTemplate")
-tilemap = map.getMap()
+mapObj = mp.Map("MapTemplate")
+tilemap = mapObj.getMap()
 
 MAPHEIGHT = 6
 MAPWIDTH = 8

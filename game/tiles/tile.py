@@ -1,6 +1,6 @@
 class Tile:
 
-    self.TILESIZE = 20
+    TILESIZE = 20
 
     '''
     instance variables:
