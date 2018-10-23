@@ -11,9 +11,12 @@ class Game:
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.running = True
+        self.font_name = pg.font.match_font(FONT_NAME)
 
-    def new(self):
-        # start new game
+    def new(self, lives):
+        # start new game, player lives set
+        self.lives = lives
+        print(lives)
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.player = Player(self)
@@ -43,11 +46,23 @@ class Game:
                 self.player.pos.y = hits[0].rect.top + 1
                 self.player.vel.y = 0
         # if player reaches sides of screen, move the rest the opposite way
-        if self.player.rect.left <= WIDTH / 4 or self.player.rect.right >= WIDTH * 3 / 4:
+        if self.player.rect.right > WIDTH * 2 / 3:
+            # note: the max(.. , 2) is a fix for drifting platforms in the right direction
+            self.player.pos.x -= max(self.player.vel.x, 2)
+            for plat in self.platforms:
+                plat.rect.right -= max(self.player.vel.x, 2)
+        elif  self.player.rect.left < WIDTH / 3:
             self.player.pos.x -= self.player.vel.x
             for plat in self.platforms:
-                plat.rect.x -= self.player.vel.x
+                plat.rect.right -= self.player.vel.x
 
+        # check all die conditions
+        if self.player.rect.top > HEIGHT:
+            if (self.lives > 1):
+                self.new(self.lives - 1)
+            else:
+                self.playing = False
+        #todo: killed by enemy
 
     def events(self):
         # game loop event
@@ -65,21 +80,55 @@ class Game:
         # game loop draw
         self.screen.fill(WHITE)
         self.all_sprites.draw(self.screen)
+        self.draw_text("Lives: " + str(self.lives), 24, BLACK, WIDTH / 2, 15)
         #after drawing everything, update the screen
         pg.display.flip()
 
     def show_start_screen(self):
         # game start screen
-        pass
+        self.screen.fill(WHITE)
+        self.draw_text(TITLE, 48, BLACK, WIDTH / 2, HEIGHT / 4)
+        self.draw_text("Press any key to start", 22, BLACK, WIDTH / 2, HEIGHT * 3 / 4)
+        pg.display.flip()
+        self.wait_for_key()
 
     def show_go_screen(self):
+        # if game is closed mid game, skip the game over screen
+        if not self.running:
+            return
+
         # game over / continue
-        pass
+        self.screen.fill(WHITE)
+        self.draw_text("GAME OVER", 48, BLACK, WIDTH / 2, HEIGHT / 4)
+        self.draw_text("Press any key to start", 22, BLACK, WIDTH / 2, HEIGHT * 3 / 4)
+        pg.display.flip()
+        self.wait_for_key()
+
+    def draw_text(self, text, size, color, x, y):
+        font = pg.font.Font(self.font_name, size)
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        text_rect.midtop = (x, y)
+        self.screen.blit(text_surface, text_rect)
+
+    def wait_for_key(self):
+        waiting = True
+        key_down = False
+        while waiting:
+            self.clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    waiting = False
+                    self.running = False
+                if event.type == pg.KEYDOWN:
+                    key_down = True
+                if key_down and event.type == pg.KEYUP:
+                    waiting = False
 
 g = Game()
 g.show_start_screen()
 while g.running:
-    g.new()
+    g.new(PLAYER_LIVES)
     g.show_go_screen()
 
 pg.quit()
