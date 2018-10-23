@@ -1,7 +1,7 @@
 # game options
 TITLE = "Platformer"
-WIDTH = 480
-HEIGHT = 600
+WIDTH = 1280
+HEIGHT = 720
 FPS = 60
 
 # player properties

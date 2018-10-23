@@ -42,6 +42,11 @@ class Game:
             if hits:
                 self.player.pos.y = hits[0].rect.top + 1
                 self.player.vel.y = 0
+        # if player reaches sides of screen, move the rest the opposite way
+        if self.player.rect.left <= WIDTH / 4 or self.player.rect.right >= WIDTH * 3 / 4:
+            self.player.pos.x -= self.player.vel.x
+            for plat in self.platforms:
+                plat.rect.x -= self.player.vel.x
 
 
     def events(self):
