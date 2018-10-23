@@ -1,5 +1,5 @@
 import os
-
+import tiles.tile
 class Map:
 
     def __init__(self, mname):
@@ -9,8 +9,13 @@ class Map:
         self.rawMapLines = file_object.readlines()
         self.initMap(self.rawMapLines)
 
-    def getMap(self):
-        # TODO add direction argument for moving the view of the map
+    def getTiles(self):
+        # TODO return array of Tile objects
+        res = []
+        for row in self.mapLayout:
+            for element in row:
+                if (element != " "):
+                    res.append()
         return self.mapLayout
 
     def initMap(self, lines):
