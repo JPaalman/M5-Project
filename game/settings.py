@@ -5,6 +5,7 @@ HEIGHT = 720
 FPS = 60
 PLAYER_LIVES = 2
 FONT_NAME = 'arial'
+RECORDS_FILE = 'level_records.txt'
 
 # player properties
 PLAYER_ACC = 0.5

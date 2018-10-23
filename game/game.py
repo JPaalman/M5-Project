@@ -1,6 +1,7 @@
 import pygame as pg
 from settings import *
 from sprites import *
+from os import path
 
 class Game:
     def __init__(self):
@@ -12,11 +13,20 @@ class Game:
         pg.display.set_caption(TITLE)
         self.running = True
         self.font_name = pg.font.match_font(FONT_NAME)
+        self.load_data()
+
+    def load_data(self):
+        # load level times
+        self.dir = path.dirname(__file__)
+        with open(path.join(self.dir, RECORDS_FILE), 'w') as f:
+            try:
+                self.records = int(f.read())
+            except:
+                self.records = 0
 
     def new(self, lives):
         # start new game, player lives set
         self.lives = lives
-        print(lives)
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.player = Player(self)
@@ -29,6 +39,7 @@ class Game:
 
     def run(self):
         # game loop
+        self.frame_count = 0
         self.playing = True
         while self.playing:
             self.clock.tick(FPS)
@@ -37,6 +48,8 @@ class Game:
             self.draw()
 
     def update(self):
+        # update timer
+        self.update_timer_string()
         # game loop updates
         self.all_sprites.update()
         if self.player.vel.y > 0:
@@ -81,6 +94,7 @@ class Game:
         self.screen.fill(WHITE)
         self.all_sprites.draw(self.screen)
         self.draw_text("Lives: " + str(self.lives), 24, BLACK, WIDTH / 2, 15)
+        self.draw_text(self.timer_string, 24, BLACK, WIDTH / 2, HEIGHT - 30)
         #after drawing everything, update the screen
         pg.display.flip()
 
@@ -89,6 +103,8 @@ class Game:
         self.screen.fill(WHITE)
         self.draw_text(TITLE, 48, BLACK, WIDTH / 2, HEIGHT / 4)
         self.draw_text("Press any key to start", 22, BLACK, WIDTH / 2, HEIGHT * 3 / 4)
+        # todo: display record times for each level...
+        self.draw_text("Record time: " + str(self.records), 22, BLACK, WIDTH / 2, HEIGHT / 2)
         pg.display.flip()
         self.wait_for_key()
 
@@ -101,6 +117,7 @@ class Game:
         self.screen.fill(WHITE)
         self.draw_text("GAME OVER", 48, BLACK, WIDTH / 2, HEIGHT / 4)
         self.draw_text("Press any key to start", 22, BLACK, WIDTH / 2, HEIGHT * 3 / 4)
+
         pg.display.flip()
         self.wait_for_key()
 
@@ -110,6 +127,15 @@ class Game:
         text_rect = text_surface.get_rect()
         text_rect.midtop = (x, y)
         self.screen.blit(text_surface, text_rect)
+
+    def update_timer_string(self):
+        if self.frame_count % FPS == 0:
+            print("updating")
+            self.total_seconds = self.frame_count // FPS
+            minutes = self.total_seconds // 60
+            seconds = self.total_seconds % 60
+            self.timer_string = "Time: {:02d}:{:02d}".format(minutes, seconds)
+        self.frame_count += 1
 
     def wait_for_key(self):
         waiting = True
