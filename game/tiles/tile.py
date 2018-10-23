@@ -11,14 +11,13 @@ class Tile:
     texturePath (path to texture)
     '''
 
-    def __init__(self, x, y, byte, data):
-        self.x = x
-        self.y = y
-        self.byte = byte
-        self.data = data
-        self.setTexture()
+    def __init__(self, new_x, new_y, new_byte, new_data):
+        self.x = new_x
+        self.y = new_y
+        self.byte = new_byte
+        self.data = new_data
+        #self.texturePath = self.setTexture()
 
     def setTexture(self):
-        self.byte
-        self.texturePath
+        return ""
         # TODO select texture based on byte

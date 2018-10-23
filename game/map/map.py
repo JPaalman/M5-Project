@@ -1,8 +1,17 @@
 import os
-import tiles.tile
+from game.tiles.tile import Tile
+from game import settings
+
+tileSize = 20
+
 class Map:
 
     def __init__(self, mname):
+        self.mapHeight = None
+        self.mapWidth = None
+        self.mapLayout = None
+        self.mapName = None
+
         dirname = os.path.dirname(__file__)
         filename = os.path.join(dirname, mname)
         file_object = open(filename, 'r')
@@ -10,62 +19,57 @@ class Map:
         self.initMap(self.rawMapLines)
 
     def getTiles(self):
-        # TODO return array of Tile objects
         res = []
-        for row in self.mapLayout:
-            for element in row:
-                if (element != " "):
-                    res.append()
-        return self.mapLayout
+        rownr = 0
+        print(len(self.mapLayout))
+        print(len(self.mapLayout[0]))
+        while rownr < len(self.mapLayout):
+            colnr = 0
+            while colnr < len(self.mapLayout[rownr]):
+                # TODO implement inserting tile data in constructor
+                res.append(Tile(self.getX(colnr), self.getY(rownr), self.mapLayout[rownr][colnr], 0))
+                colnr += 1
+            rownr += 1
+        return res
 
     def initMap(self, lines):
 
         lines = self.cleanLines(lines)
 
-        mapName = ""
-        mapHeight = 0
-        mapWidth = 0
-        mapLayout = []
-
         index = 0;
 
         # Read map name
-        mapName = self.getParamValue(lines[index])
+        self.mapName = self.getParamValue(lines[index])
         index += 1
 
         # Read map height
-        mapHeight = int(float(self.getParamValue(lines[index])))
+        self.mapHeight = int(float(self.getParamValue(lines[index])))
         index += 1
 
         # Read map width
-        mapWidth = int(float(self.getParamValue(lines[index])))
+        self.mapWidth = int(float(self.getParamValue(lines[index])))
         index += 1
 
         # Load maplayout
-        mapLayout = self.getMapLayout(lines[index:])
-
+        self.mapLayout = self.getMapLayout(lines[index:])
 
         # Load tile data
         # TODO implement
-
-        # Put values into instance variables
-        self.mapHeight = mapHeight
-        self.mapWidth = mapWidth
-        self.mapLayout = mapLayout
-        self.mapName = mapName
 
         print("Map initiated:")
         print("Map name: " + self.mapName)
         print("Width: " + str(self.mapWidth))
         print("Height: " + str(self.mapHeight))
         print("\nMapdata:")
-        for x in mapLayout:
+        for x in self.mapLayout:
             print(x)
 
     def cleanLines(self, list):
 
+        tempList = []
         for x in list:
-            x.rstrip()
+            tempList.append(x[:-1])
+        list = tempList
 
         out = []
         i = self.nextLine(list, -1)
@@ -93,7 +97,13 @@ class Map:
         # TODO implement padding and truncation
         res = []
         for x in data:
-            if (str(x) == "!MAPEND"):
+            if str(x) == "!MAPEND":
                 return res
             res.append(bytearray(x, "ascii"))
         return res
+
+    def getX(self, x):
+        return tileSize * x
+
+    def getY(self, y):
+        return tileSize * y

@@ -1,21 +1,22 @@
 import pygame
-import game.map as mp
+from game.map.map import Map
 
 pygame.init()
 clock = pygame.time.Clock()
 
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 caption = 'Platformer'
 
 mainSurface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT),0 ,32)
 pygame.display.set_caption(caption)
 
-mapObj = mp.Map("MapTemplate")
-tilemap = mapObj.getMap()
-
-MAPHEIGHT = 6
-MAPWIDTH = 8
+mapObj = Map("MapTemplate")
+mapTiles = mapObj.getTiles()
+for t in mapTiles:
+    print(str(t.x) + " " + str(t.y) + " " + str(t.byte))
+MAPHEIGHT = mapObj.mapHeight
+MAPWIDTH = mapObj.mapWidth
 TILESIZE = 100
 
 BLACK = (0,   0,   0  )
@@ -27,7 +28,8 @@ RED   = (255, 0,   0  )
 colours =   {
                 71 : GREEN,
                 32 : BLUE,
-                87  : BROWN,
+                87 : BROWN,
+                10 : RED
             }
 
 while True:
@@ -39,12 +41,8 @@ while True:
 
     mainSurface
 
-    #loop through ech row
-    for row in range(MAPHEIGHT):
-        #loop through each column in the row
-        for column in range(MAPWIDTH):
-            #draw the resource at that position in the tilemap, using the correct colour
-            pygame.draw.rect(mainSurface, colours[tilemap[row][column]], (column*TILESIZE,row*TILESIZE,TILESIZE,TILESIZE))
+    for t in mapTiles:
+        pygame.draw.rect(mainSurface, colours[t.byte], (t.x, t.y, 20, 20))
 
     pygame.display.update()
 
