@@ -3,11 +3,15 @@ TITLE = "Platformer"
 WIDTH = 1280
 HEIGHT = 720
 FPS = 60
+PLAYER_LIVES = 2
+FONT_NAME = 'arial'
 
 # player properties
 PLAYER_ACC = 0.5
 PLAYER_FRICTION = -0.12
 PLAYER_GRAV = 0.8
+# todo: use this player jump variable to jump
+PLAYER_JUMP = 20
 
 # starting platforms
 # todo: replace with map reader!
