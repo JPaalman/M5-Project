@@ -1,6 +1,7 @@
 import pygame as pg
 
 from game.settings import *
+from game.tiles import tile
 
 
 class Player(pg.sprite.Sprite):
@@ -17,8 +18,8 @@ class Player(pg.sprite.Sprite):
 
         self.x = x  # horizontal position
         self.y = y  # vertical position
-        self.h = h  # height
         self.w = w  # width
+        self.h = h  # height
 
         self.vel = pg.Vector2(0, 0)  # velocity
         self.acc = pg.Vector2(0, self.GRAVITY)  # acceleration
@@ -33,6 +34,7 @@ class Player(pg.sprite.Sprite):
         """
         I'm also a docstring hurr durr
         """
+        # todo keylistener in seperate thread
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT]:
             self.acc.x -= self.ACCELERATION
@@ -49,6 +51,18 @@ class Player(pg.sprite.Sprite):
         self.vel.y += self.acc.y
         self.y += self.vel.y
 
-        # dummy collision
-        if self.y > 700:
-            self.y = 700
+        self.collision()
+
+    def collision(self):
+        """
+        I f*cking hate docstrings
+        """
+        if self.rect.colliderect(tile.rect):
+            if self.vel.x > 0:  # Moving right; Hit the left side of the wall
+                self.rect.right = tile.rect.left
+            if self.vel.x < 0:  # Moving left; Hit the right side of the wall
+                self.rect.left = tile.rect.right
+            if self.vel.y > 0:  # Moving down; Hit the top side of the wall
+                self.rect.bottom = tile.rect.top
+            if self.vel.y < 0:  # Moving up; Hit the bottom side of the wall
+                self.rect.top = tile.rect.bottom
