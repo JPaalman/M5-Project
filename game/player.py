@@ -2,6 +2,7 @@ import pygame as pg
 
 from game.settings import *
 from game.tiles import tile
+vec = pg.math.Vector2
 
 
 class Player(pg.sprite.Sprite):
@@ -14,20 +15,23 @@ class Player(pg.sprite.Sprite):
     LIFE = 5
 
     def __init__(self, x, y, h, w):
-        super().__init__()
+        pg.sprite.Sprite.__init__(self)
+
+        self.image = pg.Surface((w, h))
+        self.image.fill(RED)
+
+        self.rect = self.image.get_rect()
 
         self.x = x  # horizontal position
         self.y = y  # vertical position
         self.w = w  # width
         self.h = h  # height
 
-        self.vel = pg.math.Vector2(0, 0)  # velocity
-        self.acc = pg.math.Vector2(0, self.GRAVITY)  # acceleration
+        self.rect.center = (x, y)
 
-        self.rect = pg.Rect(x, y, w, h)
+        self.vel = vec(0, 0)  # velocity
+        self.acc = vec(0, 0)  # acceleration
 
-        self.image = pg.Surface((w, h))
-        self.image.fill(RED)
         # self.image = pg.image.load("../resources/player.*")
 
     def update(self):
@@ -35,23 +39,25 @@ class Player(pg.sprite.Sprite):
         I'm also a docstring hurr durr
         """
         # todo keylistener in seperate thread
+        self.acc = vec(0, self.GRAVITY)
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT]:
-            self.acc.x -= self.ACCELERATION
+            self.acc.x = self.ACCELERATION
         if keys[pg.K_RIGHT]:
-            self.acc.x += self.ACCELERATION
+            self.acc.x = self.ACCELERATION
         if keys[pg.K_SPACE]:
             self.vel.y = -20
 
         self.acc.x -= self.vel.x * self.FRICTION
 
         self.vel.x += self.acc.x
-        self.x += self.vel.x
-
         self.vel.y += self.acc.y
-        self.y += self.vel.y
 
-        self.collision()
+        self.x += self.vel.x + 0.5 * self.acc.x
+        self.y += self.vel.y + 0.5 * self.acc.y
+
+        self.rect.midbottom = vec(self.x, self.y )
+        # self.collision()
 
     def collision(self):
         """

@@ -2,6 +2,7 @@ import pygame as pg
 from game.settings import *
 from game.player import *
 from game.sprites import *
+from game.map.map import *
 from os import path
 
 
@@ -21,11 +22,15 @@ class Game:
         self.load_data()
         self.lives = None
         self.all_sprites = None
+        self.sprites_on_screen = None
         self.platforms = None
         self.player = None
         self.playing = None
         self.frame_count = None
         self.timer_string = None
+        self.map = None
+        self.map_tiles = None
+        self.level = None
 
     def load_data(self):
         """ load level times """
@@ -35,17 +40,28 @@ class Game:
             except IOError:
                 self.records = 0
 
-    def new(self, lives):
+    def new(self, lives, level):
         """ start new game, player lives set """
         self.lives = lives
+        self.level = level
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.player = Player(WIDTH / 2, HEIGHT / 2, 30, 20)
         self.all_sprites.add(self.player)
+        '''
         for plat in PLATFORM_LIST:
             p = Platform(*plat)
             self.all_sprites.add(p)
             self.platforms.add(p)
+        '''
+        self.map = Map(level)
+        self.map_tiles = self.map.getTiles()
+        for tile in self.map_tiles:
+            # platform
+            if tile.data == 0:
+                p = Platform(tile.x, tile.y, TILESIZE, TILESIZE)
+                self.platforms.add(p)
+            self.all_sprites.add(p)
         self.run()
 
     def run(self):
@@ -73,18 +89,18 @@ class Game:
         # if player reaches sides of screen, move the rest the opposite way
         if self.player.rect.right > WIDTH * 2 / 3:
             # note: the max(.. , 2) is a fix for drifting platforms in the right direction
-            self.player.pos.x -= max(self.player.vel.x, 2)
+            self.player.x -= max(self.player.vel.x, 2)
             for plat in self.platforms:
                 plat.rect.right -= max(self.player.vel.x, 2)
         elif self.player.rect.left < WIDTH / 3:
-            self.player.pos.x -= self.player.vel.x
+            self.player.x -= self.player.vel.x
             for plat in self.platforms:
                 plat.rect.right -= self.player.vel.x
 
         # check all die conditions
         if self.player.rect.top > HEIGHT:
             if self.lives > 1:
-                self.new(self.lives - 1)
+                self.new(self.lives - 1, self.level)
             else:
                 self.playing = False
         # todo: killed by enemy
@@ -97,9 +113,6 @@ class Game:
                 if self.playing:
                     self.playing = False
                 self.running = False
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_SPACE:
-                    self.player.jump()
 
     def draw(self):
         """ game loop - drawing """
@@ -169,7 +182,7 @@ class Game:
 g = Game()
 g.show_start_screen()
 while g.running:
-    g.new(PLAYER_LIVES)
+    g.new(PLAYER_LIVES, LEVEL_1)
     g.show_go_screen()
 
 pg.quit()
