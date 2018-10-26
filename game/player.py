@@ -7,7 +7,6 @@ class Player(pg.sprite.Sprite):
     """
     I'm a docstring hurr durr
     """
-
     ACCELERATION = 60 / FPS  # dummy value
     FRICTION = 1  # dummy value
     GRAVITY = 1  # dummy value
@@ -16,13 +15,13 @@ class Player(pg.sprite.Sprite):
     def __init__(self, x, y, h, w):
         super().__init__()
 
-        self.x = x  # x position
-        self.y = y  # y position
+        self.x = x  # horizontal position
+        self.y = y  # vertical position
         self.h = h  # height
         self.w = w  # width
 
-        self.vel = pg.Vector2(0, 0)
-        self.acc = pg.Vector2(0, self.GRAVITY)
+        self.vel = pg.Vector2(0, 0)  # velocity
+        self.acc = pg.Vector2(0, self.GRAVITY)  # acceleration
 
         self.rect = pg.Rect(x, y, w, h)
 
@@ -34,21 +33,16 @@ class Player(pg.sprite.Sprite):
         """
         I'm also a docstring hurr durr
         """
-
-        # key updates
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT]:
-            self.acc.x -= self.a
+            self.acc.x -= self.ACCELERATION
         if keys[pg.K_RIGHT]:
-            self.acc.x += self.a
-        # test jumping function
+            self.acc.x += self.ACCELERATION
         if keys[pg.K_SPACE]:
             self.vel.y = -20
 
-        # friction
         self.acc.x -= self.vel.x * self.FRICTION
 
-        # update vel and pos
         self.vel.x += self.acc.x
         self.x += self.vel.x
 
