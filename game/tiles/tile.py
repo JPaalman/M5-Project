@@ -1,6 +1,8 @@
+import game.settings as settings
+
 class Tile:
 
-    TILESIZE = 20
+    TILESIZE = settings.TILESIZE
 
     '''
     instance variables:
@@ -16,6 +18,8 @@ class Tile:
         self.y = new_y
         self.byte = new_byte
         self.data = new_data
+        if self.data != 0:
+            self.byte = 64
         #self.texturePath = self.setTexture()
 
     def setTexture(self):

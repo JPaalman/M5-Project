@@ -19,3 +19,4 @@ GGGGGGGGGGGGGGGGG
 # Tiledata: x and y coordinate of a tile, and the data that you want to add
 # x,y and data are represented 4 byte integers.
 3,5=123
+
