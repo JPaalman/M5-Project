@@ -1,11 +1,14 @@
 import pygame as pg
-from settings import *
-from sprites import *
+from game.settings import *
+from game.player import *
+from game.sprites import *
 from os import path
 
+
 class Game:
+    """ platformer game """
     def __init__(self):
-        # initialize game window
+        """ initialize game window """
         pg.init()
         pg.mixer.init()
         self.clock = pg.time.Clock()
@@ -13,23 +16,31 @@ class Game:
         pg.display.set_caption(TITLE)
         self.running = True
         self.font_name = pg.font.match_font(FONT_NAME)
+        self.dir = path.dirname(__file__)
+        self.records = None
         self.load_data()
+        self.lives = None
+        self.all_sprites = None
+        self.platforms = None
+        self.player = None
+        self.playing = None
+        self.frame_count = None
+        self.timer_string = None
 
     def load_data(self):
-        # load level times
-        self.dir = path.dirname(__file__)
+        """ load level times """
         with open(path.join(self.dir, RECORDS_FILE), 'w') as f:
             try:
                 self.records = int(f.read())
-            except:
+            except IOError:
                 self.records = 0
 
     def new(self, lives):
-        # start new game, player lives set
+        """ start new game, player lives set """
         self.lives = lives
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
-        self.player = Player(self)
+        self.player = Player(WIDTH / 2, HEIGHT / 2, 30, 20)
         self.all_sprites.add(self.player)
         for plat in PLATFORM_LIST:
             p = Platform(*plat)
@@ -38,7 +49,7 @@ class Game:
         self.run()
 
     def run(self):
-        # game loop
+        """ game loop """
         self.frame_count = 0
         self.playing = True
         while self.playing:
@@ -48,6 +59,7 @@ class Game:
             self.draw()
 
     def update(self):
+        """ update all the things! """
         # update timer
         self.update_timer_string()
         # game loop updates
@@ -64,21 +76,21 @@ class Game:
             self.player.pos.x -= max(self.player.vel.x, 2)
             for plat in self.platforms:
                 plat.rect.right -= max(self.player.vel.x, 2)
-        elif  self.player.rect.left < WIDTH / 3:
+        elif self.player.rect.left < WIDTH / 3:
             self.player.pos.x -= self.player.vel.x
             for plat in self.platforms:
                 plat.rect.right -= self.player.vel.x
 
         # check all die conditions
         if self.player.rect.top > HEIGHT:
-            if (self.lives > 1):
+            if self.lives > 1:
                 self.new(self.lives - 1)
             else:
                 self.playing = False
-        #todo: killed by enemy
+        # todo: killed by enemy
 
     def events(self):
-        # game loop event
+        """ game loop - handling events """
         for event in pg.event.get():
             # check for close window event
             if event.type == pg.QUIT:
@@ -90,16 +102,16 @@ class Game:
                     self.player.jump()
 
     def draw(self):
-        # game loop draw
+        """ game loop - drawing """
         self.screen.fill(WHITE)
         self.all_sprites.draw(self.screen)
         self.draw_text("Lives: " + str(self.lives), 24, BLACK, WIDTH / 2, 15)
-        self.draw_text(self.timer_string, 24, BLACK, WIDTH / 2, HEIGHT - 30)
-        #after drawing everything, update the screen
+        self.draw_text(self.timer_string, 24, BLACK, WIDTH / 2, HEIGHT - 35)
+        # after drawing everything, update the screen
         pg.display.flip()
 
     def show_start_screen(self):
-        # game start screen
+        """ game start screen """
         self.screen.fill(WHITE)
         self.draw_text(TITLE, 48, BLACK, WIDTH / 2, HEIGHT / 4)
         self.draw_text("Press any key to start", 22, BLACK, WIDTH / 2, HEIGHT * 3 / 4)
@@ -109,7 +121,7 @@ class Game:
         self.wait_for_key()
 
     def show_go_screen(self):
-        # if game is closed mid game, skip the game over screen
+        """ if game is closed mid game, skip the game over screen """
         if not self.running:
             return
 
@@ -122,6 +134,7 @@ class Game:
         self.wait_for_key()
 
     def draw_text(self, text, size, color, x, y):
+        """ draw text to the screen at position x, y """
         font = pg.font.Font(self.font_name, size)
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
@@ -129,15 +142,16 @@ class Game:
         self.screen.blit(text_surface, text_rect)
 
     def update_timer_string(self):
-        if self.frame_count % FPS == 0:
-            print("updating")
-            self.total_seconds = self.frame_count // FPS
-            minutes = self.total_seconds // 60
-            seconds = self.total_seconds % 60
-            self.timer_string = "Time: {:02d}:{:02d}".format(minutes, seconds)
+        """ updates the timer string that will be drawn to the screen """
+        total_seconds = self.frame_count / FPS
+        minutes = total_seconds // 60
+        seconds = total_seconds % 60
+        milli_sec = (seconds % 1) * 1000
+        self.timer_string = "Time: {:02d}:{:02d}:{:03d}".format(int(minutes), int(seconds), int(milli_sec))
         self.frame_count += 1
 
     def wait_for_key(self):
+        """ method that waits for a full button press (down and up) """
         waiting = True
         key_down = False
         while waiting:
@@ -150,6 +164,7 @@ class Game:
                     key_down = True
                 if key_down and event.type == pg.KEYUP:
                     waiting = False
+
 
 g = Game()
 g.show_start_screen()
