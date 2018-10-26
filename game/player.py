@@ -57,6 +57,8 @@ class Player(pg.sprite.Sprite):
         """
         I f*cking hate docstrings
         """
+        # todo find a way to differentiate between vertical and horizontal collision
+        # todo move the collision handling to the tiles and check for collision with all sprites
         if self.rect.colliderect(tile.rect):
             if self.vel.x > 0:  # Moving right; Hit the left side of the wall
                 self.rect.right = tile.rect.left
