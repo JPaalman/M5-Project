@@ -60,9 +60,13 @@ class Player(pg.sprite.Sprite):
         if self.rect.colliderect(tile.rect):
             if self.vel.x > 0:  # Moving right; Hit the left side of the wall
                 self.rect.right = tile.rect.left
+                self.vel.x = 0
             if self.vel.x < 0:  # Moving left; Hit the right side of the wall
                 self.rect.left = tile.rect.right
+                self.vel.x = 0
             if self.vel.y > 0:  # Moving down; Hit the top side of the wall
                 self.rect.bottom = tile.rect.top
+                self.vel.y = 0
             if self.vel.y < 0:  # Moving up; Hit the bottom side of the wall
                 self.rect.top = tile.rect.bottom
+                self.vel.y = 0
