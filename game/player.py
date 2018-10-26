@@ -21,8 +21,8 @@ class Player(pg.sprite.Sprite):
         self.w = w  # width
         self.h = h  # height
 
-        self.vel = pg.Vector2(0, 0)  # velocity
-        self.acc = pg.Vector2(0, self.GRAVITY)  # acceleration
+        self.vel = pg.math.Vector2(0, 0)  # velocity
+        self.acc = pg.math.Vector2(0, self.GRAVITY)  # acceleration
 
         self.rect = pg.Rect(x, y, w, h)
 
@@ -57,16 +57,22 @@ class Player(pg.sprite.Sprite):
         """
         I f*cking hate docstrings
         """
+        # todo find a way to differentiate between vertical and horizontal collision
+        # todo move the collision handling to the tiles and check for collision with all sprites
         if self.rect.colliderect(tile.rect):
             if self.vel.x > 0:  # Moving right; Hit the left side of the wall
                 self.rect.right = tile.rect.left
-                self.vel.x = 0
+                self.vel.x *= -0.5
+                self.acc.x = 0
             if self.vel.x < 0:  # Moving left; Hit the right side of the wall
                 self.rect.left = tile.rect.right
-                self.vel.x = 0
+                self.vel.x *= -0.5
+                self.acc.x = 0
             if self.vel.y > 0:  # Moving down; Hit the top side of the wall
                 self.rect.bottom = tile.rect.top
-                self.vel.y = 0
+                self.vel.y *= -0.5
+                self.acc.y = 0
             if self.vel.y < 0:  # Moving up; Hit the bottom side of the wall
                 self.rect.top = tile.rect.bottom
-                self.vel.y = 0
+                self.vel.y *= -0.5
+                self.acc.y = 0
