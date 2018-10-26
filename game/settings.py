@@ -9,7 +9,7 @@ FONT_NAME = 'arial'
 RECORDS_FILE = 'level_records.txt'
 
 # level files
-LEVEL_1 = 'MapTemplate.txt'
+LEVEL_1 = 'level_1.txt'
 
 # starting platforms
 # todo: replace with map reader!

@@ -56,10 +56,10 @@ class Game:
         '''
         self.map = Map(level)
         self.map_tiles = self.map.getTiles()
-        for tile in self.map_tiles:
+        for t in self.map_tiles:
             # platform
-            if tile.data == 0:
-                p = Platform(tile.x, tile.y, TILESIZE, TILESIZE)
+            if t.byte == 71:
+                p = Platform(t.x, t.y, TILESIZE, TILESIZE)
                 self.platforms.add(p)
             self.all_sprites.add(p)
         self.run()
@@ -80,12 +80,7 @@ class Game:
         self.update_timer_string()
         # game loop updates
         self.all_sprites.update()
-        if self.player.vel.y > 0:
-            # check for collision between player and platforms
-            hits = pg.sprite.spritecollide(self.player, self.platforms, False)
-            if hits:
-                self.player.pos.y = hits[0].rect.top + 1
-                self.player.vel.y = 0
+
         # if player reaches sides of screen, move the rest the opposite way
         if self.player.rect.right > WIDTH * 2 / 3:
             # note: the max(.. , 2) is a fix for drifting platforms in the right direction
