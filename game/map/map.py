@@ -54,7 +54,7 @@ class Map:
         self.mapLayout = self.getMapLayout(lines[index:])
 
         # Load tile data
-        # TODO implement
+        self.mapBytes = self.getMapBytes(lines[index:])
 
         print("Map initiated:")
         print("Map name: " + self.mapName)

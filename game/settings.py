@@ -2,6 +2,7 @@
 TITLE = "Platformer"
 WIDTH = 1280
 HEIGHT = 720
+TILESIZE = 20
 FPS = 60
 PLAYER_LIVES = 2
 FONT_NAME = 'arial'
