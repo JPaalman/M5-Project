@@ -26,7 +26,7 @@ class Player(pg.sprite.Sprite):
 
         self.rect = pg.Rect(x, y, w, h)
 
-        self.image = pg.Surface(w, h)
+        self.image = pg.Surface((w, h))
         self.image.fill(RED)
         # self.image = pg.image.load("../resources/player.*")
 
