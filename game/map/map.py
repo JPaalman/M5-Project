@@ -26,7 +26,6 @@ class Map:
         self.rawMapLines = file_object.readlines()
         self.initMap(self.rawMapLines)
 
-
     def getTiles(self):
         """
         Converts all data stored in the map file to Tile objects
@@ -38,8 +37,9 @@ class Map:
         while rownr < len(self.mapLayout):
             colnr = 0
             while colnr < len(self.mapLayout[rownr]):
-                data = self.findTileData(colnr, rownr)
-                res.append(Tile(self.getX(colnr), self.getY(rownr), self.mapLayout[rownr][colnr], data))
+                if self.mapLayout[rownr][colnr] != 32:
+                    data = self.findTileData(colnr, rownr)
+                    res.append(Tile(self.getX(colnr), self.getY(rownr), self.mapLayout[rownr][colnr], data))
                 colnr += 1
             rownr += 1
         return res
