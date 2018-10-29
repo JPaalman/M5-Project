@@ -1,6 +1,7 @@
 import pygame
 from game.map.map import Map
 import game.settings as settings
+import game.map.colorMap as colorMap
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -17,20 +18,6 @@ for t in mapTiles:
 MAPHEIGHT = mapObj.mapHeight
 MAPWIDTH = mapObj.mapWidth
 
-BLACK = (0,   0,   0  )
-BROWN = (153, 76,  0  )
-GREEN = (0,   255, 0  )
-BLUE  = (0,   0,   255)
-RED   = (255, 0,   0  )
-
-colours =   {
-                71 : GREEN,
-                32 : BLUE,
-                87 : BROWN,
-                10 : RED,
-                64 : BLACK
-            }
-
 while True:
     for event in pygame.event.get():
         print(event)
@@ -38,8 +25,7 @@ while True:
             pygame.quit()
             quit()
     for t in mapTiles:
-        pygame.draw.rect(mainSurface, colours[t.byte], (t.x, t.y, settings.TILESIZE, settings.TILESIZE))
-
+        pygame.draw.rect(mainSurface, colorMap.colours[t.byte], (t.x, t.y, settings.TILESIZE, settings.TILESIZE))
     pygame.display.update()
 
     clock.tick(60)

@@ -2,7 +2,12 @@ import os
 from game.tiles.tile import Tile
 from game import settings
 
+
 class Map:
+
+    PADDING_CHAR = 32
+    MAPBORDER_CHAR = 71
+
     """
         This class retrieves contents of a map file, puts all values into the proper variables and
         make them available for retrieving.
@@ -16,19 +21,23 @@ class Map:
 
         dirname = os.path.dirname(__file__)
         filename = os.path.join(dirname, mname)
-        file_object = open(filename, 'r')
+
+        file_object = open(filename, )
         self.rawMapLines = file_object.readlines()
         self.initMap(self.rawMapLines)
 
+
     def getTiles(self):
+        """
+        Converts all data stored in the map file to Tile objects
+        :return: Tile[] of tiles representing the map
+        """
         res = []
         rownr = 0
         print(len(self.mapLayout))
-        print(len(self.mapLayout[0]))
         while rownr < len(self.mapLayout):
             colnr = 0
             while colnr < len(self.mapLayout[rownr]):
-                # TODO implement inserting tile data in constructor
                 data = self.findTileData(colnr, rownr)
                 res.append(Tile(self.getX(colnr), self.getY(rownr), self.mapLayout[rownr][colnr], data))
                 colnr += 1
@@ -36,6 +45,11 @@ class Map:
         return res
 
     def initMap(self, lines):
+        """
+        Initializes all the instance variables by reading the file contents and
+        converting the contents to their proper representation
+        :param lines: Array of raw lines retrieved from the map file
+        """
         lines = self.cleanLines(lines)
         index = 0;
 
@@ -53,7 +67,8 @@ class Map:
 
         # Load maplayout
         self.mapLayout = self.getMapLayout(lines[index:])
-        index += (len(self.mapLayout) + 1)
+
+        index += len(self.mapLayout) + 1
 
         # Load tile data
         self.tileData = self.getTileData(lines[index:])
@@ -67,6 +82,12 @@ class Map:
             print(x)
 
     def cleanLines(self, ls):
+        """
+        Cleans the input lines by removing newline characters and ignoring empty lines or comment
+        lines that start with '#'
+        :param ls: The list that you want to clean
+        :return: The cleaned list
+        """
         tempList = []
 
         for x in ls:
@@ -84,26 +105,63 @@ class Map:
 
 
     def nextLine(self, ls, index):
+        """
+        Returns the index of the next line that contains information.
+        Emtpy lines or comment lines starting with '#' are skipped.
+        :param ls: List with possibly relevant values.
+        :param index: The last index read by the program
+        :return: The index of the next line that is relevant
+        """
         for x in range(index + 1, len(ls) - 1):
-            # TODO implement filtering for empty lines (not working atm)
-            # TODO map data is being ignored, fix.
-            if (len(ls[x]) > 0) and (ls[x][0] != "#"):
+            if (len(ls[x]) > 0) and (ls[x][0] != "#") and (ls[x][0] != 10):
                 return x
         return len(ls)
 
     def getParamValue(self, input):
+        """
+        Retrieves the string value of a parameter stored in the map file
+        :param input: [PARAMNAME]=[VALUE]
+        :return: VALUE
+        """
         return input.split("=")[1]
 
     def getMapLayout(self, data):
-        # TODO fix bug that includes the mapend line into the result
-        # TODO implement padding and truncation
+        """
+        Processes the raw lines that represent the map to a complete map. This includes
+        adding padding to lines if they are shorter than the MAPWIDTH param in the map file specifies,
+        and truncates lines if they are longer than the MAPWIDTH specifies. The same padding and truncation is applied
+        to the map vertically. The map is padded with "space" characters, and border characters at the borders.
+        :param data: The raw lines that represent the map layout itself.
+        :return: A matrix of bytes that contains the byte for every tile on the map.
+        """
         res = []
-        count = 0
-        for x in data:
-            count += 1
-            if str(x) == "!MAPEND":
+        padding = [self.PADDING_CHAR] * self.mapWidth
+        padding[0] = self.MAPBORDER_CHAR
+        padding[len(padding) - 1] = self.MAPBORDER_CHAR
+
+        bottom_padding = [self.MAPBORDER_CHAR] * self.mapWidth
+
+        i = 0
+        while (i < len(data)) and (data[i] != "!MAPEND") and len(res) != self.mapHeight + 1:
+            if len(res) == self.mapHeight:
                 return res
-            res.append(bytearray(x, "ascii"))
+
+            add = bytearray(data[i][:self.mapWidth], "ascii")
+            if len(add) < self.mapWidth:
+                while len(add) < self.mapWidth - 1:
+                    if i == 0:
+                        add.append(self.MAPBORDER_CHAR)
+                    else:
+                        add.append(self.PADDING_CHAR)
+                add.append(self.MAPBORDER_CHAR)
+            res.append(add)
+            i += 1
+
+        if len(res) != self.mapHeight:
+            while len(res) < self.mapHeight - 1:
+                res.append(padding)
+            res.append(bottom_padding)
+
         return res
 
     def getTileData(self, lines):
