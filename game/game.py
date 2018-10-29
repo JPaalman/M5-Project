@@ -1,13 +1,16 @@
-import pygame as pg
-from game.settings import *
-from game.player import *
-from game.sprites import *
-from game.map.map import *
 from os import path
+
+import pygame as pg
+
+from map.map import Map
+from player import Player
+from settings import *
+from sprites import Platform
 
 
 class Game:
     """ platformer game """
+
     def __init__(self):
         """ initialize game window """
         pg.init()
@@ -46,7 +49,7 @@ class Game:
         self.level = level
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
-        self.player = Player(WIDTH / 2, HEIGHT / 2, 30, 20)
+        self.player = Player(WIDTH / 2, HEIGHT / 2)
         self.all_sprites.add(self.player)
         '''
         for plat in PLATFORM_LIST:
@@ -172,6 +175,10 @@ class Game:
                     key_down = True
                 if key_down and event.type == pg.KEYUP:
                     waiting = False
+
+
+def get_map():
+    return g.map_tiles
 
 
 g = Game()
