@@ -2,12 +2,14 @@
 TITLE = "Platformer"
 WIDTH = 1280
 HEIGHT = 720
+TILESIZE = 20
 FPS = 60
+PLAYER_LIVES = 2
+FONT_NAME = 'arial'
+RECORDS_FILE = 'level_records.txt'
 
-# player properties
-PLAYER_ACC = 0.5
-PLAYER_FRICTION = -0.12
-PLAYER_GRAV = 0.8
+# level files
+LEVEL_1 = 'level_1.txt'
 
 # starting platforms
 # todo: replace with map reader!

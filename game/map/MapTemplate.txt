@@ -3,18 +3,20 @@
 # Map name
 NAME=dust_2
 # Map tile dimensions (int)
-HEIGHT=6
-WIDTH=8
+HEIGHT=7
+WIDTH=17
 # Mapdata: bytes represented by chars in ASCII encoding.
 # Characters past the height or width will be ignored
 # Missing characters before the height or width limit will be assumed as spaces (' ')
-W      W
-W      W
-W      W
-W      W
-W      W
-GGGGGGGG
+GGGGGGGGGGGGGGGGG
+GW W WWW WWW WWWG
+GW W W   W    W G
+GW W WWW WWW  W G
+G W  W   W    W G
+G W  WWW WWW  W G
+GGGGGGGGGGGGGGGGG
 !MAPEND
 # Tiledata: x and y coordinate of a tile, and the data that you want to add
 # x,y and data are represented 4 byte integers.
 3,5=123
+

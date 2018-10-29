@@ -1,0 +1,40 @@
+NAME = "level_1"
+HEIGHT = 36
+WIDTH = 54
+G
+G
+G
+G
+G
+G
+G
+G
+G
+G
+G
+G
+G
+G
+G
+G
+G
+G
+G
+G
+G
+G
+G
+G                             GGGGGGGGG
+G
+G
+G
+G                      GGGG
+G
+G
+G
+G
+G
+G
+G
+GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+!MAPEND

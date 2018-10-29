@@ -1,9 +1,9 @@
 import pygame as pg
-from settings import *
+from game.settings import *
 vec = pg.math.Vector2
 
+'''
 class Player(pg.sprite.Sprite):
-
     def __init__(self, game):
         pg.sprite.Sprite.__init__(self)
         self.game = game
@@ -41,6 +41,7 @@ class Player(pg.sprite.Sprite):
             self.pos.x = WIDTH
 
         self.rect.midbottom = self.pos
+'''
 
 class Platform(pg.sprite.Sprite):
     def __init__(self, x, y, w, h):
