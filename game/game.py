@@ -1,6 +1,7 @@
 from os import path
 
 import pygame as pg
+from pygame.locals import *
 
 from map.map import Map
 from settings import *
@@ -16,7 +17,10 @@ class Game:
         pg.init()
         pg.mixer.init()
         self.clock = pg.time.Clock()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT), HWSURFACE | DOUBLEBUF | RESIZABLE)
+        self.fake_screen = self.screen.copy()
+        self.WIDTH = WIDTH
+        self.HEIGHT = HEIGHT
         pg.display.set_caption(TITLE)
         self.running = True
         self.font_name = pg.font.match_font(FONT_NAME)
@@ -109,22 +113,26 @@ class Game:
                 if self.playing:
                     self.playing = False
                 self.running = False
-            if event.type == pg.KEYDOWN:
+            elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE:
                     self.player.jump()
+            elif event.type == VIDEORESIZE:
+                self.WIDTH, self.HEIGHT = event.dict['size']
 
     def draw(self):
         """ game loop - drawing """
-        self.screen.fill(WHITE)
-        self.all_sprites.draw(self.screen)
+        self.fake_screen.fill(WHITE)
+        self.all_sprites.draw(self.fake_screen)
         self.draw_text("Lives: " + str(self.lives), 24, BLACK, WIDTH / 2, 15)
         self.draw_text(self.timer_string, 24, BLACK, WIDTH / 2, HEIGHT - 35)
-        # after drawing everything, update the screen
+        # after drawing everything, update the screen with the fake surface
+        screen = pg.display.set_mode((self.WIDTH, self.HEIGHT), HWSURFACE | DOUBLEBUF | RESIZABLE)
+        self.screen.blit(pg.transform.scale(self.fake_screen, (self.WIDTH, self.HEIGHT)), (0, 0))
         pg.display.flip()
 
     def show_start_screen(self):
         """ game start screen """
-        self.screen.fill(WHITE)
+        self.fake_screen.fill(WHITE)
         self.draw_text(TITLE, 48, BLACK, WIDTH / 2, HEIGHT / 4)
         self.draw_text("Press any key to start", 22, BLACK, WIDTH / 2, HEIGHT * 3 / 4)
         # todo: display record times for each level...
@@ -138,7 +146,7 @@ class Game:
             return
 
         # game over / continue
-        self.screen.fill(WHITE)
+        self.fake_screen.fill(WHITE)
         self.draw_text("GAME OVER", 48, BLACK, WIDTH / 2, HEIGHT / 4)
         self.draw_text("Press any key to start", 22, BLACK, WIDTH / 2, HEIGHT * 3 / 4)
 
@@ -151,7 +159,7 @@ class Game:
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
         text_rect.midtop = (x, y)
-        self.screen.blit(text_surface, text_rect)
+        self.fake_screen.blit(text_surface, text_rect)
 
     def update_timer_string(self):
         """ updates the timer string that will be drawn to the screen """
