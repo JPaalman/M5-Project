@@ -1,5 +1,7 @@
 import pygame as pg
+
 from game.settings import *
+
 vec = pg.math.Vector2
 
 '''
@@ -42,6 +44,7 @@ class Player(pg.sprite.Sprite):
 
         self.rect.midbottom = self.pos
 '''
+
 
 class Platform(pg.sprite.Sprite):
     def __init__(self, x, y, w, h):

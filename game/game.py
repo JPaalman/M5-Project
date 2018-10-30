@@ -34,6 +34,7 @@ class Game:
         self.map = None
         self.map_tiles = None
         self.level = None
+        self.tiles = None
 
     def load_data(self):
         """ load level times """
@@ -50,6 +51,7 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.player = Player(WIDTH / 2, HEIGHT / 2)
+        self.tiles = pg.sprite.Group()
         self.all_sprites.add(self.player)
         '''
         for plat in PLATFORM_LIST:
