@@ -5,6 +5,7 @@ from threading import Thread
 run = False
 data = None
 FREQ = 60
+count = 0
 
 
 def run():
@@ -22,6 +23,9 @@ def runThread():
     value = 0
     to_send = bytes([value])
     while run:
+        global count
+        count += 1
+
         start = time.time()
         print(str(run))
         resp = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)
@@ -56,4 +60,5 @@ def stop():
 
 
 run()
-time.sleep(20)
+time.sleep(5)
+print("Runs: " + count)
