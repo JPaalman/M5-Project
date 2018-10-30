@@ -16,9 +16,12 @@ def runThread():
     start = time.time()
     global run
     run = True
+    print("1")
     spi = spidev.SpiDev()
     spi.mode = 0b00
+    print("2")
     spi.open(0, 0)
+    print("3")
     spi.max_speed_hz = 50000
     value = 0
     to_send = [value]
