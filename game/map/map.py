@@ -1,7 +1,7 @@
 import os
 
 from game import settings
-from tile import Tile
+from tiles import Tile
 
 
 class Map:
