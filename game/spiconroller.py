@@ -17,7 +17,7 @@ try:
 		print("response:")
 		respString = " ".join(str(x) for x in resp)
 		print(respString + " | " + "{0:b}".format(int(float(respString))))
-		time.sleep(1)
+		time.sleep(0.5)
 	#end while
 except KeyboardInterrupt:
 	print("closing on keyboard interrupt")
