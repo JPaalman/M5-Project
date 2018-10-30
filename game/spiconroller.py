@@ -40,7 +40,7 @@ def runThread():
         print("response:")
         print(str(resp))
         print("Timediff: " + str(time.time() - start))
-        time.sleep(1 / (FREQ - (time.time() - start)))
+        time.sleep(1 / (FREQ - (time.time() - start)) + 0.01)
 
 
 def read():
