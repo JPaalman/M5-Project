@@ -10,4 +10,4 @@ filename = os.path.join(dirname, settings.LEVEL_1)
 
 file_object = open("dump.txt", 'w')
 for x in mapBytes:
-    file_object.write(x.decode("ascii") + "\n")
+    file_object.write(x.decode("ascii")[:-1] + "\n")
