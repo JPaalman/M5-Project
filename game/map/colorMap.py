@@ -15,5 +15,6 @@ colours = {
             32: BLUE,      # " "
             64: BLACK,     # "@"
             71: GREEN,     # "G"
+            80: None,      # "P"
             87: BROWN,     # "W"
         }
