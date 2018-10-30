@@ -1,4 +1,4 @@
-import spidev
+import wiringpi
 import time
 from threading import Thread
 
@@ -13,34 +13,29 @@ def run():
 
 
 def runThread():
-    start = time.time()
     global run
     run = True
-    print("1")
-    spi = spidev.SpiDev()
-    spi.mode = 0b00
-    print("2")
-    spi.open(0, 0)
-    print("3")
-    spi.max_speed_hz = 50000
+    SPIchannel = 0  # SPI Channel (CE0)
+    SPIspeed = 1000000  # Clock Speed in Hz
+    wiringpi.wiringPiSetupGpio()
+    wiringpi.wiringPiSPISetup(SPIchannel, SPIspeed)
     value = 0
-    to_send = [value]
+    to_send = bytes([value])
     while run:
+        start = time.time()
         print(str(run))
-        resp = spi.xfer2(to_send)
+        resp = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)
         global data
         cpy = str(resp)
         data = process(cpy)
         print("sent:")
         print(value)
-        value += 1
-        to_send = [value]
+        # value += 1
+        # to_send = [value]
         print("response:")
-        respString = " ".join(str(x) for x in resp)
-        print(respString + " | " + "{0:b}".format(int(float(respString))))
+        print(str(resp))
         print("Timediff: " + str(time.time() - start))
         time.sleep(1 / (FREQ - (time.time() - start)))
-    spi.close()
 
 
 def read():
