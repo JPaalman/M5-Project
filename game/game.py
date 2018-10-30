@@ -1,4 +1,5 @@
 from os import path
+from threading import Thread
 
 import pygame as pg
 
@@ -34,6 +35,7 @@ class Game:
         self.timer_string = None
         self.map = None
         self.level = None
+        self.thread = None
 
     def load_data(self):
         """ load level times """
@@ -73,14 +75,16 @@ class Game:
                              WIDTH / 2, HEIGHT / 2,
                              TILESIZE, TILESIZE * 3 / 2)
         self.all_sprites.add(self.player)
-        self.run()
+
+        self.thread = Thread(target=self.run())
+        self.thread.start()
 
     def run(self):
         """ game loop """
         self.frame_count = 0
         self.playing = True
         while self.playing:
-            self.clock.tick(FPS)
+            self.clock.tick_busy_loop(FPS)
             self.events()
             self.update()
             self.draw()
