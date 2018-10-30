@@ -23,10 +23,11 @@ def runThread():
     value = 0
     to_send = bytes([value])
     while run:
+        start = time.time()
+
         global count
         count += 1
 
-        start = time.time()
         print(str(run))
         resp = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)
         global data
