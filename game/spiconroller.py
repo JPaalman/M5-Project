@@ -8,7 +8,7 @@ FREQ = 60
 
 
 def run():
-    t = Thread(target=runThread())
+    t = Thread(target=runThread)
     t.start()
 
 
