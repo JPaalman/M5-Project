@@ -33,7 +33,6 @@ class Game:
         self.frame_count = None
         self.timer_string = None
         self.map = None
-        self.map_tiles = None
         self.level = None
 
     def load_data(self):
@@ -43,6 +42,15 @@ class Game:
                 self.records = int(f.read())
             except IOError:
                 self.records = 0
+
+    def init_map(self, map_tiles):
+        """ Initialized all sprites from the level """
+        for t in map_tiles:
+            # platform
+            if t.byte == 71:
+                p = Platform(t.x, t.y, TILESIZE, TILESIZE)
+                self.platforms.add(p)
+            self.all_sprites.add(p)
 
     def new(self, lives, level):
         """ start new game, player lives set """
@@ -57,17 +65,10 @@ class Game:
             self.platforms.add(p)
         '''
         self.map = Map(level)
-        self.map_tiles = self.map.getTiles()
-        for t in self.map_tiles:
-            # platform
-            if t.byte == 71:
-                p = Platform(t.x, t.y, TILESIZE, TILESIZE)
-                self.platforms.add(p)
-            self.all_sprites.add(p)
+        self.init_map(self.map.getTiles())
         # player_properties = self.map.getPlayerProp()
-        '''[PLAYER_LIVES, PLAYER_ACC, PLAYER_FRICTION, PLAYER_GRAV, PLAYER_JUMP]'''
-        player_properties = [2, 0.5, 0.1, 1, 25]
-        self.lives = player_properties[0]
+        '''[PLAYER_ACC, PLAYER_FRICTION, PLAYER_GRAV, PLAYER_JUMP]'''
+        player_properties = [1, 0.1, 0.8, 15]
         self.player = Player(self, player_properties,
                              WIDTH / 2, HEIGHT / 2,
                              TILESIZE, TILESIZE * 3 / 2)
@@ -90,20 +91,11 @@ class Game:
         self.update_timer_string()
         # game loop updates
         self.all_sprites.update()
-        # if player reaches sides of screen, move the rest the opposite way
-        if self.player.rect.right > WIDTH * 2 / 3:
-            # note: the max(.. , 2) is a fix for drifting platforms in the right direction
-            self.player.pos.x -= max(self.player.vel.x, 2)
-            for plat in self.platforms:
-                plat.rect.right -= max(self.player.vel.x, 2)
-        elif self.player.rect.left < WIDTH / 3:
-            self.player.pos.x -= self.player.vel.x
-            for plat in self.platforms:
-                plat.rect.right -= self.player.vel.x
 
         # check all die conditions
         if self.player.rect.top > HEIGHT:
             if self.lives > 1:
+                print(self.lives)
                 self.new(self.lives - 1, self.level)
             else:
                 self.playing = False
@@ -187,6 +179,16 @@ class Game:
                     key_down = True
                 if key_down and event.type == pg.KEYUP:
                     waiting = False
+
+    def shift_world(self, shift_x):
+        if self.player.rect.right > WIDTH * 2 / 3:
+            self.player.rect.x -= shift_x
+            for plat in self.platforms:
+                plat.rect.right -= shift_x
+        elif self.player.rect.left < WIDTH / 3:
+            self.player.rect.x -= shift_x
+            for plat in self.platforms:
+                plat.rect.right -= shift_x
 
 g = Game()
 g.show_start_screen()
