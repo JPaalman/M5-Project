@@ -4,9 +4,12 @@ WIDTH = 1280
 HEIGHT = 720
 TILESIZE = 20
 FPS = 60
-PLAYER_LIVES = 2
 FONT_NAME = 'arial'
 RECORDS_FILE = 'level_records.txt'
+PLAYER_LIVES = 2
+PLAYER_ACC = 1
+PLAYER_FRICTION = 0.3
+PLAYER_GRAV = 1
 
 # level files
 LEVEL_1 = 'level_1.txt'
