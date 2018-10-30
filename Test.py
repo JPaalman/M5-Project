@@ -1,3 +1,3 @@
-from game.map import mapTest
+import map.mapTool
 
-mapTest
+map.mapTool

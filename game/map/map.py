@@ -1,7 +1,7 @@
 import os
 
 from game import settings
-from tiles import Tile
+import game.tiles
 
 
 class Map:
@@ -40,7 +40,7 @@ class Map:
             while colnr < len(self.mapLayout[rownr]):
                 if self.mapLayout[rownr][colnr] != 32:
                     data = self.findTileData(colnr, rownr)
-                    res.append(Tile(self.getX(colnr), self.getY(rownr), self.mapLayout[rownr][colnr], data))
+                    res.append(game.tiles.Tile(self.getX(colnr), self.getY(rownr), self.mapLayout[rownr][colnr], data))
                 colnr += 1
             rownr += 1
         return res
