@@ -1,5 +1,7 @@
 import pygame as pg
+
 from game.settings import *
+
 vec = pg.math.Vector2
 
 
@@ -56,6 +58,7 @@ class Player(pg.sprite.Sprite):
             if hits:
                 self.pos.y = hits[0].rect.top + 1
                 self.vel.y = 0
+
 
 
 class Platform(pg.sprite.Sprite):
