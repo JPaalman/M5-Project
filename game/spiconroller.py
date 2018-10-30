@@ -23,6 +23,7 @@ def runThread():
     value = 0
     to_send = [value]
     while run:
+        print(str(run))
         resp = spi.xfer2(to_send)
         global data
         cpy = str(resp)
@@ -36,6 +37,7 @@ def runThread():
         print(respString + " | " + "{0:b}".format(int(float(respString))))
         print("Timediff: " + str(time.time() - start))
         time.sleep(1 / (FREQ - (time.time() - start)))
+    spi.close()
 
 
 def read():
