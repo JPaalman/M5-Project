@@ -4,6 +4,7 @@ from threading import Thread
 
 run = False
 data = None
+FREQ = 60
 
 
 def run():
@@ -12,6 +13,7 @@ def run():
 
 
 def runThread():
+    start = time.time()
     global run
     run = True
     spi = spidev.SpiDev()
@@ -31,7 +33,8 @@ def runThread():
         print("response:")
         respString = " ".join(str(x) for x in resp)
         print(respString + " | " + "{0:b}".format(int(float(respString))))
-        time.sleep(0.5)
+        print("Timediff: " + str(time.time() - start))
+        time.sleep(1 / FREQ - (time.time() - start))
 
 
 def read():
@@ -51,3 +54,4 @@ def stop():
     run = False
 
 run
+time.sleep(20)
