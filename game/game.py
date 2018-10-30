@@ -2,8 +2,6 @@ from os import path
 from threading import Thread
 
 import pygame as pg
-from pygame.locals import *
-
 from map.map import Map
 from settings import *
 from sprites import Platform
@@ -18,10 +16,7 @@ class Game:
         pg.init()
         pg.mixer.init()
         self.clock = pg.time.Clock()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT), HWSURFACE | DOUBLEBUF | RESIZABLE)
-        self.fake_screen = self.screen.copy()
-        self.WIDTH = WIDTH
-        self.HEIGHT = HEIGHT
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.FULLSCREEN)
         pg.display.set_caption(TITLE)
         self.running = True
         self.font_name = pg.font.match_font(FONT_NAME)
@@ -39,6 +34,7 @@ class Game:
         self.timer_string = None
         self.map = None
         self.level = None
+        self.player_start = None
         self.thread = None
 
     def load_data(self):
@@ -56,7 +52,10 @@ class Game:
             if t.byte == 71:
                 p = Platform(t.x, t.y, TILESIZE, TILESIZE)
                 self.platforms.add(p)
-            self.all_sprites.add(p)
+                self.all_sprites.add(p)
+            # player
+            if t.byte == 80:
+                self.player_start = (t.x, t.y)
 
     def new(self, lives, level):
         """ start new game, player lives set """
@@ -75,8 +74,10 @@ class Game:
         # player_properties = self.map.getPlayerProp()
         '''[PLAYER_ACC, PLAYER_FRICTION, PLAYER_GRAV, PLAYER_JUMP]'''
         player_properties = [1, 0.1, 0.8, 15]
+        if self.player_start is None:
+            self.player_start = (WIDTH / 2, HEIGHT / 2)
         self.player = Player(self, player_properties,
-                             WIDTH / 2, HEIGHT / 2,
+                             self.player_start,
                              TILESIZE, TILESIZE * 3 / 2)
         self.all_sprites.add(self.player)
 
@@ -114,29 +115,30 @@ class Game:
         for event in pg.event.get():
             # check for close window event
             if event.type == pg.QUIT:
-                if self.playing:
-                    self.playing = False
-                self.running = False
+                self.quit()
             elif event.type == pg.KEYDOWN:
-                if event.key == pg.K_SPACE:
+                if event.key == pg.K_ESCAPE:
+                    self.quit()
+                elif event.key == pg.K_SPACE:
                     self.player.jump()
-            elif event.type == VIDEORESIZE:
-                self.WIDTH, self.HEIGHT = event.dict['size']
+
+    def quit(self):
+        if self.playing:
+            self.playing = False
+        self.running = False
 
     def draw(self):
         """ game loop - drawing """
-        self.fake_screen.fill(WHITE)
-        self.all_sprites.draw(self.fake_screen)
+        self.screen.fill(WHITE)
+        self.all_sprites.draw(self.screen)
         self.draw_text("Lives: " + str(self.lives), 24, BLACK, WIDTH / 2, 15)
         self.draw_text(self.timer_string, 24, BLACK, WIDTH / 2, HEIGHT - 35)
-        # after drawing everything, update the screen with the fake surface
-        screen = pg.display.set_mode((self.WIDTH, self.HEIGHT), HWSURFACE | DOUBLEBUF | RESIZABLE)
-        self.screen.blit(pg.transform.scale(self.fake_screen, (self.WIDTH, self.HEIGHT)), (0, 0))
+        # after drawing everything, update the screen
         pg.display.flip()
 
     def show_start_screen(self):
         """ game start screen """
-        self.fake_screen.fill(WHITE)
+        self.screen.fill(WHITE)
         self.draw_text(TITLE, 48, BLACK, WIDTH / 2, HEIGHT / 4)
         self.draw_text("Press any key to start", 22, BLACK, WIDTH / 2, HEIGHT * 3 / 4)
         # todo: display record times for each level...
@@ -150,7 +152,7 @@ class Game:
             return
 
         # game over / continue
-        self.fake_screen.fill(WHITE)
+        self.screen.fill(WHITE)
         self.draw_text("GAME OVER", 48, BLACK, WIDTH / 2, HEIGHT / 4)
         self.draw_text("Press any key to start", 22, BLACK, WIDTH / 2, HEIGHT * 3 / 4)
 
@@ -163,7 +165,7 @@ class Game:
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
         text_rect.midtop = (x, y)
-        self.fake_screen.blit(text_surface, text_rect)
+        self.screen.blit(text_surface, text_rect)
 
     def update_timer_string(self):
         """ updates the timer string that will be drawn to the screen """

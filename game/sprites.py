@@ -1,20 +1,18 @@
 import pygame as pg
-
 from game.settings import *
-
 vec = pg.math.Vector2
 
 
 class Player(pg.sprite.Sprite):
     """ Player sprite """
 
-    def __init__(self, game, prop, x, y, w, h):
+    def __init__(self, game, prop, start, w, h):
         pg.sprite.Sprite.__init__(self)
         self.game = game
         self.image = pg.Surface((w, h))
         self.image.fill(RED)
         self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
+        self.rect.center = start
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
 
@@ -39,8 +37,10 @@ class Player(pg.sprite.Sprite):
         self.acc = vec(0, self.PLAYER_GRAV)
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT]:
+            print("LEFT")
             self.acc.x = -self.PLAYER_ACC
         if keys[pg.K_RIGHT]:
+            print("RIGHT")
             self.acc.x = self.PLAYER_ACC
 
         self.acc.x += self.vel.x * -self.PLAYER_FRICTION
@@ -49,7 +49,7 @@ class Player(pg.sprite.Sprite):
         old_x = self.rect.x
 
         # Check and handle collisions
-        self.rect.x += change.x
+        self.rect.x += round(change.x)
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         for hit in hits:
             if change.x > 0:
