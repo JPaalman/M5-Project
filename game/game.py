@@ -3,7 +3,6 @@ from os import path
 import pygame as pg
 
 from map.map import Map
-from player import Player
 from settings import *
 from sprites import Platform
 from sprites import Player
