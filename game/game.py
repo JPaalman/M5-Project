@@ -6,6 +6,7 @@ from map.map import Map
 from player import Player
 from settings import *
 from sprites import Platform
+from sprites import Player
 
 
 class Game:
@@ -20,6 +21,7 @@ class Game:
         pg.display.set_caption(TITLE)
         self.running = True
         self.font_name = pg.font.match_font(FONT_NAME)
+
         self.dir = path.dirname(__file__)
         self.records = None
         self.load_data()
@@ -49,8 +51,6 @@ class Game:
         self.level = level
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
-        self.player = Player(WIDTH / 2, HEIGHT / 2)
-        self.all_sprites.add(self.player)
         '''
         for plat in PLATFORM_LIST:
             p = Platform(*plat)
@@ -65,6 +65,14 @@ class Game:
                 p = Platform(t.x, t.y, TILESIZE, TILESIZE)
                 self.platforms.add(p)
             self.all_sprites.add(p)
+        # player_properties = self.map.getPlayerProp()
+        '''[PLAYER_LIVES, PLAYER_ACC, PLAYER_FRICTION, PLAYER_GRAV, PLAYER_JUMP]'''
+        player_properties = [2, 0.5, 0.1, 1, 25]
+        self.lives = player_properties[0]
+        self.player = Player(self, player_properties,
+                             WIDTH / 2, HEIGHT / 2,
+                             TILESIZE, TILESIZE * 3 / 2)
+        self.all_sprites.add(self.player)
         self.run()
 
     def run(self):
@@ -83,15 +91,14 @@ class Game:
         self.update_timer_string()
         # game loop updates
         self.all_sprites.update()
-
         # if player reaches sides of screen, move the rest the opposite way
         if self.player.rect.right > WIDTH * 2 / 3:
             # note: the max(.. , 2) is a fix for drifting platforms in the right direction
-            self.player.x -= max(self.player.vel.x, 2)
+            self.player.pos.x -= max(self.player.vel.x, 2)
             for plat in self.platforms:
                 plat.rect.right -= max(self.player.vel.x, 2)
         elif self.player.rect.left < WIDTH / 3:
-            self.player.x -= self.player.vel.x
+            self.player.pos.x -= self.player.vel.x
             for plat in self.platforms:
                 plat.rect.right -= self.player.vel.x
 
@@ -111,6 +118,9 @@ class Game:
                 if self.playing:
                     self.playing = False
                 self.running = False
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_SPACE:
+                    self.player.jump()
 
     def draw(self):
         """ game loop - drawing """
@@ -154,11 +164,14 @@ class Game:
 
     def update_timer_string(self):
         """ updates the timer string that will be drawn to the screen """
-        total_seconds = self.frame_count / FPS
-        minutes = total_seconds // 60
-        seconds = total_seconds % 60
-        milli_sec = (seconds % 1) * 1000
-        self.timer_string = "Time: {:02d}:{:02d}:{:03d}".format(int(minutes), int(seconds), int(milli_sec))
+        if self.frame_count % FPS == 0:
+            total_seconds = self.frame_count / FPS
+            minutes = total_seconds // 60
+            seconds = total_seconds % 60
+            ''' Measuring in ms causes too much lag, so we don't check this until run is completed '''
+            # milli_sec = (seconds % 1) * 1000
+            # self.timer_string = "Time: {:02d}:{:02d}:{:03d}".format(int(minutes), int(seconds), int(milli_sec))
+            self.timer_string = "Time: {:02d}:{:02d}".format(int(minutes), int(seconds))
         self.frame_count += 1
 
     def wait_for_key(self):
@@ -175,11 +188,6 @@ class Game:
                     key_down = True
                 if key_down and event.type == pg.KEYUP:
                     waiting = False
-
-
-def get_map():
-    return g.map_tiles
-
 
 g = Game()
 g.show_start_screen()
