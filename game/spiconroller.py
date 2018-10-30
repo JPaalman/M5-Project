@@ -15,7 +15,8 @@ def run():
 def runThread():
     print("Woop")
     start = time.time()
-    setRun(True)
+    global run
+    run = True
     spi = spidev.SpiDev()
     spi.mode = 0b00
     spi.open(0, 0)
@@ -54,9 +55,5 @@ def stop():
     run = False
 
 
-def setRun(var):
-    global run
-    run = var
-
-run
+run()
 time.sleep(20)
