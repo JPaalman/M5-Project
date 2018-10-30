@@ -4,7 +4,7 @@ from threading import Thread
 
 run = False
 data = None
-FREQ = 60
+FREQ = 62
 count = 0
 
 
@@ -61,6 +61,6 @@ def stop():
 
 
 run()
-time.sleep(5)
+time.sleep(100)
 stop()
 print("Runs: " + str(count))
