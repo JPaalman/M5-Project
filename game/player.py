@@ -1,11 +1,12 @@
 import pygame as pg
 
+from game.game import get_map
 from settings import *
-from utils import polarity, Vector
+from utils import Vector
 
 ACCELERATION = 1  # dummy value
 FRICTION = 0  # dummy value
-GRAVITY = 1  # dummy value
+GRAVITY = 0.5  # dummy value
 LIFE = 5
 
 
@@ -63,8 +64,8 @@ class Player(pg.sprite.Sprite):
             self.jump = False
 
         # resistance
-        self.acc.x -= self.vel.x * FRICTION * polarity(self.acc.x)
-        self.acc.y -= self.vel.y * FRICTION * polarity(self.acc.x)
+        self.acc.x -= self.vel.x * FRICTION
+        self.acc.y -= self.vel.y * FRICTION
 
         # update velocity and position
         self.vel.add(self.acc)
@@ -74,34 +75,8 @@ class Player(pg.sprite.Sprite):
         print(self.x, self.y)
 
         # update hitbox
-        self.rect.topleft = self.pos.get()
+        self.rect.midbottom = self.pos.get()
 
         # collision
-        self.collision()
 
-    def collision(self):
-        """
-        I f*cking hate docstrings
-        """
-        # todo find a way to differentiate between vertical and horizontal collision
-        # todo move the collision handling to the tiles and check for collision with all sprites
-        from game.game import get_map
-        tiles = get_map()
-        for tile in tiles:
-            if self.rect.colliderect(tile.rect):
-                if self.vel.x > 0:  # Moving right; Hit the left side of the wall
-                    self.rect.right = tile.rect.left
-                    self.vel.x *= -0.5
-                    self.acc.x = 0
-                if self.vel.x < 0:  # Moving left; Hit the right side of the wall
-                    self.rect.left = tile.rect.right
-                    self.vel.x *= -0.5
-                    self.acc.x = 0
-                if self.vel.y > 0:  # Moving down; Hit the top side of the wall
-                    self.rect.bottom = tile.rect.top
-                    self.vel.y *= -0.5
-                    self.acc.y = 0
-                if self.vel.y < 0:  # Moving up; Hit the bottom side of the wall
-                    self.rect.top = tile.rect.bottom
-                    self.vel.y *= -0.5
-                    self.acc.y = 0
+        pg.sprite.spritecollideany(self, get_map(), False)

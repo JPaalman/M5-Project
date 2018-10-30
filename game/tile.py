@@ -3,7 +3,7 @@ import pygame as pg
 from game.settings import TILESIZE
 
 
-class Tile:
+class Tile(pg.sprite.Sprite):
     '''
     instance variables:
     x (x-coordinate top left of tile)
@@ -15,6 +15,7 @@ class Tile:
     '''
 
     def __init__(self, new_x, new_y, new_byte, new_data):
+        super().__init__()
         self.x = new_x
         self.y = new_y
         self.byte = new_byte
