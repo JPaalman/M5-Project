@@ -62,4 +62,4 @@ def stop():
 run()
 time.sleep(5)
 stop()
-print("Runs: " + count)
+print("Runs: " + str(count))
