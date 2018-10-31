@@ -42,3 +42,4 @@ colours = {
             112: FINISH,        # "p"
             124: AIBORDER       # "|"
         }
+death_tiles = {68, 100}

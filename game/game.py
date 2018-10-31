@@ -41,6 +41,7 @@ class Game:
         self.sprites_on_screen = None
         self.platforms = None
         self.player = None
+        self.death_tiles = None
 
         self.playing = None
         self.frame_count = None
@@ -62,11 +63,22 @@ class Game:
         """ Initialized all sprites from the level """
         for t in map_tiles:
             # player
-            if t.byte == 80:
+            if t.tile_id == 80:
                 self.player_start = (t.x, t.y)
-            # platforms
+            # finish
+            elif t.tile_id == 112:
+                print("YOU WIN!")
+            # AI border
+            elif t.tile_id == 124:
+                print("ADD ENEMIES!")
+            # death tile
+            elif t.tile_id in colorMap.death_tiles:
+                d = Platform(t.x, t.y, TILESIZE, TILESIZE, colorMap.colours[t.tile_id])
+                self.death_tiles.add(d)
+                self.all_sprites.add(d)
+            # the rest is assumed to be a platforms
             else:
-                p = Platform(t.x, t.y, TILESIZE, TILESIZE, colorMap.colours[t.byte])
+                p = Platform(t.x, t.y, TILESIZE, TILESIZE, colorMap.colours[t.tile_id])
                 self.platforms.add(p)
                 self.all_sprites.add(p)
 
@@ -76,6 +88,7 @@ class Game:
         self.level = level
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
+        self.death_tiles = pg.sprite.Group()
         '''
         for plat in PLATFORM_LIST:
             p = Platform(*plat)
@@ -115,13 +128,13 @@ class Game:
         self.all_sprites.update()
 
         # check all die conditions
-        if self.player.rect.top > HEIGHT:
+        if (self.player.rect.top > HEIGHT or
+                pg.sprite.spritecollide(self.player, self.death_tiles, False)):
+            # start level again if you have enough lives left, otherwise stop playing
             if self.lives > 1:
-                print(self.lives)
                 self.new(self.lives - 1, self.level)
             else:
                 self.playing = False
-        # todo: killed by enemy
 
     def events(self):
         """ game loop - handling events """
@@ -136,6 +149,7 @@ class Game:
                     self.player.jump()
 
     def quit(self):
+        """ stops the game """
         if self.playing:
             self.playing = False
         self.running = False
@@ -208,14 +222,13 @@ class Game:
                     waiting = False
 
     def shift_world(self, shift_x):
-        if self.player.rect.right > WIDTH * 2 / 3:
-            self.player.rect.x -= shift_x
-            for plat in self.platforms:
-                plat.rect.right -= shift_x
-        elif self.player.rect.left < WIDTH / 3:
-            self.player.rect.x -= shift_x
-            for plat in self.platforms:
-                plat.rect.right -= shift_x
+        """ shift everything opposite of the change in x of the player """
+        if self.player.rect.right > WIDTH * 2 / 3 and shift_x > 0:
+            for sprite in self.all_sprites:
+                sprite.rect.right -= shift_x
+        elif self.player.rect.left < WIDTH / 3 and shift_x < 0:
+            for sprite in self.all_sprites:
+                sprite.rect.left -= shift_x
 
 
 g = Game()
