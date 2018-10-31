@@ -40,17 +40,24 @@ class Map:
         res = []
         rownr = 0
 
-        tmp = self.mapLayout
+        tmp = []
+        arr = bytearray([])
         i = 0
-        while i < len(self.mapLayout):
-            if (i != 0) and (i != len(self.mapLayout) - 1):
-                tmp[i - 1] = self.mapLayout[i]
+        while i < len(self.mapLayout[0]):
+            arr.append(self.PADDING_CHAR)
             i += 1
+        tmp.append(arr)
+
+        for x in self.mapLayout:
+            tmp.append(x)
+        self.mapLayout = tmp
 
         print(len(self.mapLayout))
+        for x in self.mapLayout:
+            print(str(x))
         while rownr < len(self.mapLayout):
             colnr = 0
-            while colnr < len(self.mapLayout[rownr]):
+            while colnr < len(self.mapLayout[rownr]) - 1:
                 if self.mapLayout[rownr][colnr] != 32 and self.mapLayout[rownr][colnr] != 66:
                     data = self.findTileData(colnr, rownr)
                     res.append(game.tiles.Tile(self.getX(colnr), self.getY(rownr), self.mapLayout[rownr][colnr], data))
