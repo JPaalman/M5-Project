@@ -19,6 +19,11 @@ class Map:
         self.mapLayout = None
         self.mapName = None
         self.tileData = None
+        self.PLAYER_ACC = None
+        self.PLAYER_FRICTION = None
+        self.PLAYER_GRAV = None
+        self.PLAYER_JUMP = None
+        self.BACKGROUND_IMAGE = None
 
         dirname = os.path.dirname(__file__)
         filename = os.path.join(dirname, mname)
@@ -64,6 +69,20 @@ class Map:
 
         # Read map width
         self.mapWidth = int(float(self.getParamValue(lines[index])))
+        index += 1
+
+        # Read background file name
+        self.BACKGROUND_IMAGE = str(self.getParamValue(lines[index]))
+        index += 1
+
+        # Read player properties
+        self.PLAYER_ACC = float(self.getParamValue(lines[index]))
+        index += 1
+        self.PLAYER_FRICTION = float(self.getParamValue(lines[index]))
+        index += 1
+        self.PLAYER_GRAV = float(self.getParamValue(lines[index]))
+        index += 1
+        self.PLAYER_JUMP = float(self.getParamValue(lines[index]))
         index += 1
 
         # Load maplayout
