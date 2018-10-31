@@ -11,7 +11,7 @@ RECORDS_FILE = 'level_records.txt'
 PLAYER_LIVES = 2
 
 # level files
-LEVEL_1 = 'palette.txt'
+LEVEL_1 = 'level_1.txt'
 
 # starting platforms
 # todo: replace with map reader!
