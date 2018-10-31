@@ -84,7 +84,9 @@ class Map:
         index += 1
 
         # Read map width
-        self.mapWidth = int(float(self.getParamValue(lines[index])))
+        param = self.getParamValue(lines[index])
+        if param != "AUTO":
+            self.mapWidth = int(float(param))
         index += 1
 
         # Read background file name
@@ -170,6 +172,10 @@ class Map:
         :param data: The raw lines that represent the map layout itself.
         :return: A matrix of bytes that contains the byte for every tile on the map.
         """
+        if self.mapWidth is None:
+            self.mapWidth = len(data[0]) + 1
+            print("Auto detected mapwidth set to: " + str(self.mapWidth))
+
         res = []
         padding = [self.PADDING_CHAR] * self.mapWidth
         padding[0] = self.MAPBORDER_CHAR
@@ -238,7 +244,7 @@ class Map:
         return settings.TILESIZE * y
 
     def fillMapBottom(self, data):
-        rownr = len(data) - 1
+        rownr = len(data) - 2
 
         while rownr > 0:
             colnr = 0
