@@ -9,7 +9,7 @@ TILESIZE = 20
 FPS = 60
 FONT_NAME = 'arial'
 RECORDS_FILE = 'level_records.txt'
-PLAYER_LIVES = 2
+PLAYER_LIVES = 5
 
 # level files
 LEVEL_1 = 'palette.txt'

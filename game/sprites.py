@@ -1,5 +1,6 @@
 import pygame as pg
 from game.map import colorMap
+from settings import *
 vec = pg.math.Vector2
 
 
@@ -12,9 +13,11 @@ class Player(pg.sprite.Sprite):
         self.image = pg.Surface((w, h))
         self.image.fill(colorMap.RED)
         self.rect = self.image.get_rect()
-        self.rect.center = start
+        self.rect.midleft = start
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
+        self.change = vec(0, 0)
+        self.collision_streak = 0
 
         self.PLAYER_WIDTH = w
         self.PLAYER_HEIGHT = h
@@ -43,31 +46,47 @@ class Player(pg.sprite.Sprite):
 
         self.acc.x += self.vel.x * -self.PLAYER_FRICTION
         self.vel += self.acc
-        change = self.vel + 0.5 * self.acc
+        self.change = self.vel + 0.5 * self.acc
         old_x = self.rect.x
 
-        # Check and handle collisions
-        self.rect.x += round(change.x)
+        self.collisions()
+
+        self.game.shift_world(self.rect.x - old_x)
+
+    def collisions(self):
+        """ Check and handle collisions """
+
+        # check if we glitched inside a platform. If so, increase collision streak
+        self.rect.y -= TILESIZE / 4
+        hits = pg.sprite.spritecollide(self, self.game.platforms, False)
+        if hits:
+            for hit in hits:
+                if hit.rect.collidepoint(self.rect.midbottom):
+                    self.collision_streak += 1
+                    if self.collision_streak > 5:
+                        self.rect.bottom = hit.rect.top
+        self.rect.y += TILESIZE / 4
+
+        # normal collision handling
+        self.rect.x += round(self.change.x)
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         for hit in hits:
-            if change.x > 0:
+            if self.change.x > 0:
                 self.rect.right = hit.rect.left
                 self.vel.x = 0
-            elif change.x < 0:
+            elif self.change.x < 0:
                 self.rect.left = hit.rect.right
                 self.vel.x = 0
 
-        self.rect.y += change.y
+        self.rect.y += self.change.y
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         for hit in hits:
-            if change.y > 0:
+            if self.change.y > 0:
                 self.rect.bottom = hit.rect.top
                 self.vel.y = 0
-            elif change.y < 0:
+            elif self.change.y < 0:
                 self.rect.top = hit.rect.bottom
                 self.vel.y = 0
-
-        self.game.shift_world(self.rect.x - old_x)
 
 
 class Platform(pg.sprite.Sprite):
