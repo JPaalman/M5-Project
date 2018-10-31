@@ -37,10 +37,8 @@ class Player(pg.sprite.Sprite):
         self.acc = vec(0, self.PLAYER_GRAV)
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT]:
-            print("LEFT")
             self.acc.x = -self.PLAYER_ACC
         if keys[pg.K_RIGHT]:
-            print("RIGHT")
             self.acc.x = self.PLAYER_ACC
 
         self.acc.x += self.vel.x * -self.PLAYER_FRICTION
@@ -74,10 +72,11 @@ class Player(pg.sprite.Sprite):
 
 class Platform(pg.sprite.Sprite):
     """ Platform sprite """
-    def __init__(self, x, y, w, h):
+    def __init__(self, x, y, w, h, c):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((w, h))
-        self.image.fill(colorMap.GREEN)
+        if c is not None:
+            self.image.fill(c)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y

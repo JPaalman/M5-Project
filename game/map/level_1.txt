@@ -1,37 +1,13 @@
 NAME = "level_1"
 HEIGHT = 36
 WIDTH = 100
-G
-G
-G
-G
-G
-G
-G
-G
-G
-G
-G
-G
-G
-G
-G
-G
-G
-G
-G
-G
-G
-G
-G
-G                             GGGGGGGGG
-G
+                      GGGGGGGGG
 G
 G
 G                      GGGG
 G
 G
-G
+G                                 P
 G
 G                                      GGGGGGGG
 G                                      GGGGGGGG

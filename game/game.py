@@ -61,14 +61,14 @@ class Game:
     def init_map(self, map_tiles):
         """ Initialized all sprites from the level """
         for t in map_tiles:
-            # platform
-            if t.byte == 71:
-                p = Platform(t.x, t.y, TILESIZE, TILESIZE)
-                self.platforms.add(p)
-                self.all_sprites.add(p)
             # player
             if t.byte == 80:
                 self.player_start = (t.x, t.y)
+            # platforms
+            else:
+                p = Platform(t.x, t.y, TILESIZE, TILESIZE, colorMap.colours[t.byte])
+                self.platforms.add(p)
+                self.all_sprites.add(p)
 
     def new(self, lives, level):
         """ start new game, player lives set """
