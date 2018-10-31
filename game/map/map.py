@@ -1,13 +1,13 @@
 import os
 
 from game import settings
-from tiles import Tile
+import game.tiles
 
 
 class Map:
 
     PADDING_CHAR = 32
-    MAPBORDER_CHAR = 71
+    MAPBORDER_CHAR = 66
 
     """
         This class retrieves contents of a map file, puts all values into the proper variables and
@@ -19,6 +19,11 @@ class Map:
         self.mapLayout = None
         self.mapName = None
         self.tileData = None
+        self.PLAYER_ACC = None
+        self.PLAYER_FRICTION = None
+        self.PLAYER_GRAV = None
+        self.PLAYER_JUMP = None
+        self.BACKGROUND_IMAGE = None
 
         dirname = os.path.dirname(__file__)
         filename = os.path.join(dirname, mname)
@@ -34,13 +39,28 @@ class Map:
         """
         res = []
         rownr = 0
+
+        tmp = []
+        arr = bytearray([])
+        i = 0
+        while i < len(self.mapLayout[0]):
+            arr.append(self.PADDING_CHAR)
+            i += 1
+        tmp.append(arr)
+
+        for x in self.mapLayout:
+            tmp.append(x)
+        self.mapLayout = tmp
+
         print(len(self.mapLayout))
+        for x in self.mapLayout:
+            print(str(x))
         while rownr < len(self.mapLayout):
             colnr = 0
-            while colnr < len(self.mapLayout[rownr]):
-                if self.mapLayout[rownr][colnr] != 32:
+            while colnr < len(self.mapLayout[rownr]) - 1:
+                if self.mapLayout[rownr][colnr] != 32 and self.mapLayout[rownr][colnr] != 66:
                     data = self.findTileData(colnr, rownr)
-                    res.append(Tile(self.getX(colnr), self.getY(rownr), self.mapLayout[rownr][colnr], data))
+                    res.append(game.tiles.Tile(self.getX(colnr), self.getY(rownr), self.mapLayout[rownr][colnr], data))
                 colnr += 1
             rownr += 1
         return res
@@ -64,6 +84,20 @@ class Map:
 
         # Read map width
         self.mapWidth = int(float(self.getParamValue(lines[index])))
+        index += 1
+
+        # Read background file name
+        self.BACKGROUND_IMAGE = str(self.getParamValue(lines[index]))
+        index += 1
+
+        # Read player properties
+        self.PLAYER_ACC = float(self.getParamValue(lines[index]))
+        index += 1
+        self.PLAYER_FRICTION = float(self.getParamValue(lines[index]))
+        index += 1
+        self.PLAYER_GRAV = float(self.getParamValue(lines[index]))
+        index += 1
+        self.PLAYER_JUMP = float(self.getParamValue(lines[index]))
         index += 1
 
         # Load maplayout

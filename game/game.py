@@ -1,7 +1,9 @@
 from os import path
+from threading import Thread
 
 import pygame as pg
 
+from game.map import colorMap
 from map.map import Map
 from settings import *
 from sprites import Platform
@@ -16,25 +18,39 @@ class Game:
         pg.init()
         pg.mixer.init()
         self.clock = pg.time.Clock()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        if FULLSCREEN:
+            self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.FULLSCREEN)
+        else:
+            self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.running = True
         self.font_name = pg.font.match_font(FONT_NAME)
+
+        self.bg = pg.image.load(bgImage)
+        self.bg.convert()
 
         self.dir = path.dirname(__file__)
         self.records = None
         self.load_data()
         self.lives = None
+
+        # init sprites
         self.all_sprites = None
         self.sprites_on_screen = None
         self.platforms = None
         self.player = None
+        self.death_tiles = None
+
         self.playing = None
         self.frame_count = None
         self.timer_string = None
         self.map = None
-        self.map_tiles = None
         self.level = None
+        self.player_start = None
+        self.thread = None
+
+        self.finish = None
+        self.checkpoint = None
 
     def load_data(self):
         """ load level times """
@@ -44,12 +60,38 @@ class Game:
             except IOError:
                 self.records = 0
 
+    def init_map(self, map_tiles):
+        """ Initialized all sprites from the level """
+        for t in map_tiles:
+            # player
+            if t.tile_id == 80:
+                self.player_start = (t.x, t.y)
+            # finish
+            elif t.tile_id == 112:
+                f = Platform(t.x, t.y, TILESIZE, TILESIZE, colorMap.colours[t.tile_id])
+                self.finish = f
+                self.all_sprites.add(f)
+            # AI border
+            elif t.tile_id == 124:
+                print("ADD ENEMIES!")
+            # death tile
+            elif t.tile_id in colorMap.death_tiles:
+                d = Platform(t.x, t.y, TILESIZE, TILESIZE, colorMap.colours[t.tile_id])
+                self.death_tiles.add(d)
+                self.all_sprites.add(d)
+            # the rest is assumed to be a platforms
+            else:
+                p = Platform(t.x, t.y, TILESIZE, TILESIZE, colorMap.colours[t.tile_id])
+                self.platforms.add(p)
+                self.all_sprites.add(p)
+
     def new(self, lives, level):
         """ start new game, player lives set """
         self.lives = lives
         self.level = level
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
+        self.death_tiles = pg.sprite.Group()
         '''
         for plat in PLATFORM_LIST:
             p = Platform(*plat)
@@ -57,32 +99,35 @@ class Game:
             self.platforms.add(p)
         '''
         self.map = Map(level)
-        self.map_tiles = self.map.getTiles()
-        for t in self.map_tiles:
-            # platform
-            if t.byte == 71:
-                p = Platform(t.x, t.y, TILESIZE, TILESIZE)
-                self.platforms.add(p)
-            self.all_sprites.add(p)
+        self.init_map(self.map.getTiles())
         # player_properties = self.map.getPlayerProp()
-        '''[PLAYER_LIVES, PLAYER_ACC, PLAYER_FRICTION, PLAYER_GRAV, PLAYER_JUMP]'''
-        player_properties = [2, 0.5, 0.1, 1, 25]
-        self.lives = player_properties[0]
+        '''[PLAYER_ACC, PLAYER_FRICTION, PLAYER_GRAV, PLAYER_JUMP]'''
+        player_properties = [1, 0.1, 0.8, 15]
+
+        # if player has not reached a checkpoint, place on starting position
+        if self.checkpoint is None:
+            if self.player_start is None:
+                self.player_start = (WIDTH / 2, HEIGHT / 2)
+        else:
+            self.player_start = self.checkpoint
+
         self.player = Player(self, player_properties,
-                             WIDTH / 2, HEIGHT / 2,
+                             self.player_start,
                              TILESIZE, TILESIZE * 3 / 2)
         self.all_sprites.add(self.player)
-        self.run()
+
+        thread = Thread(target=self.run())
+        thread.start()
 
     def run(self):
         """ game loop """
         self.frame_count = 0
         self.playing = True
         while self.playing:
-            self.clock.tick(FPS)
             self.events()
             self.update()
             self.draw()
+            self.clock.tick(FPS)
 
     def update(self):
         """ update all the things! """
@@ -90,53 +135,54 @@ class Game:
         self.update_timer_string()
         # game loop updates
         self.all_sprites.update()
-        # if player reaches sides of screen, move the rest the opposite way
-        if self.player.rect.right > WIDTH * 2 / 3:
-            # note: the max(.. , 2) is a fix for drifting platforms in the right direction
-            self.player.pos.x -= max(self.player.vel.x, 2)
-            for plat in self.platforms:
-                plat.rect.right -= max(self.player.vel.x, 2)
-        elif self.player.rect.left < WIDTH / 3:
-            self.player.pos.x -= self.player.vel.x
-            for plat in self.platforms:
-                plat.rect.right -= self.player.vel.x
 
         # check all die conditions
-        if self.player.rect.top > HEIGHT:
+        if (self.player.rect.top > HEIGHT or
+                pg.sprite.spritecollide(self.player, self.death_tiles, False)):
+            # start level again if you have enough lives left, otherwise stop playing
             if self.lives > 1:
                 self.new(self.lives - 1, self.level)
             else:
                 self.playing = False
-        # todo: killed by enemy
+
+        # check win conditions
+        if self.player.rect.colliderect(self.finish.rect):
+            self.playing = False
 
     def events(self):
         """ game loop - handling events """
         for event in pg.event.get():
             # check for close window event
             if event.type == pg.QUIT:
-                if self.playing:
-                    self.playing = False
-                self.running = False
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_SPACE:
+                self.quit()
+            elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_ESCAPE:
+                    self.quit()
+                elif event.key == pg.K_SPACE:
                     self.player.jump()
+
+    def quit(self):
+        """ stops the game """
+        if self.playing:
+            self.playing = False
+        self.running = False
 
     def draw(self):
         """ game loop - drawing """
-        self.screen.fill(WHITE)
+        self.screen.blit(self.bg, (0, 0))
         self.all_sprites.draw(self.screen)
-        self.draw_text("Lives: " + str(self.lives), 24, BLACK, WIDTH / 2, 15)
-        self.draw_text(self.timer_string, 24, BLACK, WIDTH / 2, HEIGHT - 35)
+        self.draw_text("Lives: " + str(self.lives), 24, colorMap.BLACK, WIDTH / 2, 15)
+        self.draw_text(self.timer_string, 24, colorMap.BLACK, WIDTH / 2, HEIGHT - 35)
         # after drawing everything, update the screen
         pg.display.flip()
 
     def show_start_screen(self):
         """ game start screen """
-        self.screen.fill(WHITE)
-        self.draw_text(TITLE, 48, BLACK, WIDTH / 2, HEIGHT / 4)
-        self.draw_text("Press any key to start", 22, BLACK, WIDTH / 2, HEIGHT * 3 / 4)
+        self.screen.fill(colorMap.WHITE)
+        self.draw_text(TITLE, 48, colorMap.BLACK, WIDTH / 2, HEIGHT / 4)
+        self.draw_text("Press any key to start", 22, colorMap.BLACK, WIDTH / 2, HEIGHT * 3 / 4)
         # todo: display record times for each level...
-        self.draw_text("Record time: " + str(self.records), 22, BLACK, WIDTH / 2, HEIGHT / 2)
+        self.draw_text("Record time: " + str(self.records), 22, colorMap.BLACK, WIDTH / 2, HEIGHT / 2)
         pg.display.flip()
         self.wait_for_key()
 
@@ -146,9 +192,9 @@ class Game:
             return
 
         # game over / continue
-        self.screen.fill(WHITE)
-        self.draw_text("GAME OVER", 48, BLACK, WIDTH / 2, HEIGHT / 4)
-        self.draw_text("Press any key to start", 22, BLACK, WIDTH / 2, HEIGHT * 3 / 4)
+        self.screen.fill(colorMap.WHITE)
+        self.draw_text("GAME OVER", 48, colorMap.BLACK, WIDTH / 2, HEIGHT / 4)
+        self.draw_text("Press any key to start", 22, colorMap.BLACK, WIDTH / 2, HEIGHT * 3 / 4)
 
         pg.display.flip()
         self.wait_for_key()
@@ -187,6 +233,16 @@ class Game:
                     key_down = True
                 if key_down and event.type == pg.KEYUP:
                     waiting = False
+
+    def shift_world(self, shift_x):
+        """ shift everything opposite of the change in x of the player """
+        if self.player.rect.right > WIDTH * 2 / 3 and shift_x > 0:
+            for sprite in self.all_sprites:
+                sprite.rect.right -= shift_x
+        elif self.player.rect.left < WIDTH / 3 and shift_x < 0:
+            for sprite in self.all_sprites:
+                sprite.rect.left -= shift_x
+
 
 g = Game()
 g.show_start_screen()

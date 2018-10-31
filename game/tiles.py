@@ -17,13 +17,13 @@ class Tile(pg.sprite.Sprite):
 
     """
 
-    def __init__(self, x, y, new_byte, new_data):
+    def __init__(self, x, y, tile_id, data):
         super().__init__()
 
         self.x = x
         self.y = y
-        self.byte = new_byte
-        self.data = new_data
+        self.tile_id = tile_id
+        self.data = data
 
         # self.texturePath = self.setTexture()
 
