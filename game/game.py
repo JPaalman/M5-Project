@@ -15,12 +15,10 @@ class Game:
 
     def __init__(self):
         """ initialize game window """
-        fullscreen = True
-
         pg.init()
         pg.mixer.init()
         self.clock = pg.time.Clock()
-        if fullscreen:
+        if FULLSCREEN:
             self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.FULLSCREEN)
         else:
             self.screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -51,6 +49,9 @@ class Game:
         self.player_start = None
         self.thread = None
 
+        self.finish = None
+        self.checkpoint = None
+
     def load_data(self):
         """ load level times """
         with open(path.join(self.dir, RECORDS_FILE), 'w') as f:
@@ -67,7 +68,9 @@ class Game:
                 self.player_start = (t.x, t.y)
             # finish
             elif t.tile_id == 112:
-                print("YOU WIN!")
+                f = Platform(t.x, t.y, TILESIZE, TILESIZE, colorMap.colours[t.tile_id])
+                self.finish = f
+                self.all_sprites.add(f)
             # AI border
             elif t.tile_id == 124:
                 print("ADD ENEMIES!")
@@ -100,8 +103,14 @@ class Game:
         # player_properties = self.map.getPlayerProp()
         '''[PLAYER_ACC, PLAYER_FRICTION, PLAYER_GRAV, PLAYER_JUMP]'''
         player_properties = [1, 0.1, 0.8, 15]
-        if self.player_start is None:
-            self.player_start = (WIDTH / 2, HEIGHT / 2)
+
+        # if player has not reached a checkpoint, place on starting position
+        if self.checkpoint is None:
+            if self.player_start is None:
+                self.player_start = (WIDTH / 2, HEIGHT / 2)
+        else:
+            self.player_start = self.checkpoint
+
         self.player = Player(self, player_properties,
                              self.player_start,
                              TILESIZE, TILESIZE * 3 / 2)
@@ -135,6 +144,10 @@ class Game:
                 self.new(self.lives - 1, self.level)
             else:
                 self.playing = False
+
+        # check win conditions
+        if self.player.rect.colliderect(self.finish.rect):
+            self.playing = False
 
     def events(self):
         """ game loop - handling events """

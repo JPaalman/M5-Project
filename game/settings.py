@@ -1,6 +1,7 @@
 import os
 
 # game options
+FULLSCREEN = False
 TITLE = "Platformer"
 WIDTH = 1280
 HEIGHT = 720
