@@ -139,7 +139,6 @@ class Map:
 
         return out
 
-
     def nextLine(self, ls, index):
         """
         Returns the index of the next line that contains information.

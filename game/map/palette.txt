@@ -24,7 +24,7 @@ B
 B
 B
 B
-B
+B                                                                  --------
 B
 B                                                C
 B                                            ------------
@@ -37,18 +37,18 @@ B      -----------               ----
 B
 B                                                                    ----------
 B
-B--
+B--                                                                 ====
 B                   p
-B              ----------
+B              ----------                                        ===    ===
 B
-B
-B
-B  ------
-B
-B       -----
-B                   P       =       --         =                              d
-B               =============                  ====================================================
-B================
+B                                                              ==          =
+B                                                             =
+B  ------                                                    =              ==
+B                                                                             =
+B       -----                                              ==                  ==
+B                   P       =       --         =          =                      ===
+B               ============                    ==========                          ===============
+B===============
 B                            DDDDDDDDDDDDDDDDDD
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 !MAPEND
