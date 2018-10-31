@@ -1,6 +1,6 @@
 NAME = "level_1"
 HEIGHT = 36
-WIDTH = 1000
+WIDTH = 100
 G
 G
 G

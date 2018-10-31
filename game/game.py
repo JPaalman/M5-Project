@@ -15,17 +15,21 @@ class Game:
 
     def __init__(self):
         """ initialize game window """
+        fullscreen = True
+
         pg.init()
         pg.mixer.init()
         self.clock = pg.time.Clock()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.FULLSCREEN)
+        if fullscreen:
+            self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.FULLSCREEN)
+        else:
+            self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.running = True
         self.font_name = pg.font.match_font(FONT_NAME)
 
         self.bg = pg.image.load(bgImage)
         self.bg.convert()
-        self.screen.blit(self.bg, (0,0))
 
         self.dir = path.dirname(__file__)
         self.records = None
@@ -138,8 +142,7 @@ class Game:
 
     def draw(self):
         """ game loop - drawing """
-        #self.screen.fill(WHITE)
-        self.screen.blit(self.bg, (0,0))
+        self.screen.blit(self.bg, (0, 0))
         self.all_sprites.draw(self.screen)
         self.draw_text("Lives: " + str(self.lives), 24, colorMap.BLACK, WIDTH / 2, 15)
         self.draw_text(self.timer_string, 24, colorMap.BLACK, WIDTH / 2, HEIGHT - 35)
@@ -148,8 +151,7 @@ class Game:
 
     def show_start_screen(self):
         """ game start screen """
-        #self.screen.fill(WHITE)
-        self.screen.blit(self.bg, (0,0))
+        self.screen.fill(colorMap.WHITE)
         self.draw_text(TITLE, 48, colorMap.BLACK, WIDTH / 2, HEIGHT / 4)
         self.draw_text("Press any key to start", 22, colorMap.BLACK, WIDTH / 2, HEIGHT * 3 / 4)
         # todo: display record times for each level...
@@ -215,9 +217,6 @@ class Game:
             for plat in self.platforms:
                 plat.rect.right -= shift_x
 
-    def drawBackground(self):
-        bg = pg.image.load(bgImage)
-        bg = bg.convert()
 
 g = Game()
 g.show_start_screen()
