@@ -39,6 +39,14 @@ class Map:
         """
         res = []
         rownr = 0
+
+        tmp = self.mapLayout
+        i = 0
+        while i < len(self.mapLayout):
+            if (i != 0) and (i != len(self.mapLayout) - 1):
+                tmp[i - 1] = self.mapLayout[i]
+            i += 1
+
         print(len(self.mapLayout))
         while rownr < len(self.mapLayout):
             colnr = 0

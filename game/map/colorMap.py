@@ -21,6 +21,7 @@ MAPBORDER   = None
 PLAYERSPAWN = None
 I_DEATHTILE = None
 AIBORDER    = None
+CHECKPOINT  = None
 
 # All byte-to-color mappings
 #
@@ -33,6 +34,7 @@ colours = {
             61: GRASS,          # "="
             64: BLACK,          # "@"
             66: MAPBORDER,      # "B"
+            67: CHECKPOINT,     # "C"
             68: DEATHTILE,      # "D"
             70: FLOORFILLER,    # "F"
             71: GREEN,          # "G"
