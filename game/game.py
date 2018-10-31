@@ -2,11 +2,12 @@ from os import path
 from threading import Thread
 
 import pygame as pg
+
+from game.map import colorMap
 from map.map import Map
 from settings import *
 from sprites import Platform
 from sprites import Player
-from game.map import colorMap
 
 
 class Game:
@@ -30,10 +31,13 @@ class Game:
         self.records = None
         self.load_data()
         self.lives = None
+
+        # init sprites
         self.all_sprites = None
         self.sprites_on_screen = None
         self.platforms = None
         self.player = None
+
         self.playing = None
         self.frame_count = None
         self.timer_string = None
@@ -86,18 +90,18 @@ class Game:
                              TILESIZE, TILESIZE * 3 / 2)
         self.all_sprites.add(self.player)
 
-        self.thread = Thread(target=self.run())
-        self.thread.start()
+        thread = Thread(target=self.run())
+        thread.start()
 
     def run(self):
         """ game loop """
         self.frame_count = 0
         self.playing = True
         while self.playing:
-            self.clock.tick_busy_loop(FPS)
             self.events()
             self.update()
             self.draw()
+            self.clock.tick(FPS)
 
     def update(self):
         """ update all the things! """
