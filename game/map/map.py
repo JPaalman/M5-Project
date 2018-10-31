@@ -102,6 +102,7 @@ class Map:
 
         # Load maplayout
         self.mapLayout = self.getMapLayout(lines[index:])
+        self.mapLayout = self.fillMapBottom(self.mapLayout)
 
         index += len(self.mapLayout) + 1
 
@@ -235,3 +236,17 @@ class Map:
 
     def getY(self, y):
         return settings.TILESIZE * y
+
+    def fillMapBottom(self, data):
+        rownr = len(data) - 1
+
+        while rownr > 0:
+            colnr = 0
+            while colnr < len(data[rownr]):
+                if data[rownr][colnr] == 32:
+                    print(str(data[rownr + 1][colnr]) + " " + str(data[rownr][colnr]))
+                    if (data[rownr + 1][colnr] == 66) or (data[rownr + 1][colnr] == 70):
+                        data[rownr][colnr] = 70
+                colnr += 1
+            rownr -= 1
+        return data
