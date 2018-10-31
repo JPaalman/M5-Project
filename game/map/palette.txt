@@ -3,26 +3,29 @@
 # Map name
 NAME=dust_2
 # Map tile dimensions (int)
-HEIGHT=15
-WIDTH=30
+HEIGHT=18
+WIDTH=45
 # Mapdata: bytes represented by chars in ASCII encoding.
 # Characters past the height or width will be ignored
 # Missing characters before the height or width limit will be assumed as spaces (' ')
-GGGGGGGGGGGGGGGGGGGGGGGGGGGGG
-G
-G @
-G
-G G
-G
-G P
-G
-G W
-G
-G
-G
-G
-G
-GGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+B
+B
+B
+B
+B
+B               p
+B            -------
+B           -
+B
+B  ------
+B
+B       -----
+B                   P       B   --   B    p
+B               =============        =======
+B================FFFFFFFFFFFF        FFFFFFF
+BFFFFFFFFFFFFFFFFFFFFFFFFFFFFDDDDDDDDFFFFFFF
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 !MAPEND
 # Tiledata: x and y coordinate of a tile, and the data that you want to add
 # x,y and data are represented 4 byte integers.

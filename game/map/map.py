@@ -7,7 +7,7 @@ import game.tiles
 class Map:
 
     PADDING_CHAR = 32
-    MAPBORDER_CHAR = 71
+    MAPBORDER_CHAR = 66
 
     """
         This class retrieves contents of a map file, puts all values into the proper variables and
