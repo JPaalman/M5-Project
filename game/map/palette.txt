@@ -3,8 +3,8 @@
 # Map name
 NAME=dust_2
 # Map tile dimensions (int)
-HEIGHT=18
-WIDTH=45
+HEIGHT=36
+WIDTH=100
 # Path to background image
 BACKGROUND_IMAGE=bg.jpg
 # Player properties (float)
@@ -15,24 +15,43 @@ PLAYER_JUMP=15
 # Mapdata: bytes represented by chars in ASCII encoding.
 # Characters past the height or width will be ignored
 # Missing characters before the height or width limit will be assumed as spaces (' ')
-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 B
 B
 B
 B
 B
-B               p
-B            -------
-B           -
+B
+B
+B
+B
+B
+B
+B                                            ------------
+B
+B                 --------
+B                                          ---------
+B
+B
+B      -----------               ----
+B
+B                                                                    ----------
+B
+B--
+B                   p
+B              ----------
+B
+B
 B
 B  ------
 B
 B       -----
-B                   P       =   --   =    d
-B               =============        =======
-B================FFFFFFFFFFFF        FFFFFFF
-BFFFFFFFFFFFFFFFFFFFFFFFFFFFFDDDDDDDDFFFFFFF
-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+B                   P       =       --         =                            d
+B               =============                  ====================================================
+B================FFFFFFFFFFFF                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+BFFFFFFFFFFFFFFFFFFFFFFFFFFFFDDDDDDDDDDDDDDDDDDFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+
 !MAPEND
 # Tiledata: x and y coordinate of a tile, and the data that you want to add
 # x,y and data are represented 4 byte integers.
