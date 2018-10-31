@@ -6,6 +6,7 @@ from map.map import Map
 from settings import *
 from sprites import Platform
 from sprites import Player
+import os
 
 
 class Game:
@@ -20,6 +21,10 @@ class Game:
         pg.display.set_caption(TITLE)
         self.running = True
         self.font_name = pg.font.match_font(FONT_NAME)
+
+        self.bg = pg.image.load(bgImage)
+        self.bg.convert()
+        self.screen.blit(self.bg, (0,0))
 
         self.dir = path.dirname(__file__)
         self.records = None
@@ -129,7 +134,8 @@ class Game:
 
     def draw(self):
         """ game loop - drawing """
-        self.screen.fill(WHITE)
+        #self.screen.fill(WHITE)
+        self.screen.blit(self.bg, (0,0))
         self.all_sprites.draw(self.screen)
         self.draw_text("Lives: " + str(self.lives), 24, BLACK, WIDTH / 2, 15)
         self.draw_text(self.timer_string, 24, BLACK, WIDTH / 2, HEIGHT - 35)
@@ -138,7 +144,8 @@ class Game:
 
     def show_start_screen(self):
         """ game start screen """
-        self.screen.fill(WHITE)
+        #self.screen.fill(WHITE)
+        self.screen.blit(self.bg, (0,0))
         self.draw_text(TITLE, 48, BLACK, WIDTH / 2, HEIGHT / 4)
         self.draw_text("Press any key to start", 22, BLACK, WIDTH / 2, HEIGHT * 3 / 4)
         # todo: display record times for each level...
@@ -203,6 +210,10 @@ class Game:
             self.player.rect.x -= shift_x
             for plat in self.platforms:
                 plat.rect.right -= shift_x
+
+    def drawBackground(self):
+        bg = pg.image.load(bgImage)
+        bg = bg.convert()
 
 g = Game()
 g.show_start_screen()
