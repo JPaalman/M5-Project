@@ -6,7 +6,7 @@ from map.map import Map
 from settings import *
 from sprites import Platform
 from sprites import Player
-import os
+from game.map import colorMap
 
 
 class Game:
@@ -137,8 +137,8 @@ class Game:
         #self.screen.fill(WHITE)
         self.screen.blit(self.bg, (0,0))
         self.all_sprites.draw(self.screen)
-        self.draw_text("Lives: " + str(self.lives), 24, BLACK, WIDTH / 2, 15)
-        self.draw_text(self.timer_string, 24, BLACK, WIDTH / 2, HEIGHT - 35)
+        self.draw_text("Lives: " + str(self.lives), 24, colorMap.BLACK, WIDTH / 2, 15)
+        self.draw_text(self.timer_string, 24, colorMap.BLACK, WIDTH / 2, HEIGHT - 35)
         # after drawing everything, update the screen
         pg.display.flip()
 
@@ -146,10 +146,10 @@ class Game:
         """ game start screen """
         #self.screen.fill(WHITE)
         self.screen.blit(self.bg, (0,0))
-        self.draw_text(TITLE, 48, BLACK, WIDTH / 2, HEIGHT / 4)
-        self.draw_text("Press any key to start", 22, BLACK, WIDTH / 2, HEIGHT * 3 / 4)
+        self.draw_text(TITLE, 48, colorMap.BLACK, WIDTH / 2, HEIGHT / 4)
+        self.draw_text("Press any key to start", 22, colorMap.BLACK, WIDTH / 2, HEIGHT * 3 / 4)
         # todo: display record times for each level...
-        self.draw_text("Record time: " + str(self.records), 22, BLACK, WIDTH / 2, HEIGHT / 2)
+        self.draw_text("Record time: " + str(self.records), 22, colorMap.BLACK, WIDTH / 2, HEIGHT / 2)
         pg.display.flip()
         self.wait_for_key()
 
@@ -159,9 +159,9 @@ class Game:
             return
 
         # game over / continue
-        self.screen.fill(WHITE)
-        self.draw_text("GAME OVER", 48, BLACK, WIDTH / 2, HEIGHT / 4)
-        self.draw_text("Press any key to start", 22, BLACK, WIDTH / 2, HEIGHT * 3 / 4)
+        self.screen.fill(colorMap.WHITE)
+        self.draw_text("GAME OVER", 48, colorMap.BLACK, WIDTH / 2, HEIGHT / 4)
+        self.draw_text("Press any key to start", 22, colorMap.BLACK, WIDTH / 2, HEIGHT * 3 / 4)
 
         pg.display.flip()
         self.wait_for_key()

@@ -21,12 +21,5 @@ PLATFORM_LIST = [(0, HEIGHT - 40, WIDTH, 40),
                  (350, 200, 100, 20),
                  (175, 100, 50, 20)]
 
-# colors
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-BLACK = (0, 0, 0)
-
 dirname = os.path.dirname(__file__)
-bgImage = os.path.join(dirname, "bg.png")
+bgImage = os.path.join(dirname, "bg.jpg")

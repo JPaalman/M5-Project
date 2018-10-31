@@ -1,5 +1,5 @@
 import pygame as pg
-from game.settings import *
+from game.map import colorMap
 vec = pg.math.Vector2
 
 
@@ -10,7 +10,7 @@ class Player(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self)
         self.game = game
         self.image = pg.Surface((w, h))
-        self.image.fill(RED)
+        self.image.fill(colorMap.RED)
         self.rect = self.image.get_rect()
         self.rect.center = start
         self.vel = vec(0, 0)
@@ -77,7 +77,7 @@ class Platform(pg.sprite.Sprite):
     def __init__(self, x, y, w, h):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((w, h))
-        self.image.fill(GREEN)
+        self.image.fill(colorMap.GREEN)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
