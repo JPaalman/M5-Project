@@ -10,7 +10,7 @@ RED         = (255, 0,   0  )
 WHITE       = (255, 255, 255)
 
 # Game colors
-STDPLATFORM = (0, 52, 86)
+STDPLATFORM = (0, 60, 99)
 GRASS       = (48,  150, 51 )
 DEATHTILE   = (237, 109, 30 )
 FLOORFILLER = (124, 76,  28 )
