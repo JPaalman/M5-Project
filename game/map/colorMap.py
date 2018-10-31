@@ -22,6 +22,7 @@ PLAYERSPAWN = None
 I_DEATHTILE = None
 AIBORDER    = None
 CHECKPOINT  = None
+I_TILE      = None
 
 # All byte-to-color mappings
 #
@@ -30,6 +31,7 @@ CHECKPOINT  = None
 colours = {
             10: RED,            # "\n"
             32: BLUE,           # " "
+            33: I_TILE,         # "!"
             45: STDPLATFORM,    # "-"
             61: GRASS,          # "="
             64: BLACK,          # "@"
