@@ -1,4 +1,6 @@
 import pygame as pg
+from game.map import colorMap
+import resources.resourceManager as resourceManager
 
 
 class Tile(pg.sprite.Sprite):
@@ -25,8 +27,9 @@ class Tile(pg.sprite.Sprite):
         self.tile_id = tile_id
         self.data = data
 
-        # self.texturePath = self.setTexture()
+        self.imgSurface = self.setTexture()
 
     def setTexture(self):
-        return ""
-        # TODO select texture based on byte
+        if self.tile_id in colorMap.uses_texture:
+            return resourceManager.getImageById(self.tile_id)
+        return None
