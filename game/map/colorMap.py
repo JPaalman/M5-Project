@@ -51,3 +51,4 @@ colours = {
             99: COIN            # "c"
         }
 death_tiles = {68, 100}
+uses_image = {45, 61, 67, 68, 69, 70, 112, 99, 124, 33}

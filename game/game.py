@@ -46,6 +46,7 @@ class Game:
         self.death_tiles = None
         self.ai_borders = None
         self.coins = None
+        self.sprites_on_screen = None
 
         # timer
         self.frame_count = None
@@ -60,6 +61,7 @@ class Game:
         self.player_spawn = None
         self.total_world_shift = 0
         self.checkpoint_shift = 0
+        self.shift_factor = 0
 
     def load_data(self):
         """ load level times """
@@ -105,6 +107,10 @@ class Game:
                 c = Platform(t.x, t.y, t.tile_id)
                 self.coins.add(c)
                 self.all_sprites.add(c)
+            # invisible tile
+            elif t.tile_id == 33:
+                i = Platform(t.x, t.y, t.tile_id)
+                self.all_sprites.add(i)
             # the rest is assumed to be a platforms
             else:
                 p = Platform(t.x, t.y, t.tile_id)
@@ -151,6 +157,7 @@ class Game:
                              TILESIZE, TILESIZE * 3 / 2)
         self.all_sprites.add(self.player)
 
+        Thread(target=self.update_sprites_on_screen(self)).start()
         Thread(target=self.run()).start()
 
     def run(self):
@@ -215,7 +222,9 @@ class Game:
     def draw(self):
         """ game loop - drawing """
         self.screen.blit(self.bg, (0, 0))
-        self.all_sprites.draw(self.screen)
+
+        self.sprites_on_screen.draw(self.screen)
+
         self.draw_text("Lives: " + str(self.lives), 24, colorMap.BLACK, WIDTH / 2, 15)
         self.draw_text(self.timer_string, 24, colorMap.BLACK, WIDTH / 2, HEIGHT - 35)
         self.draw_text("Coins: " + str(self.coin_counter), 24, colorMap.BLACK, 50, 15)
@@ -290,6 +299,16 @@ class Game:
             for sprite in self.all_sprites:
                 sprite.rect.left -= shift_x
             self.total_world_shift -= shift_x
+
+    def update_sprites_on_screen(self, game):
+        shift_factor = abs(self.total_world_shift // TILESIZE)
+        if (shift_factor - self.shift_factor) >= 1:
+            self.shift_factor = shift_factor
+            self.sprites_on_screen = pg.sprite.Group()
+            for sprite in self.all_sprites:
+                if sprite.rect.left < (WIDTH - 200) and sprite.rect.right > (0 + 200):
+                    print("ON SCREEN, " + str(shift_factor))
+                    self.sprites_on_screen.add(sprite)
 
     def reset_constants(self):
         """ resets constants to start new game """

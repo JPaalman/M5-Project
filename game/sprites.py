@@ -95,12 +95,14 @@ class Platform(pg.sprite.Sprite):
     def __init__(self, x, y, tile_id):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        if tile_id in colorMap.colours:
+        if tile_id in colorMap.uses_image:
+            self.image = rM.getImageById(tile_id)
+        else:
             c = colorMap.colours[tile_id]
             if c is not None:
                 self.image.fill(c)
             else:
-                self.image = rM.getImageById(tile_id)
+                self.image.fill(colorMap.BLACK)
 
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -112,12 +114,15 @@ class GroundCrawler(pg.sprite.Sprite):
     def __init__(self, game, x, y, tile_id, speed):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        if tile_id in colorMap.colours:
+        if tile_id in colorMap.uses_image:
+            self.image = rM.getImageById(tile_id)
+        else:
             c = colorMap.colours[tile_id]
             if c is not None:
                 self.image.fill(c)
             else:
-                self.image = rM.getImageById(tile_id)
+                self.image.fill(colorMap.BLACK)
+
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
