@@ -8,6 +8,7 @@ from map.map import Map
 from settings import *
 from sprites import Platform
 from sprites import Player
+from sprites import GroundCrawler
 
 
 class Game:
@@ -69,8 +70,13 @@ class Game:
     def init_map(self, map_tiles):
         """ Initialized all sprites from the level """
         for t in map_tiles:
+            # enemy
+            if t.tile_id == 69:
+                e = GroundCrawler(self, t.x, t.y, TILESIZE, TILESIZE, colorMap.colours[t.tile_id])
+                self.death_tiles.add(e)
+                self.all_sprites.add(e)
             # player
-            if t.tile_id == 80:
+            elif t.tile_id == 80:
                 self.player_spawn = (t.x, t.y)
             # finish
             elif t.tile_id == 112:

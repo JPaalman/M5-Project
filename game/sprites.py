@@ -1,12 +1,7 @@
 import pygame as pg
-
-import game
 from game.map import colorMap
 from settings import *
-
 vec = pg.math.Vector2
-
-SIZE = TILESIZE
 
 
 class Player(pg.sprite.Sprite):
@@ -96,7 +91,6 @@ class Player(pg.sprite.Sprite):
 
 class Platform(pg.sprite.Sprite):
     """ Platform sprite """
-
     def __init__(self, x, y, w, h, c):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((w, h))
@@ -107,44 +101,53 @@ class Platform(pg.sprite.Sprite):
         self.rect.y = y
 
 
-class Enemy(pg.sprite.Sprite):
-    """
-    Enemy superclass. Contains all common enemy properties.
-    """
-
-    def __init__(self, x, y):
-        super(Enemy, self).__init__()
-
-        self.x = x
-        self.y = y
-
-    def update(self):
-        print("WARNING: Enemy superclass should not be constructed.")
-        self.kill()
-
-    # todo collision with player
-
-
-class Bee(Enemy):
-    """
-    Slow enemy that follows the player. Does not have collision
-    """
-
-    def __init__(self, x, y):
-        super(Bee, self).__init__(x, y)
-
-        # self.image = pg.image.load()
-        self.image = pg.Surface((SIZE, SIZE))
-        self.image.fill(pg.Color("white"))
-
+class GroundCrawler(pg.sprite.Sprite):
+    """ Enemy sprite"""
+    def __init__(self, game, x, y, w, h, c):
+        pg.sprite.Sprite.__init__(self)
+        self.image = pg.Surface((w, h))
+        if c is not None:
+            self.image.fill(c)
         self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.speed = 1
+        self.direction = 1 # 1 is forward, -1 is backwards
+        self.game = game
 
     def update(self):
-        if self.x > game.game.player.x:
-            self.x -= 1
-        else:
-            self.x += 1
-        if self.y > game.game.player.y:
-            self.y -= 1
-        else:
-            self.y += 1
+        self.rect.x += self.speed * self.direction
+        hits = pg.sprite.spritecollide(self, self.game.platforms, False)
+        if hits:
+            for hit in hits:
+                if hit.rect.collidepoint(self.rect.midright) or hit.rect.collidepoint(self.rect.midleft):
+                    self.direction *= -1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

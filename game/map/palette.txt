@@ -33,7 +33,7 @@ B                         ---
 B
 B                                          ---------
 B
-B
+B     |      E    |
 B      -----------                                                                                                                                                                                        p
 B                                                                                                                                                                                                      ======
 B                                                                    ----------
@@ -47,7 +47,7 @@ B                                                             =
 B  ------                                                    =              ==!                                                                                                                  ==
 B                                                                              DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 B       -----                                              ==                    DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-B                   P       =       --         =          =                         DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+B                   P       =       --         =     E    =                         DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 B               ============                    ==========
 B===============
 B                            DDDDDDDDDDDDDDDDDD
