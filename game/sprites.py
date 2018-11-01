@@ -109,7 +109,7 @@ class Platform(pg.sprite.Sprite):
 
 class GroundCrawler(pg.sprite.Sprite):
     """ Enemy sprite"""
-    def __init__(self, game, x, y, tile_id):
+    def __init__(self, game, x, y, tile_id, speed):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((TILESIZE, TILESIZE))
         if tile_id in colorMap.colours:
@@ -121,7 +121,7 @@ class GroundCrawler(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.speed = 1
+        self.speed = speed
         self.direction = 1  # 1 is forward, -1 is backwards
         self.game = game
 

@@ -25,6 +25,7 @@ class Map:
         self.PLAYER_GRAV = None
         self.PLAYER_JUMP = None
         self.BACKGROUND_IMAGE = None
+        self.ENEMY_SPEED = None
 
         dirname = os.path.dirname(__file__)
         filename = os.path.join(dirname, mname)
@@ -101,6 +102,10 @@ class Map:
         self.PLAYER_GRAV = float(self.getParamValue(lines[index]))
         index += 1
         self.PLAYER_JUMP = float(self.getParamValue(lines[index]))
+        index += 1
+
+        # Read enemy properties
+        self.ENEMY_SPEED = float(self.getParamValue(lines[index]))
         index += 1
 
         # Load maplayout
