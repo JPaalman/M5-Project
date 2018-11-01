@@ -12,7 +12,9 @@ RECORDS_FILE = 'level_records.txt'
 PLAYER_LIVES = 5
 
 # level files
-LEVEL_1 = 'palette.txt'
+LEVEL_1 = 'Oebele_map.txt'
+LEVELS = ["palette.txt",
+          "Oebele_map.txt"]
 
 dirname = os.path.dirname(__file__)
 bgImage = os.path.join(dirname, "bg.jpg")

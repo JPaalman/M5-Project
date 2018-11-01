@@ -12,10 +12,11 @@ texturemap = {
     61: "gras-ground2.png",
     70: "ground2.png",
     99: "coin.png",
-    45: "platform-middle.png"
+    45: "platform-middle.png",
+    83: "spike.png"
 }
 
-uses_alpha = {33, 69, 112, 67, 99}
+uses_alpha = {33, 69, 112, 67, 99, 83}
 
 
 def getImageById(imgid):
