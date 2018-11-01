@@ -164,7 +164,8 @@ class Game:
             self.events()
             self.update()
             self.draw()
-            Thread(target=self.update_sprites_on_screen(self)).start()
+            # todo put loop in thread and synchronize
+            # Thread(target=self.update_sprites_on_screen()).start()
             self.clock.tick(FPS)
 
     def update(self):
@@ -220,7 +221,8 @@ class Game:
         """ game loop - drawing """
         self.screen.blit(self.bg, (0, 0))
 
-        self.sprites_on_screen.draw(self.screen)
+        # self.sprites_on_screen.draw(self.screen)
+        self.all_sprites.draw(self.screen)
 
         self.draw_text("Lives: " + str(self.lives), 24, colorMap.BLACK, WIDTH / 2, 15)
         self.draw_text(self.timer_string, 24, colorMap.BLACK, WIDTH / 2, HEIGHT - 35)
@@ -297,7 +299,10 @@ class Game:
                 sprite.rect.left -= shift_x
             self.total_world_shift -= shift_x
 
-    def update_sprites_on_screen(self, game):
+    # todo fix algorithm. Also, use more efficient buffering: only redraw moved elements
+    # easy fix: use collision: make a rectangle that covers the entire display (not the map), and update on collision
+    # execute every iteration, not only when moved
+    def update_sprites_on_screen(self):
         shift_factor = abs(self.total_world_shift // TILESIZE)
         if (shift_factor - self.shift_factor) >= 1:
             self.shift_factor = shift_factor
