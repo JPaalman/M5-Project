@@ -24,33 +24,39 @@ class Game:
             self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.running = True
+        self.playing = True
         self.font_name = pg.font.match_font(FONT_NAME)
+        self.lives = None
+        self.thread = None
 
+        # background
         self.bg = pg.image.load(bgImage)
         self.bg.convert()
 
+        # level records
         self.dir = path.dirname(__file__)
         self.records = None
         self.load_data()
-        self.lives = None
 
         # init sprites
         self.all_sprites = None
-        self.sprites_on_screen = None
         self.platforms = None
         self.player = None
         self.death_tiles = None
 
-        self.playing = None
+        # timer
         self.frame_count = None
         self.timer_string = None
+
+        # map
         self.map = None
         self.level = None
-        self.player_start = None
-        self.thread = None
-
         self.finish = None
-        self.checkpoint = None
+        self.checkpoints = None
+        self.player_start = None
+        self.player_spawn = None
+        self.total_world_shift = 0
+        self.checkpoint_shift = 0
 
     def load_data(self):
         """ load level times """
@@ -65,12 +71,17 @@ class Game:
         for t in map_tiles:
             # player
             if t.tile_id == 80:
-                self.player_start = (t.x, t.y)
+                self.player_spawn = (t.x, t.y)
             # finish
             elif t.tile_id == 112:
                 f = Platform(t.x, t.y, TILESIZE, TILESIZE, colorMap.colours[t.tile_id])
                 self.finish = f
                 self.all_sprites.add(f)
+            # checkpoint
+            elif t.tile_id == 67:
+                c = Platform(t.x, t.y, TILESIZE, TILESIZE, colorMap.colours[t.tile_id])
+                self.checkpoints.add(c)
+                self.all_sprites.add(c)
             # AI border
             elif t.tile_id == 124:
                 print("ADD ENEMIES!")
@@ -92,6 +103,7 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.death_tiles = pg.sprite.Group()
+        self.checkpoints = pg.sprite.Group()
         '''
         for plat in PLATFORM_LIST:
             p = Platform(*plat)
@@ -100,16 +112,21 @@ class Game:
         '''
         self.map = Map(level)
         self.init_map(self.map.getTiles())
-        # player_properties = self.map.getPlayerProp()
-        '''[PLAYER_ACC, PLAYER_FRICTION, PLAYER_GRAV, PLAYER_JUMP]'''
-        player_properties = [1, 0.1, 0.8, 15]
+
+        player_properties = [self.map.PLAYER_ACC,
+                             self.map.PLAYER_FRICTION,
+                             self.map.PLAYER_GRAV,
+                             self.map.PLAYER_JUMP]
 
         # if player has not reached a checkpoint, place on starting position
-        if self.checkpoint is None:
-            if self.player_start is None:
-                self.player_start = (WIDTH / 2, HEIGHT / 2)
-        else:
-            self.player_start = self.checkpoint
+        if self.player_start is None:
+            if self.player_spawn is None:
+                self.player_spawn = (WIDTH / 2, HEIGHT / 2)
+            self.player_start = self.player_spawn
+
+        for sprite in self.all_sprites:
+            sprite.rect.right += self.checkpoint_shift
+        self.total_world_shift = self.checkpoint_shift
 
         self.player = Player(self, player_properties,
                              self.player_start,
@@ -148,6 +165,12 @@ class Game:
         # check win conditions
         if self.player.rect.colliderect(self.finish.rect):
             self.playing = False
+
+        # check checkpoint collision
+        hits = pg.sprite.spritecollide(self.player, self.checkpoints, False)
+        if hits:
+            self.player_start = (hits[0].rect.x, hits[0].rect.y)
+            self.checkpoint_shift = self.total_world_shift
 
     def events(self):
         """ game loop - handling events """
@@ -239,15 +262,25 @@ class Game:
         if self.player.rect.right > WIDTH * 2 / 3 and shift_x > 0:
             for sprite in self.all_sprites:
                 sprite.rect.right -= shift_x
+            self.total_world_shift -= shift_x
         elif self.player.rect.left < WIDTH / 3 and shift_x < 0:
             for sprite in self.all_sprites:
                 sprite.rect.left -= shift_x
+            self.total_world_shift -= shift_x
+
+    def reset_constants(self):
+        """ resets constants to start new game """
+        self.player_start = None
+        self.player_spawn = None
+        self.total_world_shift = 0
+        self.checkpoint_shift = 0
 
 
 g = Game()
 g.show_start_screen()
 while g.running:
     g.new(PLAYER_LIVES, LEVEL_1)
+    g.reset_constants()
     g.show_go_screen()
 
 pg.quit()

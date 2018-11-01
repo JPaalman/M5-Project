@@ -10,7 +10,7 @@ RED         = (255, 0,   0  )
 WHITE       = (255, 255, 255)
 
 # Game colors
-STDPLATFORM = (53,  72,  104)
+STDPLATFORM = (0,   60,  99 )
 GRASS       = (48,  150, 51 )
 DEATHTILE   = (237, 109, 30 )
 FLOORFILLER = (124, 76,  28 )
@@ -22,6 +22,7 @@ PLAYERSPAWN = None
 I_DEATHTILE = None
 AIBORDER    = None
 CHECKPOINT  = None
+I_TILE      = None
 
 # All byte-to-color mappings
 #
@@ -30,6 +31,7 @@ CHECKPOINT  = None
 colours = {
             10: RED,            # "\n"
             32: BLUE,           # " "
+            33: I_TILE,         # "!"
             45: STDPLATFORM,    # "-"
             61: GRASS,          # "="
             64: BLACK,          # "@"

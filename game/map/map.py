@@ -20,6 +20,7 @@ class Map:
         self.mapName = None
         self.tileData = None
         self.PLAYER_ACC = None
+        self.PLAYER_ACC = None
         self.PLAYER_FRICTION = None
         self.PLAYER_GRAV = None
         self.PLAYER_JUMP = None
@@ -52,9 +53,9 @@ class Map:
             tmp.append(x)
         self.mapLayout = tmp
 
-        print(len(self.mapLayout))
-        for x in self.mapLayout:
-            print(str(x))
+        # print(len(self.mapLayout))
+        # for x in self.mapLayout:
+        #     print(str(x))
         while rownr < len(self.mapLayout):
             colnr = 0
             while colnr < len(self.mapLayout[rownr]) - 1:
@@ -83,7 +84,9 @@ class Map:
         index += 1
 
         # Read map width
-        self.mapWidth = int(float(self.getParamValue(lines[index])))
+        param = self.getParamValue(lines[index])
+        if param != "AUTO":
+            self.mapWidth = int(float(param))
         index += 1
 
         # Read background file name
@@ -102,19 +105,20 @@ class Map:
 
         # Load maplayout
         self.mapLayout = self.getMapLayout(lines[index:])
+        self.mapLayout = self.fillMapBottom(self.mapLayout)
 
         index += len(self.mapLayout) + 1
 
         # Load tile data
         self.tileData = self.getTileData(lines[index:])
 
-        print("Map initiated:")
-        print("Map name: " + self.mapName)
-        print("Width: " + str(self.mapWidth))
-        print("Height: " + str(self.mapHeight))
-        print("\nMapdata:")
-        for x in self.mapLayout:
-            print(x)
+        # print("Map initiated:")
+        # print("Map name: " + self.mapName)
+        # print("Width: " + str(self.mapWidth))
+        # print("Height: " + str(self.mapHeight))
+        # print("\nMapdata:")
+        # for x in self.mapLayout:
+        #     print(x)
 
     def cleanLines(self, ls):
         """
@@ -137,7 +141,6 @@ class Map:
             i = self.nextLine(ls, i)
 
         return out
-
 
     def nextLine(self, ls, index):
         """
@@ -169,6 +172,10 @@ class Map:
         :param data: The raw lines that represent the map layout itself.
         :return: A matrix of bytes that contains the byte for every tile on the map.
         """
+        if self.mapWidth is None:
+            self.mapWidth = len(data[0]) + 1
+            print("Auto detected mapwidth set to: " + str(self.mapWidth))
+
         res = []
         padding = [self.PADDING_CHAR] * self.mapWidth
         padding[0] = self.MAPBORDER_CHAR
@@ -203,9 +210,9 @@ class Map:
         values = []
         for x in lines:
             tmp = x.split("=")
-            print(tmp)
+            # print(tmp)
             xy = tmp[0].split(",")
-            print(xy)
+            # print(xy)
             xVal = int(xy[0])
             yVal = int(xy[1])
             data = int(tmp[1])
@@ -235,3 +242,17 @@ class Map:
 
     def getY(self, y):
         return settings.TILESIZE * y
+
+    def fillMapBottom(self, data):
+        rownr = len(data) - 2
+
+        while rownr > 0:
+            colnr = 0
+            while colnr < len(data[rownr]):
+                if data[rownr][colnr] == 32:
+                    # print(str(data[rownr + 1][colnr]) + " " + str(data[rownr][colnr]))
+                    if (data[rownr + 1][colnr] == 66) or (data[rownr + 1][colnr] == 70):
+                        data[rownr][colnr] = 70
+                colnr += 1
+            rownr -= 1
+        return data
