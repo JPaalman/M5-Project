@@ -23,6 +23,7 @@ I_DEATHTILE = None
 AIBORDER    = None
 CHECKPOINT  = None
 I_TILE      = None
+ENEMY       = None
 
 # All byte-to-color mappings
 #
@@ -38,6 +39,7 @@ colours = {
             66: MAPBORDER,      # "B"
             67: CHECKPOINT,     # "C"
             68: DEATHTILE,      # "D"
+            69: ENEMY,          # "E"
             70: FLOORFILLER,    # "F"
             71: GREEN,          # "G"
             80: PLAYERSPAWN,    # "P"
@@ -47,3 +49,4 @@ colours = {
             124: AIBORDER       # "|"
         }
 death_tiles = {68, 100}
+texture = {}
