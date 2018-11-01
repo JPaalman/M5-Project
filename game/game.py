@@ -72,7 +72,7 @@ class Game:
         for t in map_tiles:
             # enemy
             if t.tile_id == 69:
-                e = GroundCrawler(self, t.x, t.y, t.tile_id)
+                e = GroundCrawler(self, t.x, t.y, t.tile_id, self.map.ENEMY_SPEED)
                 self.death_tiles.add(e)
                 self.all_sprites.add(e)
             # player

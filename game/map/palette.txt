@@ -13,6 +13,8 @@ PLAYER_ACC=1
 PLAYER_FRICTION=0.12
 PLAYER_GRAV=0.8
 PLAYER_JUMP=20
+# Enemy properties
+ENEMY_SPEED=3
 # Mapdata: bytes represented by chars in ASCII encoding.
 # Characters past the height or width will be ignored
 # Missing characters before the height or width limit will be assumed as spaces (' ')
