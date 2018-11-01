@@ -6,9 +6,9 @@ import pygame as pg
 from game.map import colorMap
 from map.map import Map
 from settings import *
+from sprites import GroundCrawler
 from sprites import Platform
 from sprites import Player
-from sprites import GroundCrawler
 
 
 class Game:
@@ -28,7 +28,6 @@ class Game:
         self.playing = True
         self.font_name = pg.font.match_font(FONT_NAME)
         self.lives = None
-        self.thread = None
 
         # background
         self.bg = pg.image.load(bgImage)
@@ -143,8 +142,7 @@ class Game:
                              TILESIZE, TILESIZE * 3 / 2)
         self.all_sprites.add(self.player)
 
-        thread = Thread(target=self.run())
-        thread.start()
+        Thread(target=self.run()).start()
 
     def run(self):
         """ game loop """
