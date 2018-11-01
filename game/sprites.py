@@ -2,19 +2,19 @@ import pygame as pg
 from game.map import colorMap
 from settings import *
 import game.resources.resourceManager as rM
+
 vec = pg.math.Vector2
 
 
 class Player(pg.sprite.Sprite):
     """ Player sprite """
 
-    def __init__(self, game, prop, start, w, h):
+    def __init__(self, game, prop, w, h):
         pg.sprite.Sprite.__init__(self)
         self.game = game
         self.image = pg.Surface((w, h))
         self.image.fill(colorMap.RED)
         self.rect = self.image.get_rect()
-        self.rect.midleft = start
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
         self.change = vec(0, 0)
@@ -27,16 +27,17 @@ class Player(pg.sprite.Sprite):
         self.PLAYER_GRAV = prop[2]
         self.PLAYER_JUMP = prop[3]
 
-    def jump(self, multiplier):
+    def set_start(self, start):
+        self.rect.midleft = start
+
+    def jump(self):
         """ Makes the player jump """
-        if multiplier is None or multiplier == 0:
-            multiplier = 1
         # jump only if we are on a platform
         self.rect.y += 1
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         self.rect.y -= 1
         if hits:
-            self.vel.y = -self.PLAYER_JUMP * multiplier
+            self.vel.y = -self.PLAYER_JUMP
 
     def update(self):
         """ Updates the player's acceleration / velocity / etc """
@@ -58,11 +59,6 @@ class Player(pg.sprite.Sprite):
 
     def collisions(self):
         """ Check and handle collisions """
-
-        # check for jump pads
-        self.rect.y += self.change.y
-
-        self.rect.y -= self.change.y
 
         # check if we glitched inside a platform. If so, increase collision streak
         self.rect.y -= TILESIZE / 4
@@ -92,10 +88,13 @@ class Player(pg.sprite.Sprite):
         hits = pg.sprite.spritecollide(self, self.game.jump_pads, False)
         jmp = False
         for hit in hits:
-            if self.rect.collidepoint(hit.rect.midtop) and not jmp:
-                self.rect.y = hit.rect.top - TILESIZE*1.5 + 1  # put player on top of jump pad first
+            if (self.rect.collidepoint(hit.rect.midtop)
+                    or self.rect.collidepoint(hit.rect.topright)
+                    or self.rect.collidepoint(hit.rect.topleft)):
+                self.rect.bottom = hit.rect.top  # put player on top of jump pad first
                 jmp = True
-                self.jump(1)
+                self.vel.y = -self.vel.y
+                break
 
         if not jmp:
             hits = pg.sprite.spritecollide(self, self.game.platforms, False)
@@ -110,6 +109,7 @@ class Player(pg.sprite.Sprite):
 
 class Platform(pg.sprite.Sprite):
     """ Platform sprite """
+
     def __init__(self, x, y, tile_id):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((TILESIZE, TILESIZE))
@@ -129,6 +129,7 @@ class Platform(pg.sprite.Sprite):
 
 class GroundCrawler(pg.sprite.Sprite):
     """ Enemy sprite"""
+
     def __init__(self, game, x, y, tile_id, speed):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((TILESIZE, TILESIZE))
@@ -161,32 +162,3 @@ class GroundCrawler(pg.sprite.Sprite):
             for hit in hits:
                 if hit.rect.collidepoint(self.rect.midright) or hit.rect.collidepoint(self.rect.midleft):
                     self.direction *= -1
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

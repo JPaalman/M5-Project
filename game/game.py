@@ -9,6 +9,7 @@ from settings import *
 from sprites import GroundCrawler
 from sprites import Platform
 from sprites import Player
+import game.resources.resourceManager as rM
 
 
 class Game:
@@ -24,36 +25,36 @@ class Game:
         self.running = True
         self.playing = True
         self.font_name = pg.font.match_font(FONT_NAME)
+        self.coin_counter = 0
+        self.has_won = False
         self.lives = None
-        self.coin_counter = None
 
         # background
-        self.bg = pg.image.load(bgImage).convert()
+        self.bg = rM.getImage("bg.jpg", False)
 
         # level records
         self.dir = path.dirname(__file__)
         self.records = None
         self.load_data()
 
-        # init sprites
-        self.all_sprites = None
-        self.platforms = None
-        self.player = None
-        self.death_tiles = None
-        self.ai_borders = None
-        self.coins = None
-        self.sprites_on_screen = None
-        self.jump_pads = None
+        # init sprite Groups
+        self.all_sprites = pg.sprite.Group()
+        self.platforms = pg.sprite.Group()
+        self.death_tiles = pg.sprite.Group()
+        self.checkpoints = pg.sprite.Group()
+        self.ai_borders = pg.sprite.Group()
+        self.coins = pg.sprite.Group()
+        self.sprites_on_screen = pg.sprite.Group()
+        self.jump_pads = pg.sprite.Group()
 
         # timer
         self.frame_count = None
         self.timer_string = None
 
         # map
+        self.player = None
         self.map = None
-        self.level = None
         self.finish = None
-        self.checkpoints = None
         self.player_start = None
         self.player_spawn = None
         self.total_world_shift = 0
@@ -120,27 +121,19 @@ class Game:
                 self.platforms.add(p)
                 self.all_sprites.add(p)
 
-    def new(self, lives, level):
+    def new(self, level):
         """ start new game, player lives set """
-        self.lives = lives
-        self.level = level
-        self.coin_counter = 0
-        self.all_sprites = pg.sprite.Group()
-        self.platforms = pg.sprite.Group()
-        self.death_tiles = pg.sprite.Group()
-        self.checkpoints = pg.sprite.Group()
-        self.ai_borders = pg.sprite.Group()
-        self.coins = pg.sprite.Group()
-        self.sprites_on_screen = pg.sprite.Group()
-        self.jump_pads = pg.sprite.Group()
-        '''
-        for plat in PLATFORM_LIST:
-            p = Platform(*plat)
-            self.all_sprites.add(p)
-            self.platforms.add(p)
-        '''
-        self.map = Map(level)
-        self.init_map(self.map.getTiles())
+        if self.map is None:
+            self.all_sprites.empty()
+            self.platforms.empty()
+            self.death_tiles.empty()
+            self.checkpoints.empty()
+            self.ai_borders.empty()
+            self.coins.empty()
+            self.sprites_on_screen.empty()
+            self.jump_pads.empty()
+            self.map = Map(level)
+            self.init_map(self.map.getTiles())
 
         player_properties = [self.map.PLAYER_ACC,
                              self.map.PLAYER_FRICTION,
@@ -154,15 +147,23 @@ class Game:
             self.player_start = self.player_spawn
 
         for sprite in self.all_sprites:
-            sprite.rect.right += self.checkpoint_shift
+            sprite.rect.right += (self.checkpoint_shift - self.total_world_shift)
         self.total_world_shift = self.checkpoint_shift
 
-        self.player = Player(self, player_properties,
-                             self.player_start,
-                             TILESIZE, TILESIZE * 3 / 2)
-        self.all_sprites.add(self.player)
+        if self.player is None:
+            self.player = Player(self, player_properties,
+                                 TILESIZE, TILESIZE * 3 / 2)
+            self.all_sprites.add(self.player)
+        else:
+            self.player.vel.y = 0
+            self.player.vel.x = 0
+        self.player.set_start(self.player_start)
 
-        Thread(target=self.run()).start()
+        thread = Thread(target=self.run())
+        thread.start()
+        print("THREAD STARTED")
+        thread.join()
+        print("THREAD JOINED")
 
     def run(self):
         """ game loop """
@@ -187,9 +188,7 @@ class Game:
         if (self.player.rect.top > HEIGHT or
                 pg.sprite.spritecollide(self.player, self.death_tiles, False)):
             # start level again if you have enough lives left, otherwise stop playing
-            if self.lives > 1:
-                self.new(self.lives - 1, self.level)
-            else:
+                self.has_won = False
                 self.playing = False
 
         # check coin collision
@@ -199,6 +198,7 @@ class Game:
 
         # check win conditions
         if self.player.rect.colliderect(self.finish.rect):
+            self.has_won = True
             self.playing = False
 
         # check checkpoint collision
@@ -217,7 +217,7 @@ class Game:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
                 elif event.key == pg.K_SPACE:
-                    self.player.jump(1)
+                    self.player.jump()
 
     def quit(self):
         """ stops the game """
@@ -321,18 +321,35 @@ class Game:
                     self.sprites_on_screen.add(sprite)
 
     def reset_constants(self):
-        """ resets constants to start new game """
+        """ resets constants to start a fresh game """
         self.player_start = None
         self.player_spawn = None
         self.total_world_shift = 0
         self.checkpoint_shift = 0
+        self.map = None
+        self.player = None
+        self.coin_counter = 0
+
+    def play_level(self, level, lives):
+        self.lives = lives
+        while self.lives >= 1 and self.running:
+            self.new(level)
+            if self.has_won:
+                break
+            self.lives -= 1
+
+        if self.has_won:
+            print("YOU WON!")
+            self.show_go_screen()
+        else:
+            print("YOU LOSE!")
+            self.show_go_screen()
+
+        self.reset_constants()
 
 
 g = Game()
 g.show_start_screen()
 while g.running:
-    g.new(PLAYER_LIVES, LEVEL_1)
-    g.reset_constants()
-    g.show_go_screen()
-
+    g.play_level(LEVEL_1, PLAYER_LIVES)
 pg.quit()

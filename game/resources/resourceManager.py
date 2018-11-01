@@ -24,7 +24,6 @@ def getImageById(imgid):
     if imgid in texturemap:
         return getImage(texturemap[imgid], imgid in uses_alpha)
     else:
-        print("TRANSPARENT: " + str(imgid))
         return getImage("transparent.png", True)
 
 
