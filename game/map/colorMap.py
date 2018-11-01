@@ -25,6 +25,7 @@ CHECKPOINT  = None
 I_TILE      = None
 ENEMY       = None
 COIN        = None
+SPIKE       = None
 
 # All byte-to-color mappings
 #
@@ -44,10 +45,11 @@ colours = {
             70: FLOORFILLER,    # "F"
             71: GREEN,          # "G"
             80: PLAYERSPAWN,    # "P"
+            83: SPIKE,          # "S"
             87: BROWN,          # "W"
+            99: COIN,           # "c"
             100: I_DEATHTILE,   # "d"
             112: FINISH,        # "p"
             124: AIBORDER,      # "|"
-            99: COIN            # "c"
         }
-death_tiles = {68, 100}
+death_tiles = {68, 83, 100}
