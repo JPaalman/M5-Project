@@ -27,14 +27,16 @@ class Player(pg.sprite.Sprite):
         self.PLAYER_GRAV = prop[2]
         self.PLAYER_JUMP = prop[3]
 
-    def jump(self):
+    def jump(self, multiplier):
         """ Makes the player jump """
+        if multiplier is None or multiplier == 0:
+            multiplier = 1
         # jump only if we are on a platform
         self.rect.y += 1
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         self.rect.y -= 1
         if hits:
-            self.vel.y = -self.PLAYER_JUMP
+            self.vel.y = -self.PLAYER_JUMP * multiplier
 
     def update(self):
         """ Updates the player's acceleration / velocity / etc """
@@ -56,6 +58,11 @@ class Player(pg.sprite.Sprite):
 
     def collisions(self):
         """ Check and handle collisions """
+
+        # check for jump pads
+        self.rect.y += self.change.y
+
+        self.rect.y -= self.change.y
 
         # check if we glitched inside a platform. If so, increase collision streak
         self.rect.y -= TILESIZE / 4
@@ -80,14 +87,25 @@ class Player(pg.sprite.Sprite):
                 self.vel.x = 0
 
         self.rect.y += self.change.y
-        hits = pg.sprite.spritecollide(self, self.game.platforms, False)
+        hits = pg.sprite.spritecollide(self, self.game.jump_pads, False)
+        jmp = False
         for hit in hits:
-            if self.change.y > 0:
-                self.rect.bottom = hit.rect.top
-                self.vel.y = 0
-            elif self.change.y < 0:
-                self.rect.top = hit.rect.bottom
-                self.vel.y = 0
+            print("jump?")
+            if self.rect.collidepoint(hit.rect.midtop) and not jmp:
+                print("jump!")
+                self.rect.y = hit.rect.top - TILESIZE*1.5 + 1  # put player on top of jump pad first
+                jmp = True
+                self.jump(1)
+
+        if not jmp:
+            hits = pg.sprite.spritecollide(self, self.game.platforms, False)
+            for hit in hits:
+                if self.change.y > 0:
+                    self.rect.bottom = hit.rect.top
+                    self.vel.y = 0
+                elif self.change.y < 0:
+                    self.rect.top = hit.rect.bottom
+                    self.vel.y = 0
 
 
 class Platform(pg.sprite.Sprite):

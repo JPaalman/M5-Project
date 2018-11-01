@@ -26,6 +26,7 @@ I_TILE      = None
 ENEMY       = None
 COIN        = None
 SPIKE       = None
+JUMPPAD     = None
 
 # All byte-to-color mappings
 #
@@ -44,6 +45,7 @@ colours = {
             69: ENEMY,          # "E"
             70: FLOORFILLER,    # "F"
             71: GREEN,          # "G"
+            74: JUMPPAD,        # "J"
             80: PLAYERSPAWN,    # "P"
             83: SPIKE,          # "S"
             87: BROWN,          # "W"
@@ -53,4 +55,4 @@ colours = {
             124: AIBORDER,      # "|"
         }
 death_tiles = {68, 83, 100}
-uses_image = {45, 61, 67, 68, 69, 70, 112, 99, 124, 33}
+uses_image = {45, 61, 67, 68, 69, 70, 112, 99, 124, 33, 74}

@@ -43,6 +43,7 @@ class Game:
         self.ai_borders = None
         self.coins = None
         self.sprites_on_screen = None
+        self.jump_pads = None
 
         # timer
         self.frame_count = None
@@ -78,6 +79,12 @@ class Game:
             # player
             elif t.tile_id == 80:
                 self.player_spawn = (t.x, t.y)
+            # jump pad
+            elif t.tile_id == 74:
+                p = Platform(t.x, t.y, t.tile_id)
+                self.platforms.add(p)
+                self.all_sprites.add(p)
+                self.jump_pads.add(p)
             # finish
             elif t.tile_id == 112:
                 f = Platform(t.x, t.y, t.tile_id)
@@ -125,6 +132,7 @@ class Game:
         self.ai_borders = pg.sprite.Group()
         self.coins = pg.sprite.Group()
         self.sprites_on_screen = pg.sprite.Group()
+        self.jump_pads = pg.sprite.Group()
         '''
         for plat in PLATFORM_LIST:
             p = Platform(*plat)
@@ -209,7 +217,7 @@ class Game:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
                 elif event.key == pg.K_SPACE:
-                    self.player.jump()
+                    self.player.jump(1)
 
     def quit(self):
         """ stops the game """
