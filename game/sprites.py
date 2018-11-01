@@ -87,12 +87,12 @@ class Player(pg.sprite.Sprite):
                 self.vel.x = 0
 
         self.rect.y += self.change.y
+
+        # first check whether the player is standing on a jump-pad
         hits = pg.sprite.spritecollide(self, self.game.jump_pads, False)
         jmp = False
         for hit in hits:
-            print("jump?")
             if self.rect.collidepoint(hit.rect.midtop) and not jmp:
-                print("jump!")
                 self.rect.y = hit.rect.top - TILESIZE*1.5 + 1  # put player on top of jump pad first
                 jmp = True
                 self.jump(1)
