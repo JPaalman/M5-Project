@@ -19,10 +19,7 @@ class Game:
         pg.init()
         pg.mixer.init()
         self.clock = pg.time.Clock()
-        if FULLSCREEN:
-            self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.FULLSCREEN)
-        else:
-            self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT))  # (0, pg.FULLSCREEN)[FULLSCREEN]
         pg.display.set_caption(TITLE)
         self.running = True
         self.playing = True
@@ -31,8 +28,7 @@ class Game:
         self.coin_counter = None
 
         # background
-        self.bg = pg.image.load(bgImage)
-        self.bg.convert()
+        self.bg = pg.image.load(bgImage).convert()
 
         # level records
         self.dir = path.dirname(__file__)
@@ -128,6 +124,7 @@ class Game:
         self.checkpoints = pg.sprite.Group()
         self.ai_borders = pg.sprite.Group()
         self.coins = pg.sprite.Group()
+        self.sprites_on_screen = pg.sprite.Group()
         '''
         for plat in PLATFORM_LIST:
             p = Platform(*plat)
@@ -157,7 +154,6 @@ class Game:
                              TILESIZE, TILESIZE * 3 / 2)
         self.all_sprites.add(self.player)
 
-        Thread(target=self.update_sprites_on_screen(self)).start()
         Thread(target=self.run()).start()
 
     def run(self):
@@ -168,6 +164,7 @@ class Game:
             self.events()
             self.update()
             self.draw()
+            Thread(target=self.update_sprites_on_screen(self)).start()
             self.clock.tick(FPS)
 
     def update(self):
