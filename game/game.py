@@ -44,6 +44,7 @@ class Game:
         self.platforms = None
         self.player = None
         self.death_tiles = None
+        self.ai_borders = None
 
         # timer
         self.frame_count = None
@@ -72,7 +73,7 @@ class Game:
         for t in map_tiles:
             # enemy
             if t.tile_id == 69:
-                e = GroundCrawler(self, t.x, t.y, TILESIZE, TILESIZE, colorMap.colours[t.tile_id])
+                e = GroundCrawler(self, t.x, t.y, t.tile_id)
                 self.death_tiles.add(e)
                 self.all_sprites.add(e)
             # player
@@ -80,25 +81,27 @@ class Game:
                 self.player_spawn = (t.x, t.y)
             # finish
             elif t.tile_id == 112:
-                f = Platform(t.x, t.y, TILESIZE, TILESIZE, colorMap.colours[t.tile_id])
+                f = Platform(t.x, t.y, t.tile_id)
                 self.finish = f
                 self.all_sprites.add(f)
             # checkpoint
             elif t.tile_id == 67:
-                c = Platform(t.x, t.y, TILESIZE, TILESIZE, colorMap.colours[t.tile_id])
+                c = Platform(t.x, t.y, t.tile_id)
                 self.checkpoints.add(c)
                 self.all_sprites.add(c)
             # AI border
             elif t.tile_id == 124:
-                print("ADD ENEMIES!")
+                a = Platform(t.x, t.y, t.tile_id)
+                self.ai_borders.add(a)
+                self.all_sprites.add(a)
             # death tile
             elif t.tile_id in colorMap.death_tiles:
-                d = Platform(t.x, t.y, TILESIZE, TILESIZE, colorMap.colours[t.tile_id])
+                d = Platform(t.x, t.y, t.tile_id)
                 self.death_tiles.add(d)
                 self.all_sprites.add(d)
             # the rest is assumed to be a platforms
             else:
-                p = Platform(t.x, t.y, TILESIZE, TILESIZE, colorMap.colours[t.tile_id])
+                p = Platform(t.x, t.y, t.tile_id)
                 self.platforms.add(p)
                 self.all_sprites.add(p)
 
@@ -110,6 +113,7 @@ class Game:
         self.platforms = pg.sprite.Group()
         self.death_tiles = pg.sprite.Group()
         self.checkpoints = pg.sprite.Group()
+        self.ai_borders = pg.sprite.Group()
         '''
         for plat in PLATFORM_LIST:
             p = Platform(*plat)

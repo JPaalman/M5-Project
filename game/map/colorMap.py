@@ -49,4 +49,3 @@ colours = {
             124: AIBORDER       # "|"
         }
 death_tiles = {68, 100}
-uses_texture = {33}

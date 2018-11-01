@@ -1,6 +1,7 @@
 import pygame as pg
 from game.map import colorMap
 from settings import *
+import game.resources.resourceManager as rM
 vec = pg.math.Vector2
 
 
@@ -63,7 +64,7 @@ class Player(pg.sprite.Sprite):
             for hit in hits:
                 if hit.rect.collidepoint(self.rect.midbottom):
                     self.collision_streak += 1
-                    if self.collision_streak > 5:
+                    if self.collision_streak > 20:
                         self.rect.bottom = hit.rect.top
         self.rect.y += TILESIZE / 4
 
@@ -91,11 +92,16 @@ class Player(pg.sprite.Sprite):
 
 class Platform(pg.sprite.Sprite):
     """ Platform sprite """
-    def __init__(self, x, y, w, h, c):
+    def __init__(self, x, y, tile_id):
         pg.sprite.Sprite.__init__(self)
-        self.image = pg.Surface((w, h))
-        if c is not None:
-            self.image.fill(c)
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        if tile_id in colorMap.colours:
+            c = colorMap.colours[tile_id]
+            if c is not None:
+                self.image.fill(c)
+            else:
+                self.image = rM.getImageById(tile_id)
+
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -103,21 +109,31 @@ class Platform(pg.sprite.Sprite):
 
 class GroundCrawler(pg.sprite.Sprite):
     """ Enemy sprite"""
-    def __init__(self, game, x, y, w, h, c):
+    def __init__(self, game, x, y, tile_id):
         pg.sprite.Sprite.__init__(self)
-        self.image = pg.Surface((w, h))
-        if c is not None:
-            self.image.fill(c)
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        if tile_id in colorMap.colours:
+            c = colorMap.colours[tile_id]
+            if c is not None:
+                self.image.fill(c)
+            else:
+                self.image = rM.getImageById(tile_id)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
         self.speed = 1
-        self.direction = 1 # 1 is forward, -1 is backwards
+        self.direction = 1  # 1 is forward, -1 is backwards
         self.game = game
 
     def update(self):
+        """ Handles the movement """
         self.rect.x += self.speed * self.direction
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
+        self.handle_hits(hits)
+        hits = pg.sprite.spritecollide(self, self.game.ai_borders, False)
+        self.handle_hits(hits)
+
+    def handle_hits(self, hits):
         if hits:
             for hit in hits:
                 if hit.rect.collidepoint(self.rect.midright) or hit.rect.collidepoint(self.rect.midleft):

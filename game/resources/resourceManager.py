@@ -4,12 +4,16 @@ import pygame as pg
 dirname = os.path.dirname(__file__)
 
 texturemap = {
-    33: "transparent.png"
+    33: "transparent.png",
+    68: "lava.png"
 }
 
 
 def getImageById(imgid):
-    return getImage(texturemap[imgid])
+    if imgid in texturemap:
+        return getImage(texturemap[imgid])
+    else:
+        return getImage("transparent.png")
 
 
 def getImage(imgstr):
