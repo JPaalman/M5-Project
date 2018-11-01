@@ -28,6 +28,7 @@ class Game:
         self.playing = True
         self.font_name = pg.font.match_font(FONT_NAME)
         self.lives = None
+        self.coin_counter = None
 
         # background
         self.bg = pg.image.load(bgImage)
@@ -44,6 +45,7 @@ class Game:
         self.player = None
         self.death_tiles = None
         self.ai_borders = None
+        self.coins = None
 
         # timer
         self.frame_count = None
@@ -98,6 +100,11 @@ class Game:
                 d = Platform(t.x, t.y, t.tile_id)
                 self.death_tiles.add(d)
                 self.all_sprites.add(d)
+            # coin
+            elif t.tile_id == 99:
+                c = Platform(t.x, t.y, t.tile_id)
+                self.coins.add(c)
+                self.all_sprites.add(c)
             # the rest is assumed to be a platforms
             else:
                 p = Platform(t.x, t.y, t.tile_id)
@@ -108,11 +115,13 @@ class Game:
         """ start new game, player lives set """
         self.lives = lives
         self.level = level
+        self.coin_counter = 0
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.death_tiles = pg.sprite.Group()
         self.checkpoints = pg.sprite.Group()
         self.ai_borders = pg.sprite.Group()
+        self.coins = pg.sprite.Group()
         '''
         for plat in PLATFORM_LIST:
             p = Platform(*plat)
@@ -170,6 +179,11 @@ class Game:
             else:
                 self.playing = False
 
+        # check coin collision
+        hits = pg.sprite.spritecollide(self.player, self.coins, True)
+        if hits:
+            self.coin_counter += 1
+
         # check win conditions
         if self.player.rect.colliderect(self.finish.rect):
             self.playing = False
@@ -204,6 +218,7 @@ class Game:
         self.all_sprites.draw(self.screen)
         self.draw_text("Lives: " + str(self.lives), 24, colorMap.BLACK, WIDTH / 2, 15)
         self.draw_text(self.timer_string, 24, colorMap.BLACK, WIDTH / 2, HEIGHT - 35)
+        self.draw_text("Coins: " + str(self.coin_counter), 24, colorMap.BLACK, 50, 15)
         # after drawing everything, update the screen
         pg.display.flip()
 

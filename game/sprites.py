@@ -64,7 +64,7 @@ class Player(pg.sprite.Sprite):
             for hit in hits:
                 if hit.rect.collidepoint(self.rect.midbottom):
                     self.collision_streak += 1
-                    if self.collision_streak > 20:
+                    if self.collision_streak > 2:
                         self.rect.bottom = hit.rect.top
         self.rect.y += TILESIZE / 4
 

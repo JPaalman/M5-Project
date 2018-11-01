@@ -19,22 +19,22 @@ ENEMY_SPEED=3
 # Characters past the height or width will be ignored
 # Missing characters before the height or width limit will be assumed as spaces (' ')
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-B                                                                                                                                                                                                               ========================
+B                                                                                                                                                                                                               =======================c
+B                                                                                                                                                                                                                                      =
 B
-B
-B
+B                                                                                       c
 B                                                                                                                                                                                                             ==
 B
 B                                                                      C
 B                                                                ----------                --                 ---                --                  --                --
 B
 B
-B                                                                                                                                                                                                            =
+B        c                                                                                                                                                                                                   =
 B
 B                         ---
 B
 B                                          ---------
-B
+B                               c
 B     |      E    |
 B      -----------                                                                                                                                                                                        p
 B                                                                                                                                                                                                      ======
@@ -44,7 +44,7 @@ B                                                                   ====        
 B                   C
 B              ----------                                        ===    ===
 B                                                                                                                                                                                                  ==
-B                                                              ==          =
+B                                                              ==          = c
 B                                                             =
 B  ------                                                    =              ==!                                                                                                                  ==
 B                                                                              DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD

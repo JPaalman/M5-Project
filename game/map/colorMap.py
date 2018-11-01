@@ -10,11 +10,11 @@ RED         = (255, 0,   0  )
 WHITE       = (255, 255, 255)
 
 # Game colors
-STDPLATFORM = (0,   60,  99 )
-GRASS       = (48,  150, 51 )
-DEATHTILE   = (237, 109, 30 )
-FLOORFILLER = (124, 76,  28 )
-FINISH      = (255, 215, 0  )
+STDPLATFORM = None  # (0,   60,  99 )
+GRASS       = None  # (48,  150, 51 )
+DEATHTILE   = None  # (237, 109, 30 )
+FLOORFILLER = None  # (124, 76,  28 )
+FINISH      = None  # (255, 215, 0  )
 
 # Invisible tiles
 MAPBORDER   = None
@@ -24,6 +24,7 @@ AIBORDER    = None
 CHECKPOINT  = None
 I_TILE      = None
 ENEMY       = None
+COIN        = None
 
 # All byte-to-color mappings
 #
@@ -46,6 +47,7 @@ colours = {
             87: BROWN,          # "W"
             100: I_DEATHTILE,   # "d"
             112: FINISH,        # "p"
-            124: AIBORDER       # "|"
+            124: AIBORDER,      # "|"
+            99: COIN            # "c"
         }
 death_tiles = {68, 100}
