@@ -3,6 +3,7 @@ import os
 from game import settings
 import game.tiles
 from game.map.colorMap import air_tiles
+from game.resources import resourceManager
 
 
 class Map:
@@ -28,12 +29,7 @@ class Map:
         self.BACKGROUND_IMAGE = None
         self.ENEMY_SPEED = None
         self.PLATFORM_SPEED = None
-
-        dirname = os.path.dirname(__file__)
-        filename = os.path.join(dirname, mname)
-
-        file_object = open(filename, )
-        self.rawMapLines = file_object.readlines()
+        self.rawMapLines = resourceManager.getMap(mname)
         self.initMap(self.rawMapLines)
 
     def getTiles(self):

@@ -1,5 +1,6 @@
 import os
-import pygame as pg
+from game.resources.maps import mapManager
+from game.resources.textures import textureManager
 
 dirname = os.path.dirname(__file__)
 
@@ -27,14 +28,14 @@ uses_alpha = {33, 69, 112, 67, 99, 83, 74, 94, 118, 62, 60}
 
 def getImageById(imgid):
     if imgid in texturemap:
-        return getImage(texturemap[imgid], imgid in uses_alpha)
+        return textureManager.getImage(texturemap[imgid], imgid in uses_alpha)
     else:
-        return getImage("transparent.png", True)
+        return textureManager.getImage("transparent.png", True)
 
 
-def getImage(imgstr, alpha):
-    img = pg.image.load(os.path.join(dirname, imgstr))
-    if alpha:
-        return img.convert_alpha()
-    else:
-        return img.convert()
+def getImage(name, alpha):
+    return textureManager.getImage(name, alpha)
+
+
+def getMap(mapname):
+    return mapManager.getMapLines(mapname)
