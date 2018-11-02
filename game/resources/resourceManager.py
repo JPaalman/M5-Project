@@ -15,7 +15,7 @@ texturemap = {
     45: "platform-middle.png",
     74: "jump_pad.png",
     90: "gras.png",
-    120: "ground2.png",
+    120: "flag.png",
     94: "spike_up.png",
     118: "spike_down.png",
     62: "spike_right.png",

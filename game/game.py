@@ -1,6 +1,7 @@
 from os import path
 from threading import Thread
 import pygame as pg
+from game.level_groups import Level
 from game.map import colorMap
 from game.map.map import Map
 from game.settings import *
@@ -11,6 +12,7 @@ import game.resources.resourceManager as rM
 class Game:
     """ platformer game """
 
+    # Initialization of game
     def __init__(self):
         """ initialize game window """
         pg.init()
@@ -34,28 +36,22 @@ class Game:
         self.high_score = None
 
         # init sprite Groups
-        self.all_sprites = pg.sprite.Group()
-        self.platforms = pg.sprite.Group()
-        self.death_tiles = pg.sprite.Group()
-        self.checkpoints = pg.sprite.Group()
-        self.ai_borders = pg.sprite.Group()
-        self.coins = pg.sprite.Group()
-        self.sprites_on_screen = pg.sprite.Group()
-        self.jump_pads = pg.sprite.Group()
-        self.enemies = pg.sprite.Group()
+        self.level_groups = None
+        self.player = None
+
+        # saved at checkpoint
+        self.level_groups_checkpoint = Level()
+        self.coin_counter_checkpoint = 0
 
         # timer
         self.frame_count = None
         self.timer_string = None
 
         # map
-        self.player = None
         self.map = None
-        self.finish = None
         self.player_start = None
         self.player_spawn = None
         self.total_world_shift = 0
-        self.checkpoint_shift = 0
         self.shift_factor = 0
 
     def load_data(self):
@@ -72,75 +68,67 @@ class Game:
             # enemy
             if t.tile_id == 69:
                 e = GroundCrawler(self, t.x, t.y, t.tile_id, self.map.ENEMY_SPEED)
-                self.death_tiles.add(e)
-                self.enemies.add(e)
-                self.all_sprites.add(e)
+                self.level_groups.death_tiles.add(e)
+                self.level_groups.enemies.add(e)
+                self.level_groups.all_sprites.add(e)
             # player
             elif t.tile_id == 80:
                 self.player_spawn = (t.x, t.y)
             # jump pad
             elif t.tile_id == 74:
                 p = Platform(t.x, t.y, t.tile_id, 1)
-                self.platforms.add(p)
-                self.all_sprites.add(p)
-                self.jump_pads.add(p)
+                self.level_groups.platforms.add(p)
+                self.level_groups.all_sprites.add(p)
+                self.level_groups.jump_pads.add(p)
             # finish
             elif t.tile_id == 112:
                 f = Platform(t.x, t.y, t.tile_id, 1)
-                self.finish = f
-                self.all_sprites.add(f)
+                self.level_groups.finishes.add(f)
+                self.level_groups.all_sprites.add(f)
             # checkpoint
             elif t.tile_id == 67:
                 c = Platform(t.x, t.y, t.tile_id, 1)
-                self.checkpoints.add(c)
-                self.all_sprites.add(c)
+                self.level_groups.checkpoints.add(c)
+                self.level_groups.all_sprites.add(c)
             # Moving platform
             elif t.tile_id == 77:
                 print("tiledata:" + str(t.data))
                 c = MovingPlatform(self, t.x, t.y, t.tile_id, t.data)
-                self.platforms.add(c)
-                self.all_sprites.add(c)
+                self.level_groups.platforms.add(c)
+                self.level_groups.all_sprites.add(c)
             # AI border
             elif t.tile_id == 124:
                 a = Platform(t.x, t.y, t.tile_id, 1)
-                self.ai_borders.add(a)
-                self.all_sprites.add(a)
+                self.level_groups.ai_borders.add(a)
+                self.level_groups.all_sprites.add(a)
             # death tile
             elif t.tile_id in colorMap.death_tiles:
                 d = Platform(t.x, t.y, t.tile_id, 1)
-                self.death_tiles.add(d)
-                self.all_sprites.add(d)
+                self.level_groups.death_tiles.add(d)
+                self.level_groups.all_sprites.add(d)
             # coin
             elif t.tile_id == 99:
                 c = Platform(t.x, t.y, t.tile_id, 1)
-                self.coins.add(c)
-                self.all_sprites.add(c)
+                self.level_groups.coins.add(c)
+                self.level_groups.all_sprites.add(c)
             # invisible tile
             elif t.tile_id == 33:
                 i = Platform(t.x, t.y, t.tile_id, 1)
-                self.all_sprites.add(i)
+                self.level_groups.all_sprites.add(i)
             # floor filler tile without collision
             elif t.tile_id == 120:
                 f = Platform(t.x, t.y, t.tile_id, 1)
-                self.all_sprites.add(f)
+                self.level_groups.all_sprites.add(f)
             # the rest is assumed to be a platforms
             else:
                 p = Platform(t.x, t.y, t.tile_id, 1)
-                self.platforms.add(p)
-                self.all_sprites.add(p)
+                self.level_groups.platforms.add(p)
+                self.level_groups.all_sprites.add(p)
 
     def new(self, level):
         """ start new game, player lives set """
+        self.level_groups = self.level_groups_checkpoint
         if self.map is None:
-            self.all_sprites.empty()
-            self.platforms.empty()
-            self.death_tiles.empty()
-            self.checkpoints.empty()
-            self.ai_borders.empty()
-            self.coins.empty()
-            self.sprites_on_screen.empty()
-            self.jump_pads.empty()
-            self.enemies.empty()
             self.map = Map(level)
             self.init_map(self.map.getTiles())
 
@@ -155,14 +143,10 @@ class Game:
                 self.player_spawn = (WIDTH / 2, HEIGHT / 2)
             self.player_start = self.player_spawn
 
-        for sprite in self.all_sprites:
-            sprite.rect.right += (self.checkpoint_shift - self.total_world_shift)
-        self.total_world_shift = self.checkpoint_shift
-
         if self.player is None:
             self.player = Player(self, player_properties,
                                  TILESIZE, TILESIZE * 3 / 2)
-            self.all_sprites.add(self.player)
+            self.level_groups.all_sprites.add(self.player)
         else:
             self.player.vel.y = 0
             self.player.vel.x = 0
@@ -172,6 +156,7 @@ class Game:
         thread.start()
         thread.join()
 
+    # Game loop methods
     def run(self):
         """ game loop """
         self.frame_count = 0
@@ -183,36 +168,6 @@ class Game:
             # todo put loop in thread and synchronize
             # Thread(target=self.update_sprites_on_screen()).start()
             self.clock.tick(FPS)
-
-    def update(self):
-        """ update all the things! """
-        # update timer
-        self.update_timer_string()
-        # game loop updates
-        self.all_sprites.update()
-
-        # check all die conditions
-        if (self.player.rect.top > HEIGHT or
-                pg.sprite.spritecollide(self.player, self.death_tiles, False)):
-            # start level again if you have enough lives left, otherwise stop playing
-                self.has_won = False
-                self.playing = False
-
-        # check coin collision
-        hits = pg.sprite.spritecollide(self.player, self.coins, True)
-        if hits:
-            self.coin_counter += 1
-
-        # check win conditions
-        if self.player.rect.colliderect(self.finish.rect):
-            self.has_won = True
-            self.playing = False
-
-        # check checkpoint collision
-        hits = pg.sprite.spritecollide(self.player, self.checkpoints, False)
-        if hits:
-            self.player_start = (hits[0].rect.x, hits[0].rect.y)
-            self.checkpoint_shift = self.total_world_shift
 
     def events(self):
         """ game loop - handling events """
@@ -226,18 +181,43 @@ class Game:
                 elif event.key == pg.K_SPACE:
                     self.player.jump()
 
-    def quit(self):
-        """ stops the game """
-        if self.playing:
+    def update(self):
+        """ update all the things! """
+        # update timer
+        self.update_timer_string()
+        # game loop updates
+        self.level_groups.all_sprites.update()
+
+        # check all die conditions
+        if (self.player.rect.top > HEIGHT or
+                pg.sprite.spritecollide(self.player, self.level_groups.death_tiles, False)):
+            # start level again if you have enough lives left, otherwise stop playing
+                self.has_won = False
+                self.playing = False
+
+        # check coin collision
+        hits = pg.sprite.spritecollide(self.player, self.level_groups.coins, True)
+        if hits:
+            self.coin_counter += 1
+
+        # check win conditions
+        if pg.sprite.spritecollide(self.player, self.level_groups.finishes, False):
+            self.has_won = True
             self.playing = False
-        self.running = False
+
+        # check checkpoint collision
+        hits = pg.sprite.spritecollide(self.player, self.level_groups.finishes, False)
+        if hits:
+            self.player_start = (hits[0].rect.x, hits[0].rect.y)
+            self.level_groups_checkpoint = self.level_groups
+            self.coin_counter_checkpoint = self.coin_counter
 
     def draw(self):
         """ game loop - drawing """
         self.screen.blit(self.bg, (0, 0))
 
         # self.sprites_on_screen.draw(self.screen)
-        self.all_sprites.draw(self.screen)
+        self.level_groups.all_sprites.draw(self.screen)
 
         self.draw_text("Lives: " + str(self.lives), 24, colorMap.BLACK, WIDTH / 2, 15)
         self.draw_text(self.timer_string, 24, colorMap.BLACK, WIDTH / 2, HEIGHT - 35)
@@ -245,6 +225,13 @@ class Game:
         # after drawing everything, update the screen
         pg.display.flip()
 
+    def quit(self):
+        """ stops the game """
+        if self.playing:
+            self.playing = False
+        self.running = False
+
+    # Other methods
     def show_start_screen(self):
         """ game start screen """
         self.screen.fill(colorMap.WHITE)
@@ -309,11 +296,11 @@ class Game:
     def shift_world(self, shift_x):
         """ shift everything opposite of the change in x of the player """
         if self.player.rect.right > WIDTH * 2 / 3 and shift_x > 0:
-            for sprite in self.all_sprites:
+            for sprite in self.level_groups.all_sprites:
                 sprite.rect.right -= shift_x
             self.total_world_shift -= shift_x
         elif self.player.rect.left < WIDTH / 3 and shift_x < 0:
-            for sprite in self.all_sprites:
+            for sprite in self.level_groups.all_sprites:
                 sprite.rect.left -= shift_x
             self.total_world_shift -= shift_x
 
@@ -335,14 +322,18 @@ class Game:
         self.player_start = None
         self.player_spawn = None
         self.total_world_shift = 0
-        self.checkpoint_shift = 0
-        self.map = None
+        self.level_groups_checkpoint = Level()
+        self.level_groups = None
         self.player = None
+        self.map = None
 
     def play_level(self, level, lives):
+        """ play one level with the amount of lives given
+            return True if level completed, else return False"""
         self.lives = lives
         while self.lives >= 1 and self.running:
             self.new(level)
+            self.coin_counter = self.coin_counter_checkpoint
             if self.has_won:
                 break
             self.lives -= 1
@@ -363,13 +354,13 @@ g = Game()
 while g.running:
     g.show_start_screen()
     level_index = 1
-    g.reset_level()
     print("level index: " + str(level_index))
     while level_index < len(PLAYLIST[0]) and g.play_level(PLAYLIST[0][level_index], g.lives):
         g.reset_level()
         level_index += 1
         print("level index: " + str(level_index))
     # todo: method for saving score and resetting score attributes
+    g.reset_level()
     g.lives = PLAYER_LIVES
     g.coin_counter = 0
     g.score = 0
