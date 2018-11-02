@@ -8,6 +8,7 @@ GREEN       = (0,   255, 0  )
 BLUE        = (0,   0,   255)
 RED         = (255, 0,   0  )
 WHITE       = (255, 255, 255)
+MOVINGPLATFORM = (25, 23, 54)
 
 # Game colors
 STDPLATFORM = None  # (0,   60,  99 )
@@ -15,8 +16,6 @@ GRASS       = None  # (48,  150, 51 )
 DEATHTILE   = None  # (237, 109, 30 )
 FLOORFILLER = None  # (124, 76,  28 )
 FINISH      = None  # (255, 215, 0  )
-
-MOVINGPLATFORM = (25, 23, 54)
 
 # Invisible tiles
 MAPBORDER   = None
@@ -58,6 +57,8 @@ colours = {
             100: I_DEATHTILE,   # "d"
             112: FINISH,        # "p"
             124: AIBORDER,      # "|"
+            120: FLOORFILLER    # "•"
         }
 death_tiles = {68, 83, 100}
-uses_image = {45, 61, 67, 68, 69, 70, 112, 99, 124, 33, 74, 83, 90}
+uses_image = {45, 61, 67, 68, 69, 70, 112, 99, 124, 33, 74, 83, 90, 120}
+airtiles = {32, 77, 69}

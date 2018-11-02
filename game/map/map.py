@@ -2,6 +2,7 @@ import os
 
 from game import settings
 import game.tiles
+from game.map.colorMap import airtiles
 
 
 class Map:
@@ -249,9 +250,21 @@ class Map:
             colnr = 0
             while colnr < len(data[rownr]):
                 if data[rownr][colnr] == 32:
-                    # print(str(data[rownr + 1][colnr]) + " " + str(data[rownr][colnr]))
                     if (data[rownr + 1][colnr] == 66) or (data[rownr + 1][colnr] == 70):
                         data[rownr][colnr] = 70
                 colnr += 1
             rownr -= 1
+
+        rownr = 0
+
+        while rownr < len(data):
+            colnr = 0
+            while colnr < len(data[rownr]):
+                if data[rownr][colnr] == 70:
+                    if (data[rownr][colnr - 1] not in airtiles) \
+                            and (data[rownr][colnr + 1] not in airtiles):
+                        data[rownr][colnr] = 120
+                colnr += 1
+            rownr += 1
+
         return data

@@ -16,7 +16,7 @@ PLAYER_JUMP=20
 # Enemy properties
 ENEMY_SPEED=3
 # Platform properties
-PLATFORM_SPEED=3
+PLATFORM_SPEED=5
 # Mapdata: bytes represented by chars in ASCII encoding.
 # Characters past the height or width will be ignored
 # Missing characters before the height or width limit will be assumed as spaces (' ')
@@ -24,12 +24,12 @@ BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 B==
 B
 B
-B    M                                        |
-B
+B    M                  |
+B    -
 B
 B
 B                                                                                                                          p
-B                                                                                                                        -----
+B                                                                                                                         -----
 B
 B   P                                           C
 B  ====                                   ============

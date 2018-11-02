@@ -15,7 +15,8 @@ texturemap = {
     45: "platform-middle.png",
     83: "spike.png",
     74: "jump_pad.png",
-    90: "gras.png"
+    90: "gras.png",
+    120: "ground2.png"
 }
 
 uses_alpha = {33, 69, 112, 67, 99, 83, 74}

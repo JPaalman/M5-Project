@@ -155,8 +155,11 @@ class MovingPlatform(pg.sprite.Sprite):
     def update(self):
         """ Handles the movement """
         self.rect.x += self.speed * self.direction
-        if self.rect.collidepoint(self.game.player.rect.midbottom):
-            self.game.player.rect.x += self.speed * self.direction
+        if pg.sprite.collide_rect(self, self.game.player):
+            if self.rect.collidepoint(self.game.player.rect.midbottom):
+                self.game.player.rect.x += self.speed * self.direction
+            else:
+                self.direction *= -1
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         self.handle_hits(hits)
         hits = pg.sprite.spritecollide(self, self.game.ai_borders, False)

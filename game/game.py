@@ -119,6 +119,10 @@ class Game:
             elif t.tile_id == 33:
                 i = Platform(t.x, t.y, t.tile_id, 1)
                 self.all_sprites.add(i)
+            # floor filler tile without collision
+            elif t.tile_id == 120:
+                f = Platform(t.x, t.y, t.tile_id, 1)
+                self.all_sprites.add(f)
             # the rest is assumed to be a platforms
             else:
                 p = Platform(t.x, t.y, t.tile_id, 1)
