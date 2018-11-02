@@ -259,7 +259,8 @@ class Map:
             while colnr < len(data[rownr]):
                 if data[rownr][colnr] == 70:
                     if (data[rownr][colnr - 1] not in air_tiles) \
-                            and (data[rownr][colnr + 1] not in air_tiles):
+                            and (data[rownr][colnr + 1] not in air_tiles
+                            and (data[rownr - 1][colnr] not in air_tiles)):
                         data[rownr][colnr] = 120
                 colnr += 1
             rownr += 1
