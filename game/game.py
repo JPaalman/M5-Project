@@ -6,9 +6,7 @@ import pygame as pg
 from game.map import colorMap
 from map.map import Map
 from settings import *
-from sprites import GroundCrawler
-from sprites import Platform
-from sprites import Player
+from sprites import *
 import game.resources.resourceManager as rM
 
 
@@ -82,42 +80,48 @@ class Game:
                 self.player_spawn = (t.x, t.y)
             # jump pad
             elif t.tile_id == 74:
-                p = Platform(t.x, t.y, t.tile_id)
+                p = Platform(t.x, t.y, t.tile_id, 1)
                 self.platforms.add(p)
                 self.all_sprites.add(p)
                 self.jump_pads.add(p)
             # finish
             elif t.tile_id == 112:
-                f = Platform(t.x, t.y, t.tile_id)
+                f = Platform(t.x, t.y, t.tile_id, 1)
                 self.finish = f
                 self.all_sprites.add(f)
             # checkpoint
             elif t.tile_id == 67:
-                c = Platform(t.x, t.y, t.tile_id)
+                c = Platform(t.x, t.y, t.tile_id, 1)
                 self.checkpoints.add(c)
+                self.all_sprites.add(c)
+            # Moving platform
+            elif t.tile_id == 77:
+                print("tiledata:" + str(t.data))
+                c = MovingPlatform(self, t.x, t.y, t.tile_id, t.data)
+                self.platforms.add(c)
                 self.all_sprites.add(c)
             # AI border
             elif t.tile_id == 124:
-                a = Platform(t.x, t.y, t.tile_id)
+                a = Platform(t.x, t.y, t.tile_id, 1)
                 self.ai_borders.add(a)
                 self.all_sprites.add(a)
             # death tile
             elif t.tile_id in colorMap.death_tiles:
-                d = Platform(t.x, t.y, t.tile_id)
+                d = Platform(t.x, t.y, t.tile_id, 1)
                 self.death_tiles.add(d)
                 self.all_sprites.add(d)
             # coin
             elif t.tile_id == 99:
-                c = Platform(t.x, t.y, t.tile_id)
+                c = Platform(t.x, t.y, t.tile_id, 1)
                 self.coins.add(c)
                 self.all_sprites.add(c)
             # invisible tile
             elif t.tile_id == 33:
-                i = Platform(t.x, t.y, t.tile_id)
+                i = Platform(t.x, t.y, t.tile_id, 1)
                 self.all_sprites.add(i)
             # the rest is assumed to be a platforms
             else:
-                p = Platform(t.x, t.y, t.tile_id)
+                p = Platform(t.x, t.y, t.tile_id, 1)
                 self.platforms.add(p)
                 self.all_sprites.add(p)
 

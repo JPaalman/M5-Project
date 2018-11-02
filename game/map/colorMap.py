@@ -16,6 +16,8 @@ DEATHTILE   = None  # (237, 109, 30 )
 FLOORFILLER = None  # (124, 76,  28 )
 FINISH      = None  # (255, 215, 0  )
 
+MOVINGPLATFORM = (25, 23, 54)
+
 # Invisible tiles
 MAPBORDER   = None
 PLAYERSPAWN = None
@@ -27,6 +29,7 @@ ENEMY       = None
 COIN        = None
 SPIKE       = None
 JUMPPAD     = None
+GRASSBLOCK  = None
 
 # All byte-to-color mappings
 #
@@ -46,13 +49,15 @@ colours = {
             70: FLOORFILLER,    # "F"
             71: GREEN,          # "G"
             74: JUMPPAD,        # "J"
+            77: MOVINGPLATFORM, # "M"
             80: PLAYERSPAWN,    # "P"
             83: SPIKE,          # "S"
             87: BROWN,          # "W"
+            90: GRASSBLOCK,     # "Z"
             99: COIN,           # "c"
             100: I_DEATHTILE,   # "d"
             112: FINISH,        # "p"
             124: AIBORDER,      # "|"
         }
 death_tiles = {68, 83, 100}
-uses_image = {45, 61, 67, 68, 69, 70, 112, 99, 124, 33, 74, 83}
+uses_image = {45, 61, 67, 68, 69, 70, 112, 99, 124, 33, 74, 83, 90}

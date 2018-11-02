@@ -110,9 +110,13 @@ class Player(pg.sprite.Sprite):
 class Platform(pg.sprite.Sprite):
     """ Platform sprite """
 
-    def __init__(self, x, y, tile_id):
+    def __init__(self, x, y, tile_id, width):
         pg.sprite.Sprite.__init__(self)
-        self.image = pg.Surface((TILESIZE, TILESIZE))
+
+        if width is None:
+            width = 1
+
+        self.image = pg.Surface((TILESIZE * width, TILESIZE))
         if tile_id in colorMap.uses_image:
             self.image = rM.getImageById(tile_id)
         else:
@@ -125,6 +129,46 @@ class Platform(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
+
+class MovingPlatform(pg.sprite.Sprite):
+    """ Moving platform sprite """
+    def __init__(self, game, x, y, tile_id, width):
+        pg.sprite.Sprite.__init__(self)
+        self.image = pg.Surface((TILESIZE * width, TILESIZE))
+        if tile_id in colorMap.uses_image:
+            self.image = rM.getImageById(tile_id)
+        else:
+            c = colorMap.colours[tile_id]
+            if c is not None:
+                self.image.fill(c)
+            else:
+                self.image.fill(colorMap.BLACK)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.speed = game.map.PLATFORM_SPEED
+        self.direction = -1  # 1 is forward, -1 is backwards
+        self.game = game
+
+    def update(self):
+        """ Handles the movement """
+        self.rect.x += self.speed * self.direction
+        if self.rect.collidepoint(self.game.player.rect.midbottom):
+            self.game.player.rect.x += self.speed * self.direction
+        hits = pg.sprite.spritecollide(self, self.game.platforms, False)
+        self.handle_hits(hits)
+        hits = pg.sprite.spritecollide(self, self.game.ai_borders, False)
+        self.handle_hits(hits)
+
+    def handle_hits(self, hits):
+        """ Handles collision of moving platforms """
+        if hits:
+            for hit in hits:
+                if hit.rect != self.rect and (
+                        hit.rect.collidepoint(self.rect.topleft) or hit.rect.collidepoint(self.rect.topright)):
+                    self.direction *= -1
 
 
 class GroundCrawler(pg.sprite.Sprite):

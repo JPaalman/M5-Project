@@ -26,6 +26,7 @@ class Map:
         self.PLAYER_JUMP = None
         self.BACKGROUND_IMAGE = None
         self.ENEMY_SPEED = None
+        self.PLATFORM_SPEED = None
 
         dirname = os.path.dirname(__file__)
         filename = os.path.join(dirname, mname)
@@ -61,7 +62,7 @@ class Map:
             colnr = 0
             while colnr < len(self.mapLayout[rownr]) - 1:
                 if self.mapLayout[rownr][colnr] != 32 and self.mapLayout[rownr][colnr] != 66:
-                    data = self.findTileData(colnr, rownr)
+                    data = self.findTileData(self.mapLayout[rownr][colnr])
                     res.append(game.tiles.Tile(self.getX(colnr), self.getY(rownr), self.mapLayout[rownr][colnr], data))
                 colnr += 1
             rownr += 1
@@ -106,6 +107,10 @@ class Map:
 
         # Read enemy properties
         self.ENEMY_SPEED = float(self.getParamValue(lines[index]))
+        index += 1
+
+        # Read platform properties
+        self.PLATFORM_SPEED = float(self.getParamValue(lines[index]))
         index += 1
 
         # Load maplayout
@@ -214,33 +219,22 @@ class Map:
     def getTileData(self, lines):
         values = []
         for x in lines:
-            tmp = x.split("=")
-            # print(tmp)
-            xy = tmp[0].split(",")
-            # print(xy)
-            xVal = int(xy[0])
-            yVal = int(xy[1])
-            data = int(tmp[1])
-            values.append([yVal, xVal, data])
+            values.append(int(x))
         return values
 
-    def findTileData(self, col, row):
-        xCoord = row
-        yCoord = col
-        temp = None
-        count = 0
-        i = -1
+    def findTileData(self, tid):
+        temp = 0
+
         for x in self.tileData:
-            if (x[0] == xCoord) and (x[1] == yCoord):
-                temp = x
-                i = count
-                break
-            count += 1
-        if (i != -1) and (i < len(self.tileData)):
-            del self.tileData[i]
-        if temp is None:
-            return 0;
-        return temp[2]
+            print(str(x))
+
+        if len(self.tileData) > 0:
+            # moving platform
+            if tid == 77:
+                temp = self.tileData[0]
+                self.tileData = self.tileData[1:]
+
+        return temp
 
     def getX(self, x):
         return settings.TILESIZE * x
