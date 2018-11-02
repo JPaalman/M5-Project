@@ -1,12 +1,10 @@
 from os import path
 from threading import Thread
-
 import pygame as pg
-
 from game.map import colorMap
-from map.map import Map
-from settings import *
-from sprites import *
+from game.map.map import Map
+from game.settings import *
+from game.sprites import *
 import game.resources.resourceManager as rM
 
 
@@ -20,20 +18,20 @@ class Game:
         self.clock = pg.time.Clock()
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))  # (0, pg.FULLSCREEN)[FULLSCREEN]
         pg.display.set_caption(TITLE)
+        self.font_name = pg.font.match_font(FONT_NAME)
         self.running = True
         self.playing = True
-        self.font_name = pg.font.match_font(FONT_NAME)
-        self.coin_counter = 0
         self.has_won = False
-        self.lives = None
+        self.lives = PLAYER_LIVES
+        self.coin_counter = 0
 
         # background
         self.bg = rM.getImage("bg.jpg", False)
 
         # level records
         self.dir = path.dirname(__file__)
-        self.high_score = None
         self.load_data()
+        self.high_score = None
 
         # init sprite Groups
         self.all_sprites = pg.sprite.Group()
@@ -332,7 +330,7 @@ class Game:
                     print("ON SCREEN, " + str(shift_factor))
                     self.sprites_on_screen.add(sprite)
 
-    def reset_constants(self):
+    def reset_level(self):
         """ resets constants to start a fresh game """
         self.player_start = None
         self.player_spawn = None
@@ -359,19 +357,20 @@ class Game:
             self.show_go_screen()
             return False
 
-        self.reset_constants()
-
 
 g = Game()
 # m = Menu(g.screen)
 while g.running:
     g.show_start_screen()
-    level_index = 0
-    while level_index < len(PLAYLIST[0] and g.play_level(PLAYLIST[0][0], g.lives)):
+    level_index = 1
+    g.reset_level()
+    print("level index: " + str(level_index))
+    while level_index < len(PLAYLIST[0]) and g.play_level(PLAYLIST[0][level_index], g.lives):
+        g.reset_level()
         level_index += 1
+        print("level index: " + str(level_index))
     # todo: method for saving score and resetting score attributes
     g.lives = PLAYER_LIVES
     g.coin_counter = 0
     g.score = 0
-
 pg.quit()
