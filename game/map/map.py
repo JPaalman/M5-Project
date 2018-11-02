@@ -226,9 +226,6 @@ class Map:
     def findTileData(self, tid):
         temp = 0
 
-        for x in self.tileData:
-            print(str(x))
-
         if len(self.tileData) > 0:
             # moving platform
             if tid == 77:
