@@ -1,3 +1,5 @@
+import pygame as pg
+
 def polarity(num):
     """
     Returns the polarity of the given number.
@@ -37,3 +39,12 @@ class Vector(object):
         Returns the contents of this vector as tuple.
         """
         return self.x, self.y
+
+
+def draw_text(display, font_name, text, size, color, x, y):
+    """ draw text to the screen at position x, y """
+    font = pg.font.Font(font_name, size)
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect()
+    text_rect.midtop = (x, y)
+    display.blit(text_surface, text_rect)
