@@ -246,6 +246,7 @@ class Game:
         pg.display.flip()
 
     def show_start_screen(self):
+        # TODO replace with Menu.selectMap method
         """ game start screen """
         self.screen.fill(colorMap.WHITE)
         self.draw_text(TITLE, 48, colorMap.BLACK, WIDTH / 2, HEIGHT / 4)
