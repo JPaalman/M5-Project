@@ -32,7 +32,7 @@ class Game:
 
         # level records
         self.dir = path.dirname(__file__)
-        self.records = None
+        self.high_score = None
         self.load_data()
 
         # init sprite Groups
@@ -44,6 +44,7 @@ class Game:
         self.coins = pg.sprite.Group()
         self.sprites_on_screen = pg.sprite.Group()
         self.jump_pads = pg.sprite.Group()
+        self.enemies = pg.sprite.Group()
 
         # timer
         self.frame_count = None
@@ -61,11 +62,11 @@ class Game:
 
     def load_data(self):
         """ load level times """
-        with open(path.join(self.dir, RECORDS_FILE), 'w') as f:
+        with open(path.join(self.dir, HIGH_SCORES), 'w') as f:
             try:
-                self.records = int(f.read())
+                self.high_score = int(f.read())
             except IOError:
-                self.records = 0
+                self.high_score = 0
 
     def init_map(self, map_tiles):
         """ Initialized all sprites from the level """
@@ -74,6 +75,7 @@ class Game:
             if t.tile_id == 69:
                 e = GroundCrawler(self, t.x, t.y, t.tile_id, self.map.ENEMY_SPEED)
                 self.death_tiles.add(e)
+                self.enemies.add(e)
                 self.all_sprites.add(e)
             # player
             elif t.tile_id == 80:
@@ -140,6 +142,7 @@ class Game:
             self.coins.empty()
             self.sprites_on_screen.empty()
             self.jump_pads.empty()
+            self.enemies.empty()
             self.map = Map(level)
             self.init_map(self.map.getTiles())
 
@@ -169,9 +172,7 @@ class Game:
 
         thread = Thread(target=self.run())
         thread.start()
-        print("THREAD STARTED")
         thread.join()
-        print("THREAD JOINED")
 
     def run(self):
         """ game loop """
@@ -252,9 +253,9 @@ class Game:
         self.draw_text(TITLE, 48, colorMap.BLACK, WIDTH / 2, HEIGHT / 4)
         self.draw_text("Press any key to start", 22, colorMap.BLACK, WIDTH / 2, HEIGHT * 3 / 4)
         # todo: display record times for each level...
-        self.draw_text("Record time: " + str(self.records), 22, colorMap.BLACK, WIDTH / 2, HEIGHT / 2)
+        self.draw_text("Record time: " + str(self.high_score), 22, colorMap.BLACK, WIDTH / 2, HEIGHT / 2)
         pg.display.flip()
-        self.wait_for_key()
+        return self.wait_for_key()
 
     def show_go_screen(self):
         """ if game is closed mid game, skip the game over screen """
@@ -293,6 +294,7 @@ class Game:
         """ method that waits for a full button press (down and up) """
         waiting = True
         key_down = False
+        key = None
         while waiting:
             self.clock.tick(FPS)
             for event in pg.event.get():
@@ -301,8 +303,10 @@ class Game:
                     self.running = False
                 if event.type == pg.KEYDOWN:
                     key_down = True
+                    key = event.key
                 if key_down and event.type == pg.KEYUP:
                     waiting = False
+        return key
 
     def shift_world(self, shift_x):
         """ shift everything opposite of the change in x of the player """
@@ -336,7 +340,6 @@ class Game:
         self.checkpoint_shift = 0
         self.map = None
         self.player = None
-        self.coin_counter = 0
 
     def play_level(self, level, lives):
         self.lives = lives
@@ -346,18 +349,29 @@ class Game:
                 break
             self.lives -= 1
 
+        # todo: add score to top of screen and go/win screen
         if self.has_won:
             print("YOU WON!")
             self.show_go_screen()
+            return True
         else:
             print("YOU LOSE!")
             self.show_go_screen()
+            return False
 
         self.reset_constants()
 
 
 g = Game()
-g.show_start_screen()
+# m = Menu(g.screen)
 while g.running:
-    g.play_level(LEVEL_1, PLAYER_LIVES)
+    g.show_start_screen()
+    level_index = 0
+    while level_index < len(PLAYLIST[0] and g.play_level(PLAYLIST[0][0], g.lives)):
+        level_index += 1
+    # todo: method for saving score and resetting score attributes
+    g.lives = PLAYER_LIVES
+    g.coin_counter = 0
+    g.score = 0
+
 pg.quit()
