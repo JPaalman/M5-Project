@@ -13,7 +13,6 @@ texturemap = {
     70: "ground2.png",
     99: "coin.png",
     45: "platform-middle.png",
-    83: "spike.png",
     74: "jump_pad.png",
     90: "gras.png",
     120: "ground2.png",
