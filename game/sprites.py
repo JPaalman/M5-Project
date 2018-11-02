@@ -35,7 +35,7 @@ class Player(pg.sprite.Sprite):
         """ Makes the player jump """
         # jump only if we are on a platform
         self.rect.y += 1
-        hits = pg.sprite.spritecollide(self, self.game.level_groups.platforms, False)
+        hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         self.rect.y -= 1
         if hits:
             self.vel.y = -self.PLAYER_JUMP
@@ -63,7 +63,7 @@ class Player(pg.sprite.Sprite):
 
         # check if we glitched inside a platform. If so, increase collision streak
         self.rect.y -= TILESIZE / 4
-        hits = pg.sprite.spritecollide(self, self.game.level_groups.platforms, False)
+        hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         if hits:
             for hit in hits:
                 if hit.rect.collidepoint(self.rect.midbottom):
@@ -74,7 +74,7 @@ class Player(pg.sprite.Sprite):
 
         # normal collision handling
         self.rect.x += round(self.change.x)
-        hits = pg.sprite.spritecollide(self, self.game.level_groups.platforms, False)
+        hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         for hit in hits:
             if self.change.x > 0:
                 self.rect.right = hit.rect.left
@@ -86,7 +86,7 @@ class Player(pg.sprite.Sprite):
         self.rect.y += self.change.y
 
         # first check whether the player is standing on a jump-pad
-        hits = pg.sprite.spritecollide(self, self.game.level_groups.jump_pads, False)
+        hits = pg.sprite.spritecollide(self, self.game.jump_pads, False)
         jmp = False
         for hit in hits:
             if (self.rect.collidepoint(hit.rect.midtop)
@@ -98,7 +98,7 @@ class Player(pg.sprite.Sprite):
                 break
 
         if not jmp:
-            hits = pg.sprite.spritecollide(self, self.game.level_groups.platforms, False)
+            hits = pg.sprite.spritecollide(self, self.game.platforms, False)
             for hit in hits:
                 if self.change.y > 0:
                     self.rect.bottom = hit.rect.top
@@ -158,9 +158,9 @@ class MovingPlatform(pg.sprite.Sprite):
         self.rect.x += self.speed * self.direction
         if self.rect.collidepoint(self.game.player.rect.midbottom):
             self.game.player.rect.x += self.speed * self.direction
-        hits = pg.sprite.spritecollide(self, self.game.level_groups.platforms, False)
+        hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         self.handle_hits(hits)
-        hits = pg.sprite.spritecollide(self, self.game.level_groups.ai_borders, False)
+        hits = pg.sprite.spritecollide(self, self.game.ai_borders, False)
         self.handle_hits(hits)
 
     def handle_hits(self, hits):
@@ -197,9 +197,9 @@ class GroundCrawler(pg.sprite.Sprite):
     def update(self):
         """ Handles the movement """
         self.rect.x += self.speed * self.direction
-        hits = pg.sprite.spritecollide(self, self.game.level_groups.platforms, False)
+        hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         self.handle_hits(hits)
-        hits = pg.sprite.spritecollide(self, self.game.level_groups.ai_borders, False)
+        hits = pg.sprite.spritecollide(self, self.game.ai_borders, False)
         self.handle_hits(hits)
 
     def handle_hits(self, hits):
