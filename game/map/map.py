@@ -2,7 +2,7 @@ import os
 
 from game import settings
 import game.tiles
-from game.map.colorMap import airtiles
+from game.map.colorMap import air_tiles
 
 
 class Map:
@@ -261,8 +261,8 @@ class Map:
             colnr = 0
             while colnr < len(data[rownr]):
                 if data[rownr][colnr] == 70:
-                    if (data[rownr][colnr - 1] not in airtiles) \
-                            and (data[rownr][colnr + 1] not in airtiles):
+                    if (data[rownr][colnr - 1] not in air_tiles) \
+                            and (data[rownr][colnr + 1] not in air_tiles):
                         data[rownr][colnr] = 120
                 colnr += 1
             rownr += 1

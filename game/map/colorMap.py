@@ -29,6 +29,10 @@ COIN        = None
 SPIKE       = None
 JUMPPAD     = None
 GRASSBLOCK  = None
+SPIKE_DOWN  = None
+SPIKE_UP    = None
+SPIKE_LEFT  = None
+SPIKE_RIGHT = None
 
 # All byte-to-color mappings
 #
@@ -39,7 +43,9 @@ colours = {
             32: BLUE,           # " "
             33: I_TILE,         # "!"
             45: STDPLATFORM,    # "-"
+            60: SPIKE_LEFT,     # "<"
             61: GRASS,          # "="
+            62: SPIKE_RIGHT,    # ">"
             64: BLACK,          # "@"
             66: MAPBORDER,      # "B"
             67: CHECKPOINT,     # "C"
@@ -50,15 +56,16 @@ colours = {
             74: JUMPPAD,        # "J"
             77: MOVINGPLATFORM, # "M"
             80: PLAYERSPAWN,    # "P"
-            83: SPIKE,          # "S"
             87: BROWN,          # "W"
             90: GRASSBLOCK,     # "Z"
+            94: SPIKE_UP,       # "^"
             99: COIN,           # "c"
             100: I_DEATHTILE,   # "d"
             112: FINISH,        # "p"
+            118: SPIKE_DOWN,    # "v"
+            120: FLOORFILLER,   # "x"
             124: AIBORDER,      # "|"
-            120: FLOORFILLER    # "•"
         }
 death_tiles = {68, 83, 100}
-uses_image = {45, 61, 67, 68, 69, 70, 112, 99, 124, 33, 74, 83, 90, 120}
-airtiles = {32, 77, 69}
+uses_image = {45, 61, 67, 68, 69, 70, 112, 99, 124, 33, 74, 90, 120, 94, 118, 62, 60}
+air_tiles = {32, 77, 69}

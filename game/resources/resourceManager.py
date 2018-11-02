@@ -16,10 +16,14 @@ texturemap = {
     83: "spike.png",
     74: "jump_pad.png",
     90: "gras.png",
-    120: "ground2.png"
+    120: "ground2.png",
+    94: "spike_up.png",
+    118: "spike_down.png",
+    62: "spike_right.png",
+    60: "spike_left.png"
 }
 
-uses_alpha = {33, 69, 112, 67, 99, 83, 74}
+uses_alpha = {33, 69, 112, 67, 99, 83, 74, 94, 118, 62, 60}
 
 
 def getImageById(imgid):
