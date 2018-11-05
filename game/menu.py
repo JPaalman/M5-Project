@@ -41,6 +41,8 @@ class Menu:
             for event in pg.event.get():
                 # test events, set key states
                 if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_ESCAPE:
+                        return -1
                     if event.key == pg.K_LEFT and left:
                         left = False
                         index -= 1
@@ -56,6 +58,8 @@ class Menu:
                     if event.key == pg.K_SPACE:
                         print("selected: " + self.selectedPlaylistName)
                         return index
+                if event.type == pg.QUIT:
+                    return -1
             pg.event.pump()
             time.sleep(0.05)
 
@@ -82,6 +86,8 @@ class Menu:
                                 if event1.type == pg.KEYUP and event1.key == pg.K_SPACE:
                                     return True
                             time.sleep(0.05)
+                if event.type == pg.QUIT:
+                    return False
             pg.event.pump()
             time.sleep(0.05)
 
@@ -167,9 +173,18 @@ class Menu:
                            settings.HEIGHT / 2 + 125)
         pg.display.flip()
 
-        while True:
+        """
+        up = False
+        while not up:
             for event in pg.event.get():
                 if event.type == pg.KEYUP:
+                    up = True
+            pg.event.pump()
+        """
+
+        while True:
+            for event in pg.event.get():
+                if event.type == pg.KEYDOWN:
                     if event.key == pg.K_ESCAPE:
                         return False
                     if event.key == pg.K_SPACE:
@@ -183,15 +198,19 @@ class Menu:
                             pg.display.flip()
                             while True:
                                 for event1 in pg.event.get():
-                                    if event1.type == pg.KEYUP:
+                                    if event1.type == pg.KEYDOWN:
                                         if event1.key == pg.K_ESCAPE:
                                             return False
                                         if event1.key == pg.K_SPACE:
                                             return True
+                                    if event1.type == pg.QUIT:
+                                        return False
                                 pg.event.pump()
                                 time.sleep(0.1)
                         else:
                             return True
+                if event.type == pg.QUIT:
+                    return False
             pg.event.pump()
             time.sleep(0.1)
 

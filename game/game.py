@@ -429,5 +429,8 @@ class Game:
 g = Game()
 while g.running:
     index = g.menu.selectPlaylist()
-    g.play_playlist(index)
+    if index == -1:
+        g.quit()
+    else:
+        g.play_playlist(index)
 pg.quit()

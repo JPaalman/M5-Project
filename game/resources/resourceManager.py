@@ -80,6 +80,14 @@ def writeHighscores(obj):
         if x not in obj.keys():
             obj[x] = []
 
+    rm = []
+    for x in obj.keys():
+        if x not in tmp:
+            rm.append(x)
+
+    for x in rm:
+        obj.pop(x, None)
+
     json.dump(obj, file_object)
     file_object.close()
     print("end2")
