@@ -58,7 +58,7 @@ class Menu:
                         self.drawPlaylistName(index)
                     if event.key == pg.K_SPACE:
                         print("selected: " + self.selectedPlaylistName)
-                        return settings.PLAYLIST[index]
+                        return index
             pg.event.pump()
             time.sleep(0.05)
 
