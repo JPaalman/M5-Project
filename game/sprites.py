@@ -2,6 +2,7 @@ import pygame as pg
 from game.map import colorMap
 from game.settings import *
 import game.resources.resourceManager as rM
+import time
 
 vec = pg.math.Vector2
 
