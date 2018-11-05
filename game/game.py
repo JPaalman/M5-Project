@@ -5,8 +5,17 @@ from game.menu import Menu
 from game.sprites import *
 
 
+def format_timer(seconds):
+    """ formates an integer seconds to a string in minutes : seconds """
+    minutes = seconds // 60
+    timer_string = "Time: {:02d}:{:02d}".format(int(minutes), int(seconds))
+    return timer_string
+
+
 class Game:
     """ platformer game """
+
+    # Initialization of Game, high scores, map tiles and a new level
 
     def __init__(self):
         """ initialize game window """
@@ -198,6 +207,8 @@ class Game:
 
         self.run()
 
+    # Game loop; run to call events, update and draw
+
     def run(self):
         """ game loop """
         self.playing = True
@@ -302,7 +313,7 @@ class Game:
 
         if self.rendered_seconds is None or self.total_seconds != self.overlay_seconds:
             self.overlay_seconds = self.total_seconds
-            self.rendered_seconds = self.render_text(self.format_timer(self.total_seconds), 24, colorMap.BLACK)
+            self.rendered_seconds = self.render_text(format_timer(self.total_seconds), 24, colorMap.BLACK)
         self.draw_text_surface(self.rendered_seconds, WIDTH / 2, HEIGHT - 40)
 
         if self.rendered_map_name is None or self.map.mapName != self.overlay_map_name:
@@ -313,16 +324,13 @@ class Game:
         # after drawing everything, update the screen
         pg.display.update()
 
-    def format_timer(self, seconds):
-        minutes = seconds // 60
-        timer_string = "Time: {:02d}:{:02d}".format(int(minutes), int(seconds))
-        return timer_string
-
     def quit(self):
         """ stops the game """
         if self.playing:
             self.playing = False
         self.running = False
+
+    # Methods regarding drawing to / updating the screen surface
 
     def draw_text_surface(self, text_surface, x, y):
         """ draw text to the screen at position x, y """
@@ -331,6 +339,8 @@ class Game:
         self.screen.blit(text_surface, text_rect)
 
     def render_text(self, text, size, color):
+        """ renders text to a surface """
+        """ CPU INTENSIVE """
         print("RENDERING: " + text)
         font = pg.font.Font(self.font_name, size)
         text_surface = font.render(text, True, color)
@@ -358,6 +368,8 @@ class Game:
             for sprite in self.all_sprites:
                 if sprite.rect.left < (WIDTH + TILESIZE * 15) and sprite.rect.right > (0 - TILESIZE * 15):
                     self.sprites_on_screen.add(sprite)
+
+    # Used to play (a series of) levels
 
     def reset_level(self):
         """ resets constants to start a fresh game """
