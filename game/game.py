@@ -1,8 +1,9 @@
 from os import path
+from threading import Thread
 
 from game.map.map import Map
-from game.sprites import *
 from game.menu import Menu
+from game.sprites import *
 
 
 class Game:
@@ -24,7 +25,7 @@ class Game:
         self.start = 1
         self.fps_factor = 60 / FPS
 
-        self.old_rects = [self.screen.get_rect()]
+        self.old_time = 0
 
         # background
         self.bg = rM.getImage("bg.jpg", False)
@@ -61,11 +62,8 @@ class Game:
         self.checkpoint_coin_counter = 0
         self.shift_factor = 999
 
-        self.counter = 0
-
         # menu
         self.menu = Menu(self.screen)
-
 
     def load_data(self):
         """ load level times """
@@ -187,15 +185,20 @@ class Game:
     def run(self):
         """ game loop """
         self.frame_count = 0
-        self.counter = 0
         draw_counter = 0
         self.playing = True
         while self.playing:
+            self.old_time = time.time() * 1000
             self.events()
+            print("handling events took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds")
+            self.old_time = time.time() * 1000
             self.update()
-            self.draw2()
+            print("updating took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds")
+            self.old_time = time.time() * 1000
+            self.draw()
+            print("drawing took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds")
             # todo put loop in thread and synchronize
-            # Thread(target=self.update_sprites_on_screen()).start()
+            Thread(target=self.update_sprites_on_screen()).start()
             if draw_counter == 0:
                 self.draw()
                 draw_counter = 2
@@ -254,7 +257,7 @@ class Game:
 
     def draw(self):
         """ game loop - drawing """
-        #self.screen.blit(self.map.bgImage, (0, 0))
+        # self.screen.blit(self.map.bgImage, (0, 0))
         self.screen.fill(colorMap.WHITE)
 
         self.sprites_on_screen.draw(self.screen)
@@ -266,27 +269,6 @@ class Game:
         self.draw_text(self.map.mapName, 24, colorMap.BLACK, WIDTH / 2, 20)
         # after drawing everything, update the screen
         pg.display.flip()
-
-    def draw2(self):
-        self.screen.blit(self.map.bgImage, (0, 0))
-        self.sprites_on_screen.draw(self.screen)
-
-        if self.counter >= 15:
-            pg.display.update()
-            self.counter = 0
-            print("full reset")
-        else:
-            rects = []
-            for sprite in self.sprites_on_screen:
-                rects.append(sprite.rect.copy())
-
-            pg.display.update(self.old_rects + rects)
-
-            self.old_rects = rects
-
-            self.counter += 1
-
-            print(self.counter)
 
     def quit(self):
         """ stops the game """
