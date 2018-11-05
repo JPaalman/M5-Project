@@ -202,7 +202,7 @@ class Game:
             self.old_time = time.time() * 1000
             # todo put loop in thread and synchronize
             if draw_counter == 0:
-                self.draw2()
+                self.draw()
                 draw_counter = 2
             draw_counter -= 1
             print("drawing took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds\n")
