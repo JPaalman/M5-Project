@@ -158,6 +158,13 @@ class MovingPlatform(pg.sprite.Sprite):
         self.rect.x += self.speed * self.direction
         if self.rect.collidepoint(self.game.player.rect.midbottom):
             self.game.player.rect.x += self.speed * self.direction
+
+        shift = TILESIZE * self.direction
+        self.rect.left += shift
+        if self.rect.colliderect(self.game.player.rect):
+            self.direction *= -1
+        self.rect.left -= shift
+
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         self.handle_hits(hits)
         hits = pg.sprite.spritecollide(self, self.game.ai_borders, False)
