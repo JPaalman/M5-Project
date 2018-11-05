@@ -21,6 +21,7 @@ class Game:
         self.has_won = False
         self.lives = PLAYER_LIVES
         self.coin_counter = 0
+        self.fps_factor = 60 / FPS
 
         self.old_rects = []
 
@@ -239,7 +240,7 @@ class Game:
             self.checkpoint_coin_counter = self.coin_counter
 
         UPS = 5  # updates per second; checking sprites on screen
-        if self.frame_count % (FPS / UPS) == 0:
+        if self.frame_count % (FPS // UPS) == 0:
             self.set_sprites_on_screen()
 
     def draw(self):
