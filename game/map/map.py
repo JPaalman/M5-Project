@@ -61,7 +61,7 @@ class Map:
         while rownr < len(self.mapLayout):
             colnr = 0
             while colnr < len(self.mapLayout[rownr]) - 1:
-                if self.mapLayout[rownr][colnr] != 32 and self.mapLayout[rownr][colnr] != 66:
+                if self.mapLayout[rownr][colnr] != 32 and self.mapLayout[rownr][colnr] != 66 and self.mapLayout[rownr][colnr] != 120:
                     data = self.findTileData(self.mapLayout[rownr][colnr])
                     res.append(game.tiles.Tile(self.getX(colnr), self.getY(rownr), self.mapLayout[rownr][colnr], data))
                 colnr += 1
