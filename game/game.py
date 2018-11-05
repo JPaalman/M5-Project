@@ -12,7 +12,7 @@ class Game:
         pg.init()
         pg.mixer.init()
         self.clock = pg.time.Clock()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.DOUBLEBUF)  # (0, pg.FULLSCREEN)[FULLSCREEN]
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.DOUBLEBUF, 16)  # (0, pg.FULLSCREEN)[FULLSCREEN]
         pg.display.set_caption(TITLE)
         self.font_name = pg.font.match_font(FONT_NAME)
         self.running = True
@@ -20,6 +20,8 @@ class Game:
         self.has_won = False
         self.lives = PLAYER_LIVES
         self.coin_counter = 0
+
+        self.old_rects = []
 
         # background
         self.bg = rM.getImage("bg.jpg", False)
@@ -203,10 +205,10 @@ class Game:
         if (self.player.rect.top > HEIGHT or
                 pg.sprite.spritecollide(self.player, self.death_tiles, False)):
             # start level again if you have enough lives left, otherwise stop playing
-                self.has_won = False
-                self.playing = False
-                self.coin_counter = self.checkpoint_coin_counter
-                self.shift_factor = 999
+            self.has_won = False
+            self.playing = False
+            self.coin_counter = self.checkpoint_coin_counter
+            self.shift_factor = 999
 
         # check coin collision
         hits = pg.sprite.spritecollide(self.player, self.coins, True)
@@ -235,7 +237,7 @@ class Game:
         self.screen.blit(self.map.bgImage, (0, 0))
 
         self.sprites_on_screen.draw(self.screen)
-        #self.all_sprites.draw(self.screen)
+        # self.all_sprites.draw(self.screen)
 
         self.draw_text("Lives: " + str(self.lives), 24, colorMap.BLACK, WIDTH - 60, 20)
         self.draw_text("Coins: " + str(self.coin_counter), 24, colorMap.BLACK, 60, 20)
@@ -243,6 +245,23 @@ class Game:
         self.draw_text(self.map.mapName, 24, colorMap.BLACK, WIDTH / 2, 20)
         # after drawing everything, update the screen
         pg.display.flip()
+
+    def draw2(self):
+        # copy the background rather than blitting it to the display buffer
+        # buffer is dumped when the drawing completes
+        buffer = self.bg.copy()
+        self.sprites_on_screen.draw(buffer)
+
+        rects = []
+
+        # get all onscreen sprite rects
+        for sprite in self.sprites_on_screen:
+            rects.append(sprite.rect)
+
+        # after drawing everything, update the screen
+        pg.display.update(rects + self.old_rects)
+
+        self.old_rects = rects
 
     def quit(self):
         """ stops the game """
@@ -373,7 +392,7 @@ class Game:
         level_amount = len(PLAYLIST[playlist_index]) - 1
         self.reset_level()
         while (level_index <= level_amount
-                and g.play_level(PLAYLIST[playlist_index][level_index], g.lives, level_index == level_amount)):
+               and g.play_level(PLAYLIST[playlist_index][level_index], g.lives, level_index == level_amount)):
             self.reset_level()
             level_index += 1
         # todo: method for saving score and reset score in reset_level
