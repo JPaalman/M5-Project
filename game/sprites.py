@@ -263,18 +263,13 @@ class Laser(pg.sprite.Sprite):
         self.game.all_sprites.add(self.beam)
 
     def update(self):
-        #print(str(time.time()))
-        #print(str(self.timer))
-        #print(" ")
         if self.on and (time.time() - self.timer > 1):
-            print("turning off laser")
             self.on = False
             self.game.death_tiles.remove(self.beam)
             self.beam.image = pg.Surface((TILESIZE, 1000), pg.SRCALPHA, 32)
             self.beam.image.convert_alpha()
             self.timer = time.time()
         elif not self.on and (time.time() - self.timer > 1):
-            print("turning on laser")
             self.on = True
             self.beam.image.fill(colorMap.RED)
             self.game.death_tiles.add(self.beam)
