@@ -34,9 +34,3 @@ B
 B                                                                                                                                                                                                                                       
 B                                                                                                                                                                                                                                       
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-            # jump pad
-            elif t.tile_id == 74:
-                p = Platform(t.x, t.y, t.tile_id)
-                self.platforms.add(p)
-                self.all_sprites.add(p)
-                self.jump_pads.add(p)
