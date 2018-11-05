@@ -172,16 +172,14 @@ class Game:
             self.player.vel.x = 0
         self.player.set_start(self.player_start)
 
-        print("hi")
-        main_thread = threading.Thread(target=self.run)
-        print("hello")
-        render_thread = threading.Thread(target=self.set_sprites_on_screen())
-        print("asdfhafds")
-        main_thread.start()
-        print("1")
+        render_thread = Thread(target=self.set_sprites_on_screen)
         render_thread.start()
+        print("hi")
+        self.run()
+        print("hello")
+        print("asdfhafds")
+        print("1")
         print("2")
-        main_thread.join()
         render_thread.join()
 
     def run(self):
@@ -241,11 +239,16 @@ class Game:
             self.checkpoint_shift = self.total_world_shift
             self.checkpoint_coin_counter = self.coin_counter
 
+        UPS = 5  # updates per second in checking sprites on screen
+        if self.frame_count % (FPS / UPS) == 0:
+            self.set_sprites_on_screen()
+
     def draw(self):
         """ game loop - drawing """
         self.screen.blit(self.bg, (0, 0))
 
         self.sprites_on_screen.draw(self.screen)
+        #self.all_sprites.draw(self.screen)
 
         self.draw_text("Lives: " + str(self.lives), 24, colorMap.BLACK, WIDTH / 2, 15)
         self.draw_text(self.timer_string, 24, colorMap.BLACK, WIDTH / 2, HEIGHT - 35)
@@ -335,17 +338,17 @@ class Game:
     # easy fix: use collision: make a rectangle that covers the entire display (not the map), and update on collision
     # execute every iteration, not only when moved
     def set_sprites_on_screen(self):
+        print(self.frame_count)
         """ sets sprites_on_screen to only include sprites that are on screen """
         """ this update is only done after a world shift of 10 tiles """
-        while self.playing:
-            shift_factor = self.total_world_shift // (TILESIZE * 10)
-            if shift_factor != self.shift_factor:
-                self.shift_factor = shift_factor
-                self.sprites_on_screen.empty()
+        shift_factor = self.total_world_shift // (TILESIZE * 10)
+        if shift_factor != self.shift_factor:
+            self.shift_factor = shift_factor
+            self.sprites_on_screen = pg.sprite.Group()
 
-                for sprite in self.all_sprites:
-                    if sprite.rect.left < (WIDTH + TILESIZE * 10) and sprite.rect.right > (0 - TILESIZE * 10):
-                        self.sprites_on_screen.add(sprite)
+            for sprite in self.all_sprites:
+                if sprite.rect.left < (WIDTH + TILESIZE * 15) and sprite.rect.right > (0 - TILESIZE * 15):
+                    self.sprites_on_screen.add(sprite)
 
     def reset_level(self):
         """ resets constants to start a fresh game """
