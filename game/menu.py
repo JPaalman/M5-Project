@@ -2,6 +2,7 @@ import pygame as pg
 from game import settings
 from game.map import colorMap
 from game.resources import resourceManager
+import json
 import os
 import time
 
@@ -25,10 +26,8 @@ class Menu:
         self.selectedPlaylistName = None
         pg.display.flip()
 
-        dirname = os.path.dirname(__file__)
-        filename = os.path.join(dirname, settings.highscores_file)
-        file_object = open(filename, "r")
-        self.highscores = self.initHighScores(file_object.readlines())
+        self.highscores = self.initHighScores()
+        print("end1")
 
     def selectPlaylist(self):
         """
@@ -99,34 +98,47 @@ class Menu:
 
         try:
             scores = self.highscores[playlist]
-            if scores is None:
-                self.draw_text("No highscores found", 30, colorMap.BLACK, settings.WIDTH / 2, (settings.HEIGHT / 2 + offset))
-            else:
-                self.draw_text("Highscores:", 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
-                offset += 40
-                for x in scores:
-                    self.draw_text(str(x), 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
-                    self.draw_text(str(count) + ": ", 30, colorMap.BLACK, (settings.WIDTH / 2 - (settings.TILESIZE * 8)), (settings.HEIGHT / 2 + offset))
-                    count += 1
-                    offset += 40
         except KeyError:
-            print("No highscores found")
+            self.highscores[playlist] = []
+            scores = self.highscores[playlist]
 
-    def initHighScores(self, lines):
+        if scores is None:
+            self.draw_text("No highscores found", 30, colorMap.BLACK, settings.WIDTH / 2, (settings.HEIGHT / 2 + offset))
+        else:
+            self.draw_text("Highscores:", 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
+            offset += 40
+            for x in scores:
+                self.draw_text(str(x), 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
+                self.draw_text(str(count) + ": ", 30, colorMap.BLACK, (settings.WIDTH / 2 - (settings.TILESIZE * 8)), (settings.HEIGHT / 2 + offset))
+                count += 1
+                offset += 40
+
+    def initHighScores(self):
         """
         Retrieves all highscores from the highscores.txt file and puts them into a Dictionary for the class to use
         later on.
         :param lines: The raw lines of the highscores.txt file
         :return: the dictionary containing all highscores for all playlists.
         """
+
+        dirname = os.path.dirname(__file__)
+        filename = os.path.join(dirname, settings.highscores_file)
+        file_object = open(filename, )
+
         mp = {}
 
-        for x in lines:
-            tmp = x.split("=")
-            scores = []
-            for y in tmp[1].split(","):
-                scores.append(int(y))
-            mp[tmp[0]] = scores
+        try:
+            1
+            mp = json.load(file_object)
+        except json.decoder.JSONDecodeError:
+            file_object.close()
+            print("file closed in except")
+
+        file_object.close()
+
+        #mp = {}
+
+        print("Read: " + str(mp))
 
         return mp
 
@@ -159,6 +171,11 @@ class Menu:
         :param coins: the amount of coins that the player collected
         :return: True if the player wants to play again, False if the player wants to quit.
         """
+
+        if last:
+            print("updating highscores")
+            self.updateHighscores(gameTime, coins, playlistName)
+
         self.display.blit(self.fi, (0, 0))
         self.draw_text("Finish!", 80, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 - 150)
         if last:
@@ -216,7 +233,7 @@ class Menu:
         :param time: playtime
         :return: the score from time
         """
-        return time * 50
+        return 50000 - time * 50
 
     def calculateCoinsBonus(self, coins):
         """
@@ -225,3 +242,61 @@ class Menu:
         :return: the amount of points gained by collecting coins
         """
         return coins * self.pointsPerCoin
+
+    def updateHighscores(self, gametime, coins, playlist):
+        score = self.calculateTimeScore(gametime) + self.calculateCoinsBonus(coins)
+        print("score " + str(score))
+        try:
+            ls = self.highscores[playlist]
+            print("initial values: " + str(ls))
+            tmp = []
+
+            for x in ls:
+                tmp.append(int(x))
+            ls = tmp
+
+            ls.append(score)
+            print("new scores " + str(ls))
+            ls.sort()
+            self.highscores[playlist] = ls
+        except KeyError:
+            print("keyerror")
+            return
+
+        res = []
+
+        index = 0
+        while index < len(self.highscores[playlist]) and index < 3:
+            res.append(self.highscores[playlist][index])
+            index += 1
+
+        print(str(res))
+
+        self.highscores[playlist] = res
+        print(str(self.highscores[playlist]))
+        self.writeHighscores()
+
+    def writeHighscores(self):
+        dirname = os.path.dirname(__file__)
+        filename = os.path.join(dirname, settings.highscores_file)
+        file_object = open(filename, "w")
+
+        index = 0
+        tmp = []
+        while index < len(settings.PLAYLIST):
+            tmp.append(settings.PLAYLIST[index][0])
+            index += 1
+
+        for x in tmp:
+            if x not in self.highscores.keys():
+                self.highscores[x] = []
+
+        json.dump(self.highscores, file_object)
+        file_object.close()
+        print("end2")
+
+    def dumper(obj):
+        try:
+            return obj.toJSON()
+        except:
+            return obj.__dict__

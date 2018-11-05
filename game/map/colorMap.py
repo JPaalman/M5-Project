@@ -9,7 +9,6 @@ BLUE        = (0,   0,   255)
 RED         = (255, 0,   0  )
 WHITE       = (255, 255, 255)
 MOVINGPLATFORM = (25, 23, 54)
-LASER       =  GREEN
 
 # Game colors
 STDPLATFORM = None  # (0,   60,  99 )
@@ -33,6 +32,7 @@ GRASSBLOCK  = None
 SPIKE_DOWN  = None
 SPIKE_UP    = None
 SPIKE_LEFT  = None
+LASER       = None
 SPIKE_RIGHT = None
 
 # All byte-to-color mappings
@@ -69,5 +69,5 @@ colours = {
             124: AIBORDER,      # "|"
         }
 death_tiles = {68, 83, 100, 94, 118, 62, 60}
-uses_image = {45, 61, 67, 68, 69, 70, 112, 99, 124, 33, 74, 90, 120, 94, 118, 62, 60}
+uses_image = {45, 61, 67, 68, 69, 70, 112, 99, 124, 33, 74, 90, 120, 94, 118, 62, 60, 76}
 air_tiles = {32, 33, 77, 69}
