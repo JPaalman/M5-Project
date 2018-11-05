@@ -27,14 +27,14 @@ B
 B    M                  |
 B    -
 B
-B   p
+B
 B
 B                                                                                                                         -----
 B
 B   P                                           C
 B  ====                                   ============
 B                                       ==            =                                                                       --
-B                           |E       |
+B                           |E     E |
 B                            --------===                  E                           |
 B                                                                                                           --                       ----
 B       J   | E     |
@@ -47,7 +47,7 @@ B                                                                            E  
 B                                                                                                                                   -
 B                                                              E                     |
 B                                                                                                                                        c
-B                   c                                                             E|                  ----                              ----
+B               p   c                                                             E|                  ----                              ----
 B               ---------                               =
 B
 B         DDDDDDDDDDDDDDDDDDDDDDDD                       ==

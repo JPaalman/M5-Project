@@ -94,7 +94,7 @@ class Player(pg.sprite.Sprite):
                     or self.rect.collidepoint(hit.rect.topleft)):
                 self.rect.bottom = hit.rect.top  # put player on top of jump pad first
                 jmp = True
-                self.vel.y = -self.vel.y
+                self.vel.y *= -1.2
                 break
 
         if not jmp:
@@ -201,10 +201,13 @@ class GroundCrawler(pg.sprite.Sprite):
         self.handle_hits(hits)
         hits = pg.sprite.spritecollide(self, self.game.ai_borders, False)
         self.handle_hits(hits)
+        hits = pg.sprite.spritecollide(self, self.game.enemies, False)
+        self.handle_hits(hits)
 
     def handle_hits(self, hits):
         """ When the enemy collides with something, turn its direction the other way """
         if hits:
             for hit in hits:
-                if hit.rect.collidepoint(self.rect.midright) or hit.rect.collidepoint(self.rect.midleft):
-                    self.direction *= -1
+                if hit.rect is not self.rect:
+                    if hit.rect.collidepoint(self.rect.midright) or hit.rect.collidepoint(self.rect.midleft):
+                        self.direction *= -1

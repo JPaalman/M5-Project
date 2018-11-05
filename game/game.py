@@ -223,6 +223,7 @@ class Game:
         if self.player.rect.colliderect(self.finish.rect):
             self.has_won = True
             self.playing = False
+            self.checkpoint_coin_counter = self.coin_counter
 
         # check checkpoint collision
         hits = pg.sprite.spritecollide(self.player, self.checkpoints, False)
@@ -231,7 +232,7 @@ class Game:
             self.checkpoint_shift = self.total_world_shift
             self.checkpoint_coin_counter = self.coin_counter
 
-        UPS = 5  # updates per second in checking sprites on screen
+        UPS = 5  # updates per second; checking sprites on screen
         if self.frame_count % (FPS / UPS) == 0:
             self.set_sprites_on_screen()
 
@@ -242,9 +243,10 @@ class Game:
         self.sprites_on_screen.draw(self.screen)
         #self.all_sprites.draw(self.screen)
 
-        self.draw_text("Lives: " + str(self.lives), 24, colorMap.BLACK, WIDTH / 2, 15)
-        self.draw_text(self.timer_string, 24, colorMap.BLACK, WIDTH / 2, HEIGHT - 35)
-        self.draw_text("Coins: " + str(self.coin_counter), 24, colorMap.BLACK, 50, 15)
+        self.draw_text("Lives: " + str(self.lives), 24, colorMap.BLACK, WIDTH - 60, 20)
+        self.draw_text("Coins: " + str(self.coin_counter), 24, colorMap.BLACK, 60, 20)
+        self.draw_text(self.timer_string, 24, colorMap.BLACK, WIDTH / 2, HEIGHT - 40)
+        self.draw_text(self.map.mapName, 24, colorMap.BLACK, WIDTH / 2, 20)
         # after drawing everything, update the screen
         pg.display.flip()
 
@@ -264,7 +266,7 @@ class Game:
         pg.display.flip()
         return self.wait_for_key()
 
-    def show_go_screen(self):
+    def show_go_screen(self, is_last):
         """ if game is closed mid game, skip the game over screen """
         if not self.running:
             return
@@ -273,6 +275,8 @@ class Game:
         self.screen.fill(colorMap.WHITE)
         self.draw_text("GAME OVER", 48, colorMap.BLACK, WIDTH / 2, HEIGHT / 4)
         self.draw_text("Press any key to start", 22, colorMap.BLACK, WIDTH / 2, HEIGHT * 3 / 4)
+        if is_last:
+            self.draw_text("PLACEHOLDER: LAST LEVEL, SHOW SCORES HERE", 22, colorMap.BLACK, WIDTH / 2, HEIGHT * 1 / 2)
 
         pg.display.flip()
         self.wait_for_key()
@@ -332,7 +336,7 @@ class Game:
         shift_factor = self.total_world_shift // (TILESIZE * 10)
         if shift_factor != self.shift_factor:
             self.shift_factor = shift_factor
-            self.sprites_on_screen = pg.sprite.Group()
+            self.sprites_on_screen.empty()
 
             for sprite in self.all_sprites:
                 if sprite.rect.left < (WIDTH + TILESIZE * 15) and sprite.rect.right > (0 - TILESIZE * 15):
@@ -348,8 +352,10 @@ class Game:
         self.map = None
         self.player = None
         self.shift_factor = 999
+        self.lives = PLAYER_LIVES
 
-    def play_level(self, level, lives):
+    def play_level(self, level, lives, is_last):
+        """ plays a specific level until win or no lives left """
         self.lives = lives
         while self.lives >= 1 and self.running:
             self.new(level)
@@ -360,27 +366,30 @@ class Game:
         # todo: add score to top of screen and go/win screen
         if self.has_won:
             print("YOU WON!")
-            self.show_go_screen()
+            self.show_go_screen(is_last)
             return True
         else:
             print("YOU LOSE!")
-            self.show_go_screen()
+            self.show_go_screen(is_last)
             return False
+
+    def play_playlist(self, playlist_index):
+        """ plays a specific playlist until all levels completed or no lives left """
+        level_index = 1
+        level_amount = len(PLAYLIST[playlist_index]) - 1
+        self.reset_level()
+        while (level_index <= level_amount
+                and g.play_level(PLAYLIST[playlist_index][level_index], g.lives, level_index == level_amount)):
+            self.reset_level()
+            level_index += 1
+        # todo: method for saving score and reset score in reset_level
+        self.lives = PLAYER_LIVES
+        self.coin_counter = 0
 
 
 g = Game()
 # m = Menu(g.screen)
 while g.running:
     g.show_start_screen()
-    level_index = 1
-    g.reset_level()
-    print("level index: " + str(level_index))
-    while level_index < len(PLAYLIST[0]) and g.play_level(PLAYLIST[0][level_index], g.lives):
-        g.reset_level()
-        level_index += 1
-        print("level index: " + str(level_index))
-    # todo: method for saving score and resetting score attributes
-    g.lives = PLAYER_LIVES
-    g.coin_counter = 0
-    g.score = 0
+    g.play_playlist(0)
 pg.quit()
