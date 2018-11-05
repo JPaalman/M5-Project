@@ -48,7 +48,7 @@ B                                                                            E  
 B                                                                                                                                   -
 B                                                              E                     |
 B                                                                                                                                        c
-B                   c                                                             E|                  ----                              ----
+B                   c  L                                                          E|                  ----                              ----
 B               ---------                               =
 B
 B         DDDDDDDDDDDDDDDDDDDDDDDD                       ==

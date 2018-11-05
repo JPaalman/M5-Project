@@ -9,6 +9,7 @@ BLUE        = (0,   0,   255)
 RED         = (255, 0,   0  )
 WHITE       = (255, 255, 255)
 MOVINGPLATFORM = (25, 23, 54)
+LASER       =  GREEN
 
 # Game colors
 STDPLATFORM = None  # (0,   60,  99 )
@@ -54,6 +55,7 @@ colours = {
             70: FLOORFILLER,    # "F"
             71: GREEN,          # "G"
             74: JUMPPAD,        # "J"
+            76: LASER,          # "L"
             77: MOVINGPLATFORM, # "M"
             80: PLAYERSPAWN,    # "P"
             87: BROWN,          # "W"

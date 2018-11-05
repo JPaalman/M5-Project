@@ -82,6 +82,11 @@ class Game:
                 self.platforms.add(p)
                 self.all_sprites.add(p)
                 self.jump_pads.add(p)
+            # laser
+            elif t.tile_id == 76:
+                l = Laser(self, t.x, t.y, t.tile_id)
+                self.platforms.add(l)
+                self.all_sprites.add(l)
             # finish
             elif t.tile_id == 112:
                 f = Platform(t.x, t.y, t.tile_id, 1)
