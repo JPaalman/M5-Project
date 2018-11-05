@@ -43,6 +43,7 @@ class Game:
         self.sprites_on_screen = pg.sprite.Group()
         self.jump_pads = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
+        self.sprites_on_screen = pg.sprite.Group()
 
         # timer
         self.frame_count = None
@@ -56,7 +57,8 @@ class Game:
         self.player_spawn = None
         self.total_world_shift = 0
         self.checkpoint_shift = 0
-        self.shift_factor = 0
+        self.checkpoint_coin_counter = 0
+        self.shift_factor = 999
 
     def load_data(self):
         """ load level times """
@@ -184,6 +186,18 @@ class Game:
             # Thread(target=self.update_sprites_on_screen()).start()
             self.clock.tick(FPS)
 
+    def events(self):
+        """ game loop - handling events """
+        for event in pg.event.get():
+            # check for close window event
+            if event.type == pg.QUIT:
+                self.quit()
+            elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_ESCAPE:
+                    self.quit()
+                elif event.key == pg.K_SPACE:
+                    self.player.jump()
+
     def update(self):
         """ update all the things! """
         # update timer
@@ -197,6 +211,8 @@ class Game:
             # start level again if you have enough lives left, otherwise stop playing
                 self.has_won = False
                 self.playing = False
+                self.coin_counter = self.checkpoint_coin_counter
+                self.shift_factor = 999
 
         # check coin collision
         hits = pg.sprite.spritecollide(self.player, self.coins, True)
@@ -213,37 +229,27 @@ class Game:
         if hits:
             self.player_start = (hits[0].rect.x, hits[0].rect.y)
             self.checkpoint_shift = self.total_world_shift
+            self.checkpoint_coin_counter = self.coin_counter
 
-    def events(self):
-        """ game loop - handling events """
-        for event in pg.event.get():
-            # check for close window event
-            if event.type == pg.QUIT:
-                self.quit()
-            elif event.type == pg.KEYDOWN:
-                if event.key == pg.K_ESCAPE:
-                    self.quit()
-                elif event.key == pg.K_SPACE:
-                    self.player.jump()
-
-    def quit(self):
-        """ stops the game """
-        if self.playing:
-            self.playing = False
-        self.running = False
+        self.set_sprites_on_screen()
 
     def draw(self):
         """ game loop - drawing """
         self.screen.blit(self.bg, (0, 0))
 
-        # self.sprites_on_screen.draw(self.screen)
-        self.all_sprites.draw(self.screen)
+        self.sprites_on_screen.draw(self.screen)
 
         self.draw_text("Lives: " + str(self.lives), 24, colorMap.BLACK, WIDTH / 2, 15)
         self.draw_text(self.timer_string, 24, colorMap.BLACK, WIDTH / 2, HEIGHT - 35)
         self.draw_text("Coins: " + str(self.coin_counter), 24, colorMap.BLACK, 50, 15)
         # after drawing everything, update the screen
         pg.display.flip()
+
+    def quit(self):
+        """ stops the game """
+        if self.playing:
+            self.playing = False
+        self.running = False
 
     def show_start_screen(self):
         """ game start screen """
@@ -320,13 +326,17 @@ class Game:
     # todo fix algorithm. Also, use more efficient buffering: only redraw moved elements
     # easy fix: use collision: make a rectangle that covers the entire display (not the map), and update on collision
     # execute every iteration, not only when moved
-    def update_sprites_on_screen(self):
-        shift_factor = abs(self.total_world_shift // TILESIZE)
-        if (shift_factor - self.shift_factor) >= 1:
+    def set_sprites_on_screen(self):
+        """ sets sprites_on_screen to only include sprites that are on screen """
+        """ this update is only done after a world shift of 10 tiles """
+        shift_factor = self.total_world_shift // (TILESIZE * 10)
+        if shift_factor != self.shift_factor:
+            print("IN")
             self.shift_factor = shift_factor
-            self.sprites_on_screen = pg.sprite.Group()
+            self.sprites_on_screen.empty()
+
             for sprite in self.all_sprites:
-                if sprite.rect.left < (WIDTH - 200) and sprite.rect.right > (0 + 200):
+                if sprite.rect.left < WIDTH and sprite.rect.right > 0:
                     print("ON SCREEN, " + str(shift_factor))
                     self.sprites_on_screen.add(sprite)
 
@@ -336,8 +346,10 @@ class Game:
         self.player_spawn = None
         self.total_world_shift = 0
         self.checkpoint_shift = 0
+        self.checkpoint_coin_counter = 0
         self.map = None
         self.player = None
+        self.shift_factor = 999
 
     def play_level(self, level, lives):
         self.lives = lives
