@@ -1,6 +1,7 @@
 import os
 from game.resources.maps import mapManager
 from game.resources.textures import textureManager
+from game.resources.sounds import soundManager
 
 dirname = os.path.dirname(__file__)
 
@@ -41,3 +42,6 @@ def getImage(name, alpha):
 
 def getMap(mapname):
     return mapManager.getMapLines(mapname)
+
+def getSound(sound):
+    return soundManager.getSound(sound)

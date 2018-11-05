@@ -1,8 +1,10 @@
 from os import path
 
 from game.map.map import Map
-from game.sprites import *
 from game.menu import Menu
+from game.sprites import *
+
+PROFILING = False
 
 
 class Game:
@@ -13,7 +15,7 @@ class Game:
         pg.init()
         pg.mixer.init()
         self.clock = pg.time.Clock()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.DOUBLEBUF, 16)  # (0, pg.FULLSCREEN)[FULLSCREEN]
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.font_name = pg.font.match_font(FONT_NAME)
         self.running = True
@@ -21,9 +23,9 @@ class Game:
         self.has_won = False
         self.lives = PLAYER_LIVES
         self.coin_counter = 0
-        self.fps_factor = 60 / FPS
+        self.dead = True
 
-        self.old_rects = []
+        self.old_time = 0
 
         # background
         self.bg = rM.getImage("bg.jpg", False)
@@ -46,7 +48,7 @@ class Game:
         self.sprites_on_screen = pg.sprite.Group()
 
         # timer
-        self.frame_count = None
+        self.frame_count = 0
         self.timer_string = None
 
         # map
@@ -63,6 +65,13 @@ class Game:
         # menu
         self.menu = Menu(self.screen)
 
+        # sounds
+        self.sound_counter = 0
+        self.coin_sound = rM.getSound("coin.wav")
+        self.checkpoint_sound = rM.getSound("Checkpoint.wav")
+        self.die_sound = rM.getSound("steve_hurt.wav")
+        self.win_sound = rM.getSound("finish.wav")
+        self.lose_sound = rM.getSound("game-over.wav")
 
     def load_data(self):
         """ load level times """
@@ -183,17 +192,28 @@ class Game:
 
     def run(self):
         """ game loop """
-        self.frame_count = 0
-        draw_counter = 0
         self.playing = True
         while self.playing:
+            if PROFILING:
+                self.old_time = time.time() * 1000
             self.events()
+            if PROFILING:
+                print("handling events took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds")
+                self.old_time = time.time() * 1000
             self.update()
-            if draw_counter == 0:
-                self.draw()
-                draw_counter = 2
-            draw_counter -= 1
+            if PROFILING:
+                print("updating took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds")
+                self.old_time = time.time() * 1000
+            self.draw()
+            if PROFILING:
+                print("drawing took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds\n")
             self.clock.tick(FPS)
+        if self.dead:
+            self.update()
+            self.draw()
+            pg.mixer.Sound.play(self.die_sound)
+            time.sleep(1)
+            self.dead = False
 
     def events(self):
         """ game loop - handling events """
@@ -222,10 +242,12 @@ class Game:
             self.playing = False
             self.coin_counter = self.checkpoint_coin_counter
             self.shift_factor = 999
+            self.dead = True
 
         # check coin collision
         hits = pg.sprite.spritecollide(self.player, self.coins, True)
         if hits:
+            pg.mixer.Sound.play(self.coin_sound)
             self.coin_counter += 1
 
         # check win conditions
@@ -240,6 +262,11 @@ class Game:
             self.player_start = (hits[0].rect.x, hits[0].rect.y)
             self.checkpoint_shift = self.total_world_shift
             self.checkpoint_coin_counter = self.coin_counter
+            if self.sound_counter == 0:
+                pg.mixer.Sound.play(self.checkpoint_sound)
+                self.sound_counter = 100
+        if self.sound_counter > 0:
+            self.sound_counter -= 1
 
         UPS = 5  # updates per second; checking sprites on screen
         if self.frame_count % (FPS // UPS) == 0:
@@ -247,35 +274,26 @@ class Game:
 
     def draw(self):
         """ game loop - drawing """
+        # draw everything to the buffer
+        if PROFILING:
+            old_time = time.time()
         self.screen.blit(self.map.bgImage, (0, 0))
-        #self.screen.fill(colorMap.WHITE)
-
+        if PROFILING:
+            print("    drawing background took " + str(int((time.time() - old_time) * 1000)) + " milliseconds")
+            old_time = time.time()
         self.sprites_on_screen.draw(self.screen)
-        # self.all_sprites.draw(self.screen)
-
-        self.draw_text("Lives: " + str(self.lives), 24, colorMap.BLACK, WIDTH - 60, 20)
-        self.draw_text("Coins: " + str(self.coin_counter), 24, colorMap.BLACK, 60, 20)
-        self.draw_text(self.timer_string, 24, colorMap.BLACK, WIDTH / 2, HEIGHT - 40)
-        self.draw_text(self.map.mapName, 24, colorMap.BLACK, WIDTH / 2, 20)
-        # after drawing everything, update the screen
-        pg.display.flip()
-
-    def draw2(self):
-        # copy the background rather than blitting it to the display buffer
-        # buffer is dumped when the drawing completes
-        buffer = self.bg.copy()
-        self.sprites_on_screen.draw(buffer)
-
-        rects = []
-
-        # get all onscreen sprite rects
-        for sprite in self.sprites_on_screen:
-            rects.append(sprite.rect)
+        # self.draw_text("Lives: " + str(self.lives), 24, colorMap.BLACK, WIDTH - 60, 20)
+        # self.draw_text("Coins: " + str(self.coin_counter), 24, colorMap.BLACK, 60, 20)
+        # self.draw_text(self.timer_string, 24, colorMap.BLACK, WIDTH / 2, HEIGHT - 40)
+        # self.draw_text(self.map.mapName, 24, colorMap.BLACK, WIDTH / 2, 20)
+        if PROFILING:
+            print("    blitting took " + str(int((time.time() - old_time) * 1000)) + " milliseconds")
+            old_time = time.time()
 
         # after drawing everything, update the screen
-        pg.display.update(rects + self.old_rects)
-
-        self.old_rects = rects
+        pg.display.update()
+        if PROFILING:
+            print("    updating took " + str(int((time.time() - old_time) * 1000)) + " milliseconds")
 
     def quit(self):
         """ stops the game """
@@ -349,13 +367,18 @@ class Game:
 
         # todo: add score to top of screen and go/win screen
         if self.running:
-            if not self.menu.finish(is_last, playlist_name, self.frame_count // 60, self.checkpoint_coin_counter):
-                self.quit()
             if self.has_won:
                 print("YOU WON!")
+                if is_last:
+                    pg.mixer.Sound.play(self.win_sound)
+                if not self.menu.finish(is_last, playlist_name, self.frame_count // 60, self.checkpoint_coin_counter):
+                    self.quit()
                 return True
             else:
                 print("YOU LOSE!")
+                pg.mixer.Sound.play(self.lose_sound)
+                if not self.menu.gameOver():
+                    self.quit()
                 return False
 
     def play_playlist(self, playlist_index):
@@ -372,6 +395,7 @@ class Game:
         # todo: method for saving score and reset score in reset_level
         self.lives = PLAYER_LIVES
         self.coin_counter = 0
+        self.frame_count = 0
 
 
 g = Game()
