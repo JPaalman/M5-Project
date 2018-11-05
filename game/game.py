@@ -232,7 +232,7 @@ class Game:
 
     def draw(self):
         """ game loop - drawing """
-        self.screen.blit(self.bg, (0, 0))
+        self.screen.blit(self.map.bgImage, (0, 0))
 
         self.sprites_on_screen.draw(self.screen)
         #self.all_sprites.draw(self.screen)
