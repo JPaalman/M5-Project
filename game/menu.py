@@ -27,7 +27,7 @@ class Menu:
 
         dirname = os.path.dirname(__file__)
         filename = os.path.join(dirname, settings.highscores_file)
-        file_object = open(filename, )
+        file_object = open(filename, "r")
         self.highscores = self.initHighScores(file_object.readlines())
 
     def selectPlaylist(self):
@@ -58,7 +58,7 @@ class Menu:
                         self.drawPlaylistName(index)
                     if event.key == pg.K_SPACE:
                         print("selected: " + self.selectedPlaylistName)
-                        return settings.PLAYLIST[index]
+                        return index
             pg.event.pump()
             time.sleep(0.05)
 
@@ -97,17 +97,20 @@ class Menu:
         offset += 30
         count = 1
 
-        scores = self.highscores[playlist]
-        if scores is None:
-            self.draw_text("No highscores found", 30, colorMap.BLACK, settings.WIDTH / 2, (settings.HEIGHT / 2 + offset))
-        else:
-            self.draw_text("Highscores:", 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
-            offset += 40
-            for x in scores:
-                self.draw_text(str(x), 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
-                self.draw_text(str(count) + ": ", 30, colorMap.BLACK, (settings.WIDTH / 2 - (settings.TILESIZE * 8)), (settings.HEIGHT / 2 + offset))
-                count += 1
+        try:
+            scores = self.highscores[playlist]
+            if scores is None:
+                self.draw_text("No highscores found", 30, colorMap.BLACK, settings.WIDTH / 2, (settings.HEIGHT / 2 + offset))
+            else:
+                self.draw_text("Highscores:", 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
                 offset += 40
+                for x in scores:
+                    self.draw_text(str(x), 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
+                    self.draw_text(str(count) + ": ", 30, colorMap.BLACK, (settings.WIDTH / 2 - (settings.TILESIZE * 8)), (settings.HEIGHT / 2 + offset))
+                    count += 1
+                    offset += 40
+        except KeyError:
+            print("No highscores found")
 
     def initHighScores(self, lines):
         """
@@ -147,7 +150,7 @@ class Menu:
         text_rect.midtop = (x, y)
         self.display.blit(text_surface, text_rect)
 
-    def finish(self, playlistName, gameTime, coins):
+    def finish(self, last, playlistName, gameTime, coins):
         """
         Displays the finish screen showing the end score, the calculation of it and the highscores for this playlist.
         The user can either continue and play again or quit
@@ -158,7 +161,8 @@ class Menu:
         """
         self.display.blit(self.fi, (0, 0))
         self.draw_text("Finish!", 80, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 - 150)
-        self.displayScoreCalculation(gameTime, coins)
+        if last:
+            self.displayScoreCalculation(gameTime, coins)
         self.draw_text("Press [space] to continue, or press [esc] to quit", 25, colorMap.BLACK, settings.WIDTH / 2,
                        settings.HEIGHT / 2 + 125)
         pg.display.flip()
@@ -169,22 +173,25 @@ class Menu:
                     if event.key == pg.K_ESCAPE:
                         return False
                     if event.key == pg.K_SPACE:
-                        self.display.blit(self.fi, (0,0))
-                        self.draw_text("Finish!", 80, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 - 150)
-                        self.displayHighscores(playlistName, -80)
-                        self.draw_text("Press [space] to continue, or press [esc] to quit", 25, colorMap.BLACK,
-                                       settings.WIDTH / 2,
-                                       settings.HEIGHT / 2 + 125)
-                        pg.display.flip()
-                        while True:
-                            for event1 in pg.event.get():
-                                if event1.type == pg.KEYUP:
-                                    if event1.key == pg.K_ESCAPE:
-                                        return False
-                                    if event1.key == pg.K_SPACE:
-                                        return True
-                            pg.event.pump()
-                            time.sleep(0.1)
+                        if last:
+                            self.display.blit(self.fi, (0,0))
+                            self.draw_text("Finish!", 80, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 - 150)
+                            self.displayHighscores(playlistName, -80)
+                            self.draw_text("Press [space] to continue, or press [esc] to quit", 25, colorMap.BLACK,
+                                           settings.WIDTH / 2,
+                                           settings.HEIGHT / 2 + 125)
+                            pg.display.flip()
+                            while True:
+                                for event1 in pg.event.get():
+                                    if event1.type == pg.KEYUP:
+                                        if event1.key == pg.K_ESCAPE:
+                                            return False
+                                        if event1.key == pg.K_SPACE:
+                                            return True
+                                pg.event.pump()
+                                time.sleep(0.1)
+                        else:
+                            return True
             pg.event.pump()
             time.sleep(0.1)
 

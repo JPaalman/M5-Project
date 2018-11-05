@@ -2,6 +2,7 @@ import pygame as pg
 from game.map import colorMap
 from game.settings import *
 import game.resources.resourceManager as rM
+import time
 
 vec = pg.math.Vector2
 
@@ -149,15 +150,22 @@ class MovingPlatform(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.game = game
         self.speed = game.map.PLATFORM_SPEED
         self.direction = -1  # 1 is forward, -1 is backwards
-        self.game = game
 
     def update(self):
         """ Handles the movement """
         self.rect.x += self.speed * self.direction
         if self.rect.collidepoint(self.game.player.rect.midbottom):
             self.game.player.rect.x += self.speed * self.direction
+
+        shift = TILESIZE * self.direction
+        self.rect.left += shift
+        if self.rect.colliderect(self.game.player.rect):
+            self.direction *= -1
+        self.rect.left -= shift
+
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         self.handle_hits(hits)
         hits = pg.sprite.spritecollide(self, self.game.ai_borders, False)
@@ -167,8 +175,11 @@ class MovingPlatform(pg.sprite.Sprite):
         """ Handles collision of moving platforms """
         if hits:
             for hit in hits:
-                if hit.rect != self.rect and (
-                        hit.rect.collidepoint(self.rect.topleft) or hit.rect.collidepoint(self.rect.topright)):
+                if hit.rect != self.rect:
+                    if hit.rect.collidepoint(self.rect.midright):
+                        self.rect.right = hit.rect.left
+                    if hit.rect.collidepoint(self.rect.midleft):
+                        self.rect.left = hit.rect.right
                     self.direction *= -1
 
 
@@ -190,9 +201,9 @@ class GroundCrawler(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.game = game
         self.speed = speed
         self.direction = 1  # 1 is forward, -1 is backwards
-        self.game = game
 
     def update(self):
         """ Handles the movement """
@@ -209,5 +220,71 @@ class GroundCrawler(pg.sprite.Sprite):
         if hits:
             for hit in hits:
                 if hit.rect is not self.rect:
-                    if hit.rect.collidepoint(self.rect.midright) or hit.rect.collidepoint(self.rect.midleft):
-                        self.direction *= -1
+                    if hit.rect.collidepoint(self.rect.midright):
+                        self.rect.right = hit.rect.left
+                    if hit.rect.collidepoint(self.rect.midleft):
+                        self.rect.left = hit.rect.right
+                    self.direction *= -1
+
+
+
+class Laser(pg.sprite.Sprite):
+    """Laser of death"""
+
+    def __init__(self, game, x, y, tile_id):
+        pg.sprite.Sprite.__init__(self)
+        self.image = pg.Surface((TILESIZE,TILESIZE))
+        if tile_id in colorMap.uses_image:
+            self.image = rM.getImageById(tile_id)
+        else:
+            c = colorMap.colours[tile_id]
+            if c is not None:
+                self.image.fill(c)
+            else:
+                self.image.fill(colorMap.BLACK)
+
+        self.img = rM.getImageById(33)
+        self.texture = rM.getImageById(256)
+        self.tid = tile_id
+
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.game = game
+        self.on = False
+        self.timer = time.time()
+        self.beam = Beam(x, y)
+
+        self.game.all_sprites.add(self.beam)
+
+    def update(self):
+        #print(str(time.time()))
+        #print(str(self.timer))
+        #print(" ")
+        if self.on and (time.time() - self.timer > 1):
+            print("turning off laser")
+            self.on = False
+            self.game.death_tiles.remove(self.beam)
+            self.beam.image = pg.Surface((TILESIZE, 1000), pg.SRCALPHA, 32)
+            self.beam.image.convert_alpha()
+            self.timer = time.time()
+        elif not self.on and (time.time() - self.timer > 1):
+            print("turning on laser")
+            self.on = True
+            self.beam.image.fill(colorMap.RED)
+            self.game.death_tiles.add(self.beam)
+            self.timer = time.time()
+
+
+class Beam(pg.sprite.Sprite):
+
+    def __init__(self, x, y):
+        pg.sprite.Sprite.__init__(self)
+        self.image = pg.Surface((TILESIZE, 1000), pg.SRCALPHA, 32)
+        self.image = self.image.convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y - 1000
+
+    def update(self):
+        1
