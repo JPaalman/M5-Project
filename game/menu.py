@@ -110,7 +110,7 @@ class Menu:
                     count += 1
                     offset += 40
         except KeyError:
-            print("value not found")
+            print("No highscores found")
 
     def initHighScores(self, lines):
         """
