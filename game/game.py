@@ -184,13 +184,15 @@ class Game:
     def run(self):
         """ game loop """
         self.frame_count = 0
+        draw_counter = 0
         self.playing = True
         while self.playing:
             self.events()
             self.update()
-            self.draw()
-            # todo put loop in thread and synchronize
-            # Thread(target=self.update_sprites_on_screen()).start()
+            if draw_counter == 0:
+                self.draw()
+                draw_counter = 3
+            draw_counter -= 1
             self.clock.tick(FPS)
 
     def events(self):

@@ -23,10 +23,10 @@ class Player(pg.sprite.Sprite):
 
         self.PLAYER_WIDTH = w
         self.PLAYER_HEIGHT = h
-        self.PLAYER_ACC = prop[0] * self.game.fps_factor
+        self.PLAYER_ACC = prop[0]
         self.PLAYER_FRICTION = prop[1]
-        self.PLAYER_GRAV = prop[2] * self.game.fps_factor / 0.6
-        self.PLAYER_JUMP = prop[3] * self.game.fps_factor * 0.8
+        self.PLAYER_GRAV = prop[2]
+        self.PLAYER_JUMP = prop[3]
 
     def set_start(self, start):
         """ Sets player start position """
@@ -151,7 +151,7 @@ class MovingPlatform(pg.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.game = game
-        self.speed = game.map.PLATFORM_SPEED * self.game.fps_factor * 0.6
+        self.speed = game.map.PLATFORM_SPEED
         self.direction = -1  # 1 is forward, -1 is backwards
 
     def update(self):
@@ -202,7 +202,7 @@ class GroundCrawler(pg.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.game = game
-        self.speed = speed * self.game.fps_factor * 0.6
+        self.speed = speed
         self.direction = 1  # 1 is forward, -1 is backwards
 
     def update(self):
