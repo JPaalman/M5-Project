@@ -1,5 +1,4 @@
 from os import path
-from threading import Thread
 
 from game.map.map import Map
 from game.menu import Menu
@@ -195,14 +194,12 @@ class Game:
             self.update()
             print("updating took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds")
             self.old_time = time.time() * 1000
-            self.draw()
-            print("drawing took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds")
             # todo put loop in thread and synchronize
-            Thread(target=self.update_sprites_on_screen()).start()
             if draw_counter == 0:
                 self.draw()
                 draw_counter = 2
             draw_counter -= 1
+            print("drawing took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds\n")
             self.clock.tick(FPS)
 
     def events(self):
@@ -268,7 +265,7 @@ class Game:
         self.draw_text(self.timer_string, 24, colorMap.BLACK, WIDTH / 2, HEIGHT - 40)
         self.draw_text(self.map.mapName, 24, colorMap.BLACK, WIDTH / 2, 20)
         # after drawing everything, update the screen
-        pg.display.flip()
+        pg.display.update()
 
     def quit(self):
         """ stops the game """
