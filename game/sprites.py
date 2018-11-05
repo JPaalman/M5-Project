@@ -265,12 +265,13 @@ class Laser(pg.sprite.Sprite):
             print("turning off laser")
             self.on = False
             self.game.death_tiles.remove(self.beam)
-            self.beam.image = self.img
+            self.beam.image = pg.Surface((TILESIZE, 1000), pg.SRCALPHA, 32)
+            self.beam.image.convert_alpha()
             self.timer = time.time()
         elif not self.on and (time.time() - self.timer > 1):
             print("turning on laser")
             self.on = True
-            self.beam.image = self.texture
+            self.beam.image.fill(colorMap.RED)
             self.game.death_tiles.add(self.beam)
             self.timer = time.time()
 
@@ -279,8 +280,8 @@ class Beam(pg.sprite.Sprite):
 
     def __init__(self, x, y):
         pg.sprite.Sprite.__init__(self)
-        self.image = pg.Surface((TILESIZE, 1000))
-        self.image = rM.getImageById(33)
+        self.image = pg.Surface((TILESIZE, 1000), pg.SRCALPHA, 32)
+        self.image = self.image.convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y - 1000
