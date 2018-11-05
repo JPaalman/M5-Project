@@ -26,3 +26,4 @@ bgImage = os.path.join(dirname, "bg.jpg")
 main_menu_image = "main_menu.png"
 highscores_file = "high_scores.txt"
 game_over_image = "game_over.png"
+finish_image = "finish.png"
