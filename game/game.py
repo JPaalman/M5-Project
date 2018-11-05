@@ -21,9 +21,10 @@ class Game:
         self.has_won = False
         self.lives = PLAYER_LIVES
         self.coin_counter = 0
+        self.start = 1
         self.fps_factor = 60 / FPS
 
-        self.old_rects = []
+        self.old_rects = [self.screen.get_rect()]
 
         # background
         self.bg = rM.getImage("bg.jpg", False)
@@ -59,6 +60,8 @@ class Game:
         self.checkpoint_shift = 0
         self.checkpoint_coin_counter = 0
         self.shift_factor = 999
+
+        self.counter = 0
 
         # menu
         self.menu = Menu(self.screen)
@@ -184,11 +187,15 @@ class Game:
     def run(self):
         """ game loop """
         self.frame_count = 0
+        self.counter = 0
         draw_counter = 0
         self.playing = True
         while self.playing:
             self.events()
             self.update()
+            self.draw2()
+            # todo put loop in thread and synchronize
+            # Thread(target=self.update_sprites_on_screen()).start()
             if draw_counter == 0:
                 self.draw()
                 draw_counter = 2
@@ -261,21 +268,25 @@ class Game:
         pg.display.flip()
 
     def draw2(self):
-        # copy the background rather than blitting it to the display buffer
-        # buffer is dumped when the drawing completes
-        buffer = self.bg.copy()
-        self.sprites_on_screen.draw(buffer)
+        self.screen.blit(self.map.bgImage, (0, 0))
+        self.sprites_on_screen.draw(self.screen)
 
-        rects = []
+        if self.counter >= 15:
+            pg.display.update()
+            self.counter = 0
+            print("full reset")
+        else:
+            rects = []
+            for sprite in self.sprites_on_screen:
+                rects.append(sprite.rect.copy())
 
-        # get all onscreen sprite rects
-        for sprite in self.sprites_on_screen:
-            rects.append(sprite.rect)
+            pg.display.update(self.old_rects + rects)
 
-        # after drawing everything, update the screen
-        pg.display.update(rects + self.old_rects)
+            self.old_rects = rects
 
-        self.old_rects = rects
+            self.counter += 1
+
+            print(self.counter)
 
     def quit(self):
         """ stops the game """
