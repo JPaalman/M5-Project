@@ -192,6 +192,7 @@ class Game:
 
     def run(self):
         """ game loop """
+        counter = 0
         self.playing = True
         while self.playing:
             if PROFILING:
@@ -204,7 +205,10 @@ class Game:
             if PROFILING:
                 print("updating took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds")
                 self.old_time = time.time() * 1000
-            self.draw()
+            if counter == 1:
+                self.draw()
+                counter = 0
+            counter += 1
             if PROFILING:
                 print("drawing took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds\n")
             self.clock.tick(FPS)
