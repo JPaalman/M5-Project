@@ -232,25 +232,18 @@ class GroundCrawler(pg.sprite.Sprite):
                     self.direction *= -1
 
 
-
 class Laser(pg.sprite.Sprite):
     """Laser of death"""
 
     def __init__(self, game, x, y, tile_id):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((TILESIZE,TILESIZE))
-        if tile_id in colorMap.uses_image:
-            self.image = rM.getImageById(tile_id)
-        else:
-            c = colorMap.colours[tile_id]
-            if c is not None:
-                self.image.fill(c)
-            else:
-                self.image.fill(colorMap.BLACK)
-
-        self.img = rM.getImageById(33)
-        self.texture = rM.getImageById(256)
         self.tid = tile_id
+
+        self.images = []
+        for n in range(0, 5):
+            self.images.append(rM.getImage("laser" + str(n) + ".png", False))
+        self.image = self.images[0]
 
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -260,19 +253,25 @@ class Laser(pg.sprite.Sprite):
         self.timer = time.time()
         self.beam = Beam(x, y)
 
+        self.state = 0
         self.game.all_sprites.add(self.beam)
 
     def update(self):
-        if self.on and (time.time() - self.timer > 1):
-            self.on = False
+        dt = time.time() - self.timer
+        if dt > LASER_DOWNITME / 4 and self.state != 4:
+            self.state += 1
+            self.image = self.images[self.state]
+            if self.state == 4:
+                self.game.death_tiles.add(self.beam)
+                self.beam.image.fill(colorMap.RED)
+            self.timer = time.time()
+
+        if self.state == 4 and dt > LASER_UPTIME:
+            self.state = 0
+            self.image = self.images[self.state]
             self.game.death_tiles.remove(self.beam)
             self.beam.image = pg.Surface((TILESIZE, 1000), pg.SRCALPHA, 32)
             self.beam.image.convert_alpha()
-            self.timer = time.time()
-        elif not self.on and (time.time() - self.timer > 1):
-            self.on = True
-            self.beam.image.fill(colorMap.RED)
-            self.game.death_tiles.add(self.beam)
             self.timer = time.time()
 
 
@@ -285,6 +284,3 @@ class Beam(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y - 1000
-
-    def update(self):
-        1

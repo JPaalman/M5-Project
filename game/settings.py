@@ -11,6 +11,8 @@ FONT_NAME = 'arial'
 HIGH_SCORES = 'high_scores.json'
 PLAYER_LIVES = 5
 DEFAULT_MOVING_PLATFORM_SIZE = 6
+LASER_UPTIME = 1
+LASER_DOWNITME = 2
 
 # level files
 PLAYLIST = [["test playlist", "Oebele_map.txt", "palette.txt"],
