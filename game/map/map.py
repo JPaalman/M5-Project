@@ -29,6 +29,7 @@ class Map:
         self.BACKGROUND_IMAGE = None
         self.ENEMY_SPEED = None
         self.PLATFORM_SPEED = None
+        self.BACKGROUND_MUSIC = None
         self.rawMapLines = resourceManager.getMap(mname)
         self.initMap(self.rawMapLines)
 
@@ -88,8 +89,10 @@ class Map:
             self.mapWidth = int(float(param))
         index += 1
 
-        # Read background file name
+        # Read background stuff
         self.BACKGROUND_IMAGE = str(self.getParamValue(lines[index]))
+        index += 1
+        self.BACKGROUND_MUSIC = str(self.getParamValue(lines[index]))
         index += 1
 
         # Read player properties
