@@ -2,8 +2,6 @@ import pygame as pg
 from game import settings
 from game.map import colorMap
 from game.resources import resourceManager
-import json
-import os
 import time
 
 
@@ -121,22 +119,7 @@ class Menu:
         :return: the dictionary containing all highscores for all playlists.
         """
 
-        dirname = os.path.dirname(__file__)
-        filename = os.path.join(dirname, settings.highscores_file)
-        file_object = open(filename, )
-
-        mp = {}
-
-        try:
-            1
-            mp = json.load(file_object)
-        except json.decoder.JSONDecodeError:
-            file_object.close()
-            print("file closed in except")
-
-        file_object.close()
-
-        #mp = {}
+        mp = resourceManager.getHighscores()
 
         print("Read: " + str(mp))
 
@@ -257,7 +240,7 @@ class Menu:
 
             ls.append(score)
             print("new scores " + str(ls))
-            ls.sort()
+            ls.sort(reverse=True)
             self.highscores[playlist] = ls
         except KeyError:
             print("keyerror")
@@ -274,29 +257,4 @@ class Menu:
 
         self.highscores[playlist] = res
         print(str(self.highscores[playlist]))
-        self.writeHighscores()
-
-    def writeHighscores(self):
-        dirname = os.path.dirname(__file__)
-        filename = os.path.join(dirname, settings.highscores_file)
-        file_object = open(filename, "w")
-
-        index = 0
-        tmp = []
-        while index < len(settings.PLAYLIST):
-            tmp.append(settings.PLAYLIST[index][0])
-            index += 1
-
-        for x in tmp:
-            if x not in self.highscores.keys():
-                self.highscores[x] = []
-
-        json.dump(self.highscores, file_object)
-        file_object.close()
-        print("end2")
-
-    def dumper(obj):
-        try:
-            return obj.toJSON()
-        except:
-            return obj.__dict__
+        resourceManager.writeHighscores(self.highscores)

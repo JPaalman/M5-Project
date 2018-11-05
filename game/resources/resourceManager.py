@@ -2,6 +2,8 @@ import os
 from game.resources.maps import mapManager
 from game.resources.textures import textureManager
 from game.resources.sounds import soundManager
+from game import settings
+import json
 
 dirname = os.path.dirname(__file__)
 
@@ -45,3 +47,39 @@ def getMap(mapname):
 
 def getSound(sound):
     return soundManager.getSound(sound)
+
+def getHighscores():
+    filename = os.path.join(dirname, settings.highscores_file)
+    file_object = open(filename, )
+
+    mp = {}
+
+    try:
+        1
+        mp = json.load(file_object)
+    except json.decoder.JSONDecodeError:
+        file_object.close()
+        print("file closed in except")
+
+    file_object.close()
+
+    return mp
+
+
+def writeHighscores(obj):
+    filename = os.path.join(dirname, settings.highscores_file)
+    file_object = open(filename, "w")
+
+    index = 0
+    tmp = []
+    while index < len(settings.PLAYLIST):
+        tmp.append(settings.PLAYLIST[index][0])
+        index += 1
+
+    for x in tmp:
+        if x not in obj.keys():
+            obj[x] = []
+
+    json.dump(obj, file_object)
+    file_object.close()
+    print("end2")
