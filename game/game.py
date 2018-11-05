@@ -68,6 +68,8 @@ class Game:
         self.coin_sound = rM.getSound("coin.wav")
         self.checkpoint_sound = rM.getSound("Checkpoint.wav")
         self.die_sound = rM.getSound("steve_hurt.wav")
+        self.win_sound = rM.getSound("finish.wav")
+        self.lose_sound = rM.getSound("game-over.wav")
 
     def load_data(self):
         """ load level times """
@@ -358,11 +360,14 @@ class Game:
         if self.running:
             if self.has_won:
                 print("YOU WON!")
+                if is_last:
+                    pg.mixer.Sound.play(self.win_sound)
                 if not self.menu.finish(is_last, playlist_name, self.frame_count // 60, self.checkpoint_coin_counter):
                     self.quit()
                 return True
             else:
                 print("YOU LOSE!")
+                pg.mixer.Sound.play(self.lose_sound)
                 if not self.menu.gameOver():
                     self.quit()
                 return False
