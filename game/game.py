@@ -6,6 +6,8 @@ from game.map.map import Map
 from game.settings import *
 from game.sprites import *
 import game.resources.resourceManager as rM
+import time
+import threading
 
 
 class Game:
@@ -170,9 +172,17 @@ class Game:
             self.player.vel.x = 0
         self.player.set_start(self.player_start)
 
-        thread = Thread(target=self.run())
-        thread.start()
-        thread.join()
+        print("hi")
+        main_thread = threading.Thread(target=self.run)
+        print("hello")
+        render_thread = threading.Thread(target=self.set_sprites_on_screen())
+        print("asdfhafds")
+        main_thread.start()
+        print("1")
+        render_thread.start()
+        print("2")
+        main_thread.join()
+        render_thread.join()
 
     def run(self):
         """ game loop """
@@ -230,8 +240,6 @@ class Game:
             self.player_start = (hits[0].rect.x, hits[0].rect.y)
             self.checkpoint_shift = self.total_world_shift
             self.checkpoint_coin_counter = self.coin_counter
-
-        Thread(target=self.set_sprites_on_screen()).start()
 
     def draw(self):
         """ game loop - drawing """
@@ -329,16 +337,15 @@ class Game:
     def set_sprites_on_screen(self):
         """ sets sprites_on_screen to only include sprites that are on screen """
         """ this update is only done after a world shift of 10 tiles """
-        shift_factor = self.total_world_shift // (TILESIZE * 10)
-        if shift_factor != self.shift_factor:
-            print("IN")
-            self.shift_factor = shift_factor
-            self.sprites_on_screen.empty()
+        while self.playing:
+            shift_factor = self.total_world_shift // (TILESIZE * 10)
+            if shift_factor != self.shift_factor:
+                self.shift_factor = shift_factor
+                self.sprites_on_screen.empty()
 
-            for sprite in self.all_sprites:
-                if sprite.rect.left < (WIDTH + TILESIZE * 10) and sprite.rect.right > (0 - TILESIZE * 10):
-                    print("ON SCREEN, " + str(shift_factor))
-                    self.sprites_on_screen.add(sprite)
+                for sprite in self.all_sprites:
+                    if sprite.rect.left < (WIDTH + TILESIZE * 10) and sprite.rect.right > (0 - TILESIZE * 10):
+                        self.sprites_on_screen.add(sprite)
 
     def reset_level(self):
         """ resets constants to start a fresh game """
