@@ -247,7 +247,8 @@ class Game:
 
     def draw(self):
         """ game loop - drawing """
-        self.screen.blit(self.map.bgImage, (0, 0))
+        #self.screen.blit(self.map.bgImage, (0, 0))
+        self.screen.fill(colorMap.WHITE)
 
         self.sprites_on_screen.draw(self.screen)
         # self.all_sprites.draw(self.screen)
