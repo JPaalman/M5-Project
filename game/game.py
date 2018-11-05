@@ -21,6 +21,7 @@ class Game:
         self.has_won = False
         self.lives = PLAYER_LIVES
         self.coin_counter = 0
+        self.fps_factor = 60 / FPS
 
         self.old_rects = []
 
@@ -183,13 +184,15 @@ class Game:
     def run(self):
         """ game loop """
         self.frame_count = 0
+        draw_counter = 0
         self.playing = True
         while self.playing:
             self.events()
             self.update()
-            self.draw()
-            # todo put loop in thread and synchronize
-            # Thread(target=self.update_sprites_on_screen()).start()
+            if draw_counter == 0:
+                self.draw()
+                draw_counter = 2
+            draw_counter -= 1
             self.clock.tick(FPS)
 
     def events(self):
@@ -239,7 +242,7 @@ class Game:
             self.checkpoint_coin_counter = self.coin_counter
 
         UPS = 5  # updates per second; checking sprites on screen
-        if self.frame_count % (FPS / UPS) == 0:
+        if self.frame_count % (FPS // UPS) == 0:
             self.set_sprites_on_screen()
 
     def draw(self):
@@ -344,16 +347,15 @@ class Game:
             self.lives -= 1
 
         # todo: add score to top of screen and go/win screen
-        if self.has_won:
-            print("YOU WON!")
+        if self.running:
             if not self.menu.finish(is_last, playlist_name, self.frame_count // 60, self.checkpoint_coin_counter):
                 self.quit()
-            return True
-        else:
-            print("YOU LOSE!")
-            if not self.menu.gameOver():
-                self.quit()
-            return False
+            if self.has_won:
+                print("YOU WON!")
+                return True
+            else:
+                print("YOU LOSE!")
+                return False
 
     def play_playlist(self, playlist_index):
         """ plays a specific playlist until all levels completed or no lives left """
