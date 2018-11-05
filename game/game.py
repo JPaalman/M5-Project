@@ -172,15 +172,7 @@ class Game:
             self.player.vel.x = 0
         self.player.set_start(self.player_start)
 
-        render_thread = Thread(target=self.set_sprites_on_screen)
-        render_thread.start()
-        print("hi")
         self.run()
-        print("hello")
-        print("asdfhafds")
-        print("1")
-        print("2")
-        render_thread.join()
 
     def run(self):
         """ game loop """
@@ -334,11 +326,7 @@ class Game:
                 sprite.rect.left -= shift_x
             self.total_world_shift -= shift_x
 
-    # todo fix algorithm. Also, use more efficient buffering: only redraw moved elements
-    # easy fix: use collision: make a rectangle that covers the entire display (not the map), and update on collision
-    # execute every iteration, not only when moved
     def set_sprites_on_screen(self):
-        print(self.frame_count)
         """ sets sprites_on_screen to only include sprites that are on screen """
         """ this update is only done after a world shift of 10 tiles """
         shift_factor = self.total_world_shift // (TILESIZE * 10)
