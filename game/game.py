@@ -4,8 +4,6 @@ from game.map.map import Map
 from game.menu import Menu
 from game.sprites import *
 
-PROFILING = False
-
 
 class Game:
     """ platformer game """
@@ -15,7 +13,7 @@ class Game:
         pg.init()
         pg.mixer.init()
         self.clock = pg.time.Clock()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.DOUBLEBUF, 16)  # (0, pg.FULLSCREEN)[FULLSCREEN]
         pg.display.set_caption(TITLE)
         self.font_name = pg.font.match_font(FONT_NAME)
         self.running = True
@@ -24,6 +22,8 @@ class Game:
         self.lives = PLAYER_LIVES
         self.coin_counter = 0
         self.dead = True
+        self.frame_count = 0
+        self.total_seconds = 0
 
         self.old_time = 0
 
@@ -47,10 +47,6 @@ class Game:
         self.enemies = pg.sprite.Group()
         self.sprites_on_screen = pg.sprite.Group()
 
-        # timer
-        self.frame_count = 0
-        self.timer_string = None
-
         # map
         self.player = None
         self.map = None
@@ -72,6 +68,18 @@ class Game:
         self.die_sound = rM.getSound("steve_hurt.wav")
         self.win_sound = rM.getSound("finish.wav")
         self.lose_sound = rM.getSound("game-over.wav")
+
+        # overlayed text info
+        self.overlay_seconds = 0
+        self.overlay_coins = 0
+        self.overlay_lives = 0
+        self.overlay_map_name = None
+
+        #
+        self.rendered_seconds = None
+        self.rendered_coins = None
+        self.rendered_lives = None
+        self.rendered_map_name = None
 
     def load_data(self):
         """ load level times """
@@ -192,25 +200,19 @@ class Game:
 
     def run(self):
         """ game loop """
-        counter = 0
         self.playing = True
         while self.playing:
-            if PROFILING:
-                self.old_time = time.time() * 1000
+            self.old_time = time.time() * 1000
             self.events()
-            if PROFILING:
-                print("handling events took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds")
-                self.old_time = time.time() * 1000
+            print("handling events took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds")
+            self.old_time = time.time() * 1000
             self.update()
-            if PROFILING:
-                print("updating took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds")
-                self.old_time = time.time() * 1000
-            if counter == 1:
+            print("updating took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds")
+            self.old_time = time.time() * 1000
+            # todo put loop in thread and synchronize
+            if self.frame_count % 2 == 0:
                 self.draw()
-                counter = 0
-            counter += 1
-            if PROFILING:
-                print("drawing took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds\n")
+            print("drawing took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds\n")
             self.clock.tick(FPS)
         if self.dead:
             self.update()
@@ -233,8 +235,6 @@ class Game:
 
     def update(self):
         """ update all the things! """
-        # update timer
-        self.update_timer_string()
         # game loop updates
         self.all_sprites.update()
 
@@ -276,28 +276,47 @@ class Game:
         if self.frame_count % (FPS // UPS) == 0:
             self.set_sprites_on_screen()
 
+        if self.frame_count % FPS == 0:
+            self.total_seconds = self.frame_count / FPS
+
+        self.frame_count += 1
+
     def draw(self):
         """ game loop - drawing """
-        # draw everything to the buffer
-        if PROFILING:
-            old_time = time.time()
         self.screen.blit(self.map.bgImage, (0, 0))
-        if PROFILING:
-            print("    drawing background took " + str(int((time.time() - old_time) * 1000)) + " milliseconds")
-            old_time = time.time()
+        # self.screen.fill(colorMap.WHITE)
+
         self.sprites_on_screen.draw(self.screen)
-        # self.draw_text("Lives: " + str(self.lives), 24, colorMap.BLACK, WIDTH - 60, 20)
-        # self.draw_text("Coins: " + str(self.coin_counter), 24, colorMap.BLACK, 60, 20)
-        # self.draw_text(self.timer_string, 24, colorMap.BLACK, WIDTH / 2, HEIGHT - 40)
-        # self.draw_text(self.map.mapName, 24, colorMap.BLACK, WIDTH / 2, 20)
-        if PROFILING:
-            print("    blitting took " + str(int((time.time() - old_time) * 1000)) + " milliseconds")
-            old_time = time.time()
+        # self.all_sprites.draw(self.screen)
+
+        # for the overlayed text, check if a new render has to be made, otherwise use the exisiting text surface
+        if self.rendered_lives is None or self.lives != self.overlay_lives:
+            self.overlay_lives = self.lives
+            self.rendered_lives = self.render_text("Lives: " + str(self.lives), 24, colorMap.BLACK)
+        self.draw_text_surface(self.rendered_lives, WIDTH - 60, 20)
+
+        if self.rendered_coins is None or self.coin_counter != self.overlay_coins:
+            self.overlay_coins = self.coin_counter
+            self.rendered_coins = self.render_text("Coins: " + str(self.coin_counter), 24, colorMap.BLACK)
+        self.draw_text_surface(self.rendered_coins, 60, 20)
+
+        if self.rendered_seconds is None or self.total_seconds != self.overlay_seconds:
+            self.overlay_seconds = self.total_seconds
+            self.rendered_seconds = self.render_text(self.format_timer(self.total_seconds), 24, colorMap.BLACK)
+        self.draw_text_surface(self.rendered_seconds, WIDTH / 2, HEIGHT - 40)
+
+        if self.rendered_map_name is None or self.map.mapName != self.overlay_map_name:
+            self.overlay_map_name = self.map.mapName
+            self.rendered_map_name = self.render_text(self.map.mapName, 24, colorMap.BLACK)
+        self.draw_text_surface(self.rendered_map_name, WIDTH / 2, 20)
 
         # after drawing everything, update the screen
         pg.display.update()
-        if PROFILING:
-            print("    updating took " + str(int((time.time() - old_time) * 1000)) + " milliseconds")
+
+    def format_timer(self, seconds):
+        minutes = seconds // 60
+        timer_string = "Time: {:02d}:{:02d}".format(int(minutes), int(seconds))
+        return timer_string
 
     def quit(self):
         """ stops the game """
@@ -305,25 +324,17 @@ class Game:
             self.playing = False
         self.running = False
 
-    def draw_text(self, text, size, color, x, y):
+    def draw_text_surface(self, text_surface, x, y):
         """ draw text to the screen at position x, y """
-        font = pg.font.Font(self.font_name, size)
-        text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
         text_rect.midtop = (x, y)
         self.screen.blit(text_surface, text_rect)
 
-    def update_timer_string(self):
-        """ updates the timer string that will be drawn to the screen """
-        if self.frame_count % FPS == 0:
-            total_seconds = self.frame_count / FPS
-            minutes = total_seconds // 60
-            seconds = total_seconds % 60
-            ''' Measuring in ms causes too much lag, so we don't check this until run is completed '''
-            # milli_sec = (seconds % 1) * 1000
-            # self.timer_string = "Time: {:02d}:{:02d}:{:03d}".format(int(minutes), int(seconds), int(milli_sec))
-            self.timer_string = "Time: {:02d}:{:02d}".format(int(minutes), int(seconds))
-        self.frame_count += 1
+    def render_text(self, text, size, color):
+        print("RENDERING: " + text)
+        font = pg.font.Font(self.font_name, size)
+        text_surface = font.render(text, True, color)
+        return text_surface
 
     def shift_world(self, shift_x):
         """ shift everything opposite of the change in x of the player """
