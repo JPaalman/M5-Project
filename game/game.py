@@ -231,7 +231,7 @@ class Game:
             self.checkpoint_shift = self.total_world_shift
             self.checkpoint_coin_counter = self.coin_counter
 
-        self.set_sprites_on_screen()
+        Thread(target=self.set_sprites_on_screen()).start()
 
     def draw(self):
         """ game loop - drawing """
@@ -336,7 +336,7 @@ class Game:
             self.sprites_on_screen.empty()
 
             for sprite in self.all_sprites:
-                if sprite.rect.left < WIDTH and sprite.rect.right > 0:
+                if sprite.rect.left < (WIDTH + TILESIZE * 10) and sprite.rect.right > (0 - TILESIZE * 10):
                     print("ON SCREEN, " + str(shift_factor))
                     self.sprites_on_screen.add(sprite)
 
