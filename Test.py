@@ -9,4 +9,4 @@ screen = pg.display.set_mode((settings.WIDTH, settings.HEIGHT))  # (0, pg.FULLSC
 pg.display.set_caption(settings.TITLE)
 
 m = Menu(screen)
-m.finish("test playlist", 500, 3)
+m.selectPlaylist()
