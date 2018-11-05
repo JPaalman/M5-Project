@@ -4,7 +4,7 @@ from game.map.map import Map
 from game.menu import Menu
 from game.sprites import *
 
-PROFILING = True
+PROFILING = False
 
 
 class Game:
