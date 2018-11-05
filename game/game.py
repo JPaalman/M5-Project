@@ -2,6 +2,7 @@ from os import path
 
 from game.map.map import Map
 from game.sprites import *
+from game.menu import Menu
 
 
 class Game:
@@ -21,6 +22,7 @@ class Game:
         self.lives = PLAYER_LIVES
         self.coin_counter = 0
         self.start = 1
+        self.fps_factor = 60 / FPS
 
         self.old_rects = [self.screen.get_rect()]
 
@@ -60,6 +62,10 @@ class Game:
         self.shift_factor = 999
 
         self.counter = 0
+
+        # menu
+        self.menu = Menu(self.screen)
+
 
     def load_data(self):
         """ load level times """
@@ -182,6 +188,7 @@ class Game:
         """ game loop """
         self.frame_count = 0
         self.counter = 0
+        draw_counter = 0
         self.playing = True
         while self.playing:
             self.events()
@@ -189,6 +196,10 @@ class Game:
             self.draw2()
             # todo put loop in thread and synchronize
             # Thread(target=self.update_sprites_on_screen()).start()
+            if draw_counter == 0:
+                self.draw()
+                draw_counter = 2
+            draw_counter -= 1
             self.clock.tick(FPS)
 
     def events(self):
@@ -238,12 +249,13 @@ class Game:
             self.checkpoint_coin_counter = self.coin_counter
 
         UPS = 5  # updates per second; checking sprites on screen
-        if self.frame_count % (FPS / UPS) == 0:
+        if self.frame_count % (FPS // UPS) == 0:
             self.set_sprites_on_screen()
 
     def draw(self):
         """ game loop - drawing """
-        self.screen.blit(self.map.bgImage, (0, 0))
+        #self.screen.blit(self.map.bgImage, (0, 0))
+        self.screen.fill(colorMap.WHITE)
 
         self.sprites_on_screen.draw(self.screen)
         # self.all_sprites.draw(self.screen)
@@ -282,31 +294,6 @@ class Game:
             self.playing = False
         self.running = False
 
-    def show_start_screen(self):
-        """ game start screen """
-        self.screen.fill(colorMap.WHITE)
-        self.draw_text(TITLE, 48, colorMap.BLACK, WIDTH / 2, HEIGHT / 4)
-        self.draw_text("Press any key to start", 22, colorMap.BLACK, WIDTH / 2, HEIGHT * 3 / 4)
-        # todo: display record times for each level...
-        self.draw_text("Record time: " + str(self.high_score), 22, colorMap.BLACK, WIDTH / 2, HEIGHT / 2)
-        pg.display.flip()
-        return self.wait_for_key()
-
-    def show_go_screen(self, is_last):
-        """ if game is closed mid game, skip the game over screen """
-        if not self.running:
-            return
-
-        # game over / continue
-        self.screen.fill(colorMap.WHITE)
-        self.draw_text("GAME OVER", 48, colorMap.BLACK, WIDTH / 2, HEIGHT / 4)
-        self.draw_text("Press any key to start", 22, colorMap.BLACK, WIDTH / 2, HEIGHT * 3 / 4)
-        if is_last:
-            self.draw_text("PLACEHOLDER: LAST LEVEL, SHOW SCORES HERE", 22, colorMap.BLACK, WIDTH / 2, HEIGHT * 1 / 2)
-
-        pg.display.flip()
-        self.wait_for_key()
-
     def draw_text(self, text, size, color, x, y):
         """ draw text to the screen at position x, y """
         font = pg.font.Font(self.font_name, size)
@@ -326,24 +313,6 @@ class Game:
             # self.timer_string = "Time: {:02d}:{:02d}:{:03d}".format(int(minutes), int(seconds), int(milli_sec))
             self.timer_string = "Time: {:02d}:{:02d}".format(int(minutes), int(seconds))
         self.frame_count += 1
-
-    def wait_for_key(self):
-        """ method that waits for a full button press (down and up) """
-        waiting = True
-        key_down = False
-        key = None
-        while waiting:
-            self.clock.tick(FPS)
-            for event in pg.event.get():
-                if event.type == pg.QUIT:
-                    waiting = False
-                    self.running = False
-                if event.type == pg.KEYDOWN:
-                    key_down = True
-                    key = event.key
-                if key_down and event.type == pg.KEYUP:
-                    waiting = False
-        return key
 
     def shift_world(self, shift_x):
         """ shift everything opposite of the change in x of the player """
@@ -380,7 +349,7 @@ class Game:
         self.shift_factor = 999
         self.lives = PLAYER_LIVES
 
-    def play_level(self, level, lives, is_last):
+    def play_level(self, level, lives, playlist_name, is_last):
         """ plays a specific level until win or no lives left """
         self.lives = lives
         while self.lives >= 1 and self.running:
@@ -390,22 +359,25 @@ class Game:
             self.lives -= 1
 
         # todo: add score to top of screen and go/win screen
-        if self.has_won:
-            print("YOU WON!")
-            self.show_go_screen(is_last)
-            return True
-        else:
-            print("YOU LOSE!")
-            self.show_go_screen(is_last)
-            return False
+        if self.running:
+            if not self.menu.finish(is_last, playlist_name, self.frame_count // 60, self.checkpoint_coin_counter):
+                self.quit()
+            if self.has_won:
+                print("YOU WON!")
+                return True
+            else:
+                print("YOU LOSE!")
+                return False
 
     def play_playlist(self, playlist_index):
         """ plays a specific playlist until all levels completed or no lives left """
         level_index = 1
         level_amount = len(PLAYLIST[playlist_index]) - 1
+        playlist_name = PLAYLIST[playlist_index][0]
         self.reset_level()
         while (level_index <= level_amount
-               and g.play_level(PLAYLIST[playlist_index][level_index], g.lives, level_index == level_amount)):
+               and g.play_level(PLAYLIST[playlist_index][level_index], g.lives,
+                                playlist_name, level_index == level_amount)):
             self.reset_level()
             level_index += 1
         # todo: method for saving score and reset score in reset_level
@@ -414,8 +386,7 @@ class Game:
 
 
 g = Game()
-# m = Menu(g.screen)
 while g.running:
-    g.show_start_screen()
-    g.play_playlist(0)
+    index = g.menu.selectPlaylist()
+    g.play_playlist(index)
 pg.quit()

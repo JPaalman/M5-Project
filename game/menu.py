@@ -27,7 +27,7 @@ class Menu:
 
         dirname = os.path.dirname(__file__)
         filename = os.path.join(dirname, settings.highscores_file)
-        file_object = open(filename, )
+        file_object = open(filename, "r")
         self.highscores = self.initHighScores(file_object.readlines())
 
     def selectPlaylist(self):
@@ -97,17 +97,20 @@ class Menu:
         offset += 30
         count = 1
 
-        scores = self.highscores[playlist]
-        if scores is None:
-            self.draw_text("No highscores found", 30, colorMap.BLACK, settings.WIDTH / 2, (settings.HEIGHT / 2 + offset))
-        else:
-            self.draw_text("Highscores:", 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
-            offset += 40
-            for x in scores:
-                self.draw_text(str(x), 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
-                self.draw_text(str(count) + ": ", 30, colorMap.BLACK, (settings.WIDTH / 2 - (settings.TILESIZE * 8)), (settings.HEIGHT / 2 + offset))
-                count += 1
+        try:
+            scores = self.highscores[playlist]
+            if scores is None:
+                self.draw_text("No highscores found", 30, colorMap.BLACK, settings.WIDTH / 2, (settings.HEIGHT / 2 + offset))
+            else:
+                self.draw_text("Highscores:", 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
                 offset += 40
+                for x in scores:
+                    self.draw_text(str(x), 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
+                    self.draw_text(str(count) + ": ", 30, colorMap.BLACK, (settings.WIDTH / 2 - (settings.TILESIZE * 8)), (settings.HEIGHT / 2 + offset))
+                    count += 1
+                    offset += 40
+        except KeyError:
+            print("No highscores found")
 
     def initHighScores(self, lines):
         """

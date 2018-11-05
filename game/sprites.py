@@ -150,9 +150,9 @@ class MovingPlatform(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.game = game
         self.speed = game.map.PLATFORM_SPEED
         self.direction = -1  # 1 is forward, -1 is backwards
-        self.game = game
 
     def update(self):
         """ Handles the movement """
@@ -175,8 +175,11 @@ class MovingPlatform(pg.sprite.Sprite):
         """ Handles collision of moving platforms """
         if hits:
             for hit in hits:
-                if hit.rect != self.rect and (
-                        hit.rect.collidepoint(self.rect.topleft) or hit.rect.collidepoint(self.rect.topright)):
+                if hit.rect != self.rect:
+                    if hit.rect.collidepoint(self.rect.midright):
+                        self.rect.right = hit.rect.left
+                    if hit.rect.collidepoint(self.rect.midleft):
+                        self.rect.left = hit.rect.right
                     self.direction *= -1
 
 
@@ -198,9 +201,9 @@ class GroundCrawler(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.game = game
         self.speed = speed
         self.direction = 1  # 1 is forward, -1 is backwards
-        self.game = game
 
     def update(self):
         """ Handles the movement """
@@ -217,8 +220,12 @@ class GroundCrawler(pg.sprite.Sprite):
         if hits:
             for hit in hits:
                 if hit.rect is not self.rect:
-                    if hit.rect.collidepoint(self.rect.midright) or hit.rect.collidepoint(self.rect.midleft):
-                        self.direction *= -1
+                    if hit.rect.collidepoint(self.rect.midright):
+                        self.rect.right = hit.rect.left
+                    if hit.rect.collidepoint(self.rect.midleft):
+                        self.rect.left = hit.rect.right
+                    self.direction *= -1
+
 
 
 class Laser(pg.sprite.Sprite):
@@ -258,12 +265,13 @@ class Laser(pg.sprite.Sprite):
             print("turning off laser")
             self.on = False
             self.game.death_tiles.remove(self.beam)
-            self.beam.image = self.img
+            self.beam.image = pg.Surface((TILESIZE, 1000), pg.SRCALPHA, 32)
+            self.beam.image.convert_alpha()
             self.timer = time.time()
         elif not self.on and (time.time() - self.timer > 1):
             print("turning on laser")
             self.on = True
-            self.beam.image = self.texture
+            self.beam.image.fill(colorMap.RED)
             self.game.death_tiles.add(self.beam)
             self.timer = time.time()
 
@@ -272,8 +280,8 @@ class Beam(pg.sprite.Sprite):
 
     def __init__(self, x, y):
         pg.sprite.Sprite.__init__(self)
-        self.image = pg.Surface((TILESIZE, 1000))
-        self.image = rM.getImageById(33)
+        self.image = pg.Surface((TILESIZE, 1000), pg.SRCALPHA, 32)
+        self.image = self.image.convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y - 1000
