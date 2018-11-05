@@ -1,13 +1,7 @@
 from os import path
-from threading import Thread
-import pygame as pg
-from game.map import colorMap
+
 from game.map.map import Map
-from game.settings import *
 from game.sprites import *
-import game.resources.resourceManager as rM
-import time
-import threading
 
 
 class Game:
@@ -18,7 +12,7 @@ class Game:
         pg.init()
         pg.mixer.init()
         self.clock = pg.time.Clock()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT))  # (0, pg.FULLSCREEN)[FULLSCREEN]
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.DOUBLEBUF)  # (0, pg.FULLSCREEN)[FULLSCREEN]
         pg.display.set_caption(TITLE)
         self.font_name = pg.font.match_font(FONT_NAME)
         self.running = True
