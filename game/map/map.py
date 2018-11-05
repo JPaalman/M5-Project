@@ -4,6 +4,7 @@ from game import settings
 import game.tiles
 from game.map.colorMap import air_tiles
 from game.resources import resourceManager
+from game.resources.textures import textureManager as tM
 
 
 class Map:
@@ -20,6 +21,7 @@ class Map:
         self.mapWidth = None
         self.mapLayout = None
         self.mapName = None
+        self.bgImage = None
         self.tileData = None
         self.PLAYER_ACC = None
         self.PLAYER_ACC = None
@@ -94,6 +96,7 @@ class Map:
         index += 1
         self.BACKGROUND_MUSIC = str(self.getParamValue(lines[index]))
         index += 1
+        self.bgImage = tM.getImage(self.BACKGROUND_IMAGE, False)
 
         # Read player properties
         self.PLAYER_ACC = float(self.getParamValue(lines[index]))

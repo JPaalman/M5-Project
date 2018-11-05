@@ -13,13 +13,9 @@ PLAYER_LIVES = 5
 DEFAULT_MOVING_PLATFORM_SIZE = 6
 
 # level files
-PLAYLIST = [["test playlist", "Oebele_map.txt", "palette.txt", "Jumppad.txt"],
+PLAYLIST = [["test playlist", "Oebele_map.txt", "palette.txt"],
             ["yeetlist", "map.txt", "othermap.txt"],
             ["list", "txt.txt", "woop.txt"]]
-
-LEVEL_1 = 'Jumppad.txt'
-LEVELS = ["Jumppad.txt", "palette.txt",
-          "Oebele_map.txt"]
 
 dirname = os.path.dirname(__file__)
 bgImage = os.path.join(dirname, "bg.jpg")
