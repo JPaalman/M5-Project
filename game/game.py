@@ -21,7 +21,7 @@ class Game:
         self.has_won = False
         self.lives = PLAYER_LIVES
         self.coin_counter = 0
-        self.fps_factor = 60 / FPS
+        self.dead = True
 
         self.old_time = 0
 
@@ -46,7 +46,7 @@ class Game:
         self.sprites_on_screen = pg.sprite.Group()
 
         # timer
-        self.frame_count = None
+        self.frame_count = 0
         self.timer_string = None
 
         # map
@@ -62,6 +62,12 @@ class Game:
 
         # menu
         self.menu = Menu(self.screen)
+
+        # sounds
+        self.sound_counter = 0
+        self.coin_sound = rM.getSound("coin.wav")
+        self.checkpoint_sound = rM.getSound("Checkpoint.wav")
+        self.die_sound = rM.getSound("steve_hurt.wav")
 
     def load_data(self):
         """ load level times """
@@ -182,7 +188,6 @@ class Game:
 
     def run(self):
         """ game loop """
-        self.frame_count = 0
         draw_counter = 0
         self.playing = True
         while self.playing:
@@ -200,6 +205,12 @@ class Game:
             draw_counter -= 1
             print("drawing took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds\n")
             self.clock.tick(FPS)
+        if self.dead:
+            self.update()
+            self.draw()
+            pg.mixer.Sound.play(self.die_sound)
+            time.sleep(1)
+            self.dead = False
 
     def events(self):
         """ game loop - handling events """
@@ -228,10 +239,12 @@ class Game:
             self.playing = False
             self.coin_counter = self.checkpoint_coin_counter
             self.shift_factor = 999
+            self.dead = True
 
         # check coin collision
         hits = pg.sprite.spritecollide(self.player, self.coins, True)
         if hits:
+            pg.mixer.Sound.play(self.coin_sound)
             self.coin_counter += 1
 
         # check win conditions
@@ -246,6 +259,11 @@ class Game:
             self.player_start = (hits[0].rect.x, hits[0].rect.y)
             self.checkpoint_shift = self.total_world_shift
             self.checkpoint_coin_counter = self.coin_counter
+            if self.sound_counter == 0:
+                pg.mixer.Sound.play(self.checkpoint_sound)
+                self.sound_counter = 100
+        if self.sound_counter > 0:
+            self.sound_counter -= 1
 
         UPS = 5  # updates per second; checking sprites on screen
         if self.frame_count % (FPS // UPS) == 0:
@@ -253,8 +271,8 @@ class Game:
 
     def draw(self):
         """ game loop - drawing """
-        # self.screen.blit(self.map.bgImage, (0, 0))
-        self.screen.fill(colorMap.WHITE)
+        self.screen.blit(self.map.bgImage, (0, 0))
+        # self.screen.fill(colorMap.WHITE)
 
         self.sprites_on_screen.draw(self.screen)
         # self.all_sprites.draw(self.screen)
@@ -338,13 +356,15 @@ class Game:
 
         # todo: add score to top of screen and go/win screen
         if self.running:
-            if not self.menu.finish(is_last, playlist_name, self.frame_count // 60, self.checkpoint_coin_counter):
-                self.quit()
             if self.has_won:
                 print("YOU WON!")
+                if not self.menu.finish(is_last, playlist_name, self.frame_count // 60, self.checkpoint_coin_counter):
+                    self.quit()
                 return True
             else:
                 print("YOU LOSE!")
+                if not self.menu.gameOver():
+                    self.quit()
                 return False
 
     def play_playlist(self, playlist_index):
@@ -361,6 +381,7 @@ class Game:
         # todo: method for saving score and reset score in reset_level
         self.lives = PLAYER_LIVES
         self.coin_counter = 0
+        self.frame_count = 0
 
 
 g = Game()
