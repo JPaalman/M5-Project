@@ -24,8 +24,7 @@ class Menu:
         self.selectedPlaylistName = None
         pg.display.flip()
 
-        self.highscores = self.initHighScores()
-        print("end1")
+        self.highscores = resourceManager.getHighscores()
 
     def selectPlaylist(self):
         """
@@ -116,20 +115,6 @@ class Menu:
                 self.draw_text(str(count) + ": ", 30, colorMap.BLACK, (settings.WIDTH / 2 - (settings.TILESIZE * 8)), (settings.HEIGHT / 2 + offset))
                 count += 1
                 offset += 40
-
-    def initHighScores(self):
-        """
-        Retrieves all highscores from the highscores.txt file and puts them into a Dictionary for the class to use
-        later on.
-        :param lines: The raw lines of the highscores.txt file
-        :return: the dictionary containing all highscores for all playlists.
-        """
-
-        mp = resourceManager.getHighscores()
-
-        print("Read: " + str(mp))
-
-        return mp
 
     def drawPlaylistName(self, index):
         """

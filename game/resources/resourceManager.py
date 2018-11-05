@@ -52,14 +52,7 @@ def getHighscores():
     filename = os.path.join(dirname, settings.highscores_file)
     file_object = open(filename, )
 
-    mp = {}
-
-    try:
-        1
-        mp = json.load(file_object)
-    except json.decoder.JSONDecodeError:
-        file_object.close()
-        print("file closed in except")
+    mp = json.load(file_object)
 
     file_object.close()
 
@@ -90,4 +83,3 @@ def writeHighscores(obj):
 
     json.dump(obj, file_object)
     file_object.close()
-    print("end2")
