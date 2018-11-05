@@ -163,8 +163,8 @@ class Menu:
         self.draw_text("Finish!", 80, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 - 150)
         if last:
             self.displayScoreCalculation(gameTime, coins)
-        self.draw_text("Press [space] to continue, or press [esc] to quit", 25, colorMap.BLACK, settings.WIDTH / 2,
-                       settings.HEIGHT / 2 + 125)
+            self.draw_text("Press [space] to continue, or press [esc] to quit", 25, colorMap.BLACK, settings.WIDTH / 2,
+                           settings.HEIGHT / 2 + 125)
         pg.display.flip()
 
         while True:

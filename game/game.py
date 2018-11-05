@@ -270,6 +270,7 @@ class Game:
             self.has_won = True
             self.playing = False
             self.checkpoint_coin_counter = self.coin_counter
+            self.dead = False
 
         # check checkpoint collision
         hits = pg.sprite.spritecollide(self.player, self.checkpoints, False)
