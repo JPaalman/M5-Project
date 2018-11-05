@@ -21,12 +21,16 @@ class Player(pg.sprite.Sprite):
         self.change = vec(0, 0)
         self.collision_streak = 0
 
+        # properties
         self.PLAYER_WIDTH = w
         self.PLAYER_HEIGHT = h
         self.PLAYER_ACC = prop[0]
         self.PLAYER_FRICTION = prop[1]
         self.PLAYER_GRAV = prop[2]
         self.PLAYER_JUMP = prop[3]
+
+        # sounds
+        self.jump_pad_sound = rM.getSound("Trampoline2.wav")
 
     def set_start(self, start):
         """ Sets player start position """
@@ -95,6 +99,7 @@ class Player(pg.sprite.Sprite):
                     or self.rect.collidepoint(hit.rect.topleft)):
                 self.rect.bottom = hit.rect.top  # put player on top of jump pad first
                 jmp = True
+                pg.mixer.Sound.play(self.jump_pad_sound)
                 self.vel.y *= -1.2
                 break
 

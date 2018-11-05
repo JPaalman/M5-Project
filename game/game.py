@@ -21,7 +21,6 @@ class Game:
         self.has_won = False
         self.lives = PLAYER_LIVES
         self.coin_counter = 0
-        self.start = 1
         self.fps_factor = 60 / FPS
 
         self.old_time = 0
