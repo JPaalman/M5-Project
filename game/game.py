@@ -191,7 +191,7 @@ class Game:
             self.update()
             if draw_counter == 0:
                 self.draw()
-                draw_counter = 3
+                draw_counter = 2
             draw_counter -= 1
             self.clock.tick(FPS)
 
