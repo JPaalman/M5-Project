@@ -147,7 +147,7 @@ class Menu:
         text_rect.midtop = (x, y)
         self.display.blit(text_surface, text_rect)
 
-    def finish(self, playlistName, gameTime, coins):
+    def finish(self, last, playlistName, gameTime, coins):
         """
         Displays the finish screen showing the end score, the calculation of it and the highscores for this playlist.
         The user can either continue and play again or quit
@@ -158,7 +158,8 @@ class Menu:
         """
         self.display.blit(self.fi, (0, 0))
         self.draw_text("Finish!", 80, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 - 150)
-        self.displayScoreCalculation(gameTime, coins)
+        if last:
+            self.displayScoreCalculation(gameTime, coins)
         self.draw_text("Press [space] to continue, or press [esc] to quit", 25, colorMap.BLACK, settings.WIDTH / 2,
                        settings.HEIGHT / 2 + 125)
         pg.display.flip()
@@ -169,22 +170,25 @@ class Menu:
                     if event.key == pg.K_ESCAPE:
                         return False
                     if event.key == pg.K_SPACE:
-                        self.display.blit(self.fi, (0,0))
-                        self.draw_text("Finish!", 80, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 - 150)
-                        self.displayHighscores(playlistName, -80)
-                        self.draw_text("Press [space] to continue, or press [esc] to quit", 25, colorMap.BLACK,
-                                       settings.WIDTH / 2,
-                                       settings.HEIGHT / 2 + 125)
-                        pg.display.flip()
-                        while True:
-                            for event1 in pg.event.get():
-                                if event1.type == pg.KEYUP:
-                                    if event1.key == pg.K_ESCAPE:
-                                        return False
-                                    if event1.key == pg.K_SPACE:
-                                        return True
-                            pg.event.pump()
-                            time.sleep(0.1)
+                        if last:
+                            self.display.blit(self.fi, (0,0))
+                            self.draw_text("Finish!", 80, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 - 150)
+                            self.displayHighscores(playlistName, -80)
+                            self.draw_text("Press [space] to continue, or press [esc] to quit", 25, colorMap.BLACK,
+                                           settings.WIDTH / 2,
+                                           settings.HEIGHT / 2 + 125)
+                            pg.display.flip()
+                            while True:
+                                for event1 in pg.event.get():
+                                    if event1.type == pg.KEYUP:
+                                        if event1.key == pg.K_ESCAPE:
+                                            return False
+                                        if event1.key == pg.K_SPACE:
+                                            return True
+                                pg.event.pump()
+                                time.sleep(0.1)
+                        else:
+                            return True
             pg.event.pump()
             time.sleep(0.1)
 
