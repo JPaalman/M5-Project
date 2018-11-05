@@ -243,6 +243,7 @@ class Map:
         return settings.TILESIZE * y
 
     def fillMapBottom(self, data):
+        """
         rownr = len(data) - 2
 
         while rownr > 0:
@@ -266,5 +267,5 @@ class Map:
                         data[rownr][colnr] = 120
                 colnr += 1
             rownr += 1
-
+        """
         return data
