@@ -202,7 +202,7 @@ class Game:
             self.old_time = time.time() * 1000
             # todo put loop in thread and synchronize
             if draw_counter == 0:
-                self.draw()
+                self.draw2()
                 draw_counter = 2
             draw_counter -= 1
             print("drawing took " + str(int(time.time() * 1000 - self.old_time)) + " milliseconds\n")
@@ -273,18 +273,20 @@ class Game:
 
     def draw(self):
         """ game loop - drawing """
+        # draw everything to the buffer
+        old_time = time.time()
         self.screen.blit(self.map.bgImage, (0, 0))
-        # self.screen.fill(colorMap.WHITE)
-
         self.sprites_on_screen.draw(self.screen)
-        # self.all_sprites.draw(self.screen)
-
         self.draw_text("Lives: " + str(self.lives), 24, colorMap.BLACK, WIDTH - 60, 20)
         self.draw_text("Coins: " + str(self.coin_counter), 24, colorMap.BLACK, 60, 20)
         self.draw_text(self.timer_string, 24, colorMap.BLACK, WIDTH / 2, HEIGHT - 40)
         self.draw_text(self.map.mapName, 24, colorMap.BLACK, WIDTH / 2, 20)
+        print("    blitting took " + str(int((time.time() - old_time) * 1000)) + " milliseconds")
+        old_time = time.time()
+
         # after drawing everything, update the screen
-        pg.display.update()
+        pg.display.flip()
+        print("    flipping took " + str(int((time.time() - old_time) * 1000)) + " milliseconds")
 
     def quit(self):
         """ stops the game """
