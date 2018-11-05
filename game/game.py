@@ -296,9 +296,9 @@ class Game:
             old_time = time.time()
 
         # after drawing everything, update the screen
-        pg.display.flip()
+        pg.display.update()
         if PROFILING:
-            print("    flipping took " + str(int((time.time() - old_time) * 1000)) + " milliseconds")
+            print("    updating took " + str(int((time.time() - old_time) * 1000)) + " milliseconds")
 
     def quit(self):
         """ stops the game """
