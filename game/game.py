@@ -345,16 +345,15 @@ class Game:
             self.lives -= 1
 
         # todo: add score to top of screen and go/win screen
-        if self.has_won:
-            print("YOU WON!")
+        if self.running:
             if not self.menu.finish(is_last, playlist_name, self.frame_count // 60, self.checkpoint_coin_counter):
                 self.quit()
-            return True
-        else:
-            print("YOU LOSE!")
-            if not self.menu.gameOver():
-                self.quit()
-            return False
+            if self.has_won:
+                print("YOU WON!")
+                return True
+            else:
+                print("YOU LOSE!")
+                return False
 
     def play_playlist(self, playlist_index):
         """ plays a specific playlist until all levels completed or no lives left """
