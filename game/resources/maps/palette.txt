@@ -8,7 +8,7 @@ HEIGHT=36
 WIDTH=AUTO
 # Path to background image
 BACKGROUND_IMAGE=bg_night.png
-BACKGROUND_MUSIC=music.wav
+BACKGROUND_MUSIC=Divenire.wav
 # Player properties (float)
 PLAYER_ACC=1
 PLAYER_FRICTION=0.12

@@ -1,4 +1,3 @@
-import wiringpi
 import time
 from threading import Thread
 from pynput.keyboard import Key, Controller
