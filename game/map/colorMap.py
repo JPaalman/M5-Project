@@ -35,6 +35,7 @@ SPIKE_LEFT  = None
 LASER       = None
 SPIKE_RIGHT = None
 ANDROID     = None
+SECRET      = None
 
 # All byte-to-color mappings
 #
@@ -60,6 +61,7 @@ colours = {
             76: LASER,          # "L"
             77: MOVINGPLATFORM, # "M"
             80: PLAYERSPAWN,    # "P"
+            83: SECRET,         # "S"
             87: BROWN,          # "W"
             90: GRASSBLOCK,     # "Z"
             94: SPIKE_UP,       # "^"
@@ -70,6 +72,6 @@ colours = {
             120: FLOORFILLER,   # "x"
             124: AIBORDER,      # "|"
         }
-death_tiles = {68, 83, 100, 94, 118, 62, 60}
-uses_image = {45, 61, 67, 68, 69, 70, 112, 99, 124, 33, 74, 90, 120, 94, 118, 62, 60, 76}
-air_tiles = {32, 33, 77, 69}
+death_tiles = {68, 100, 94, 118, 62, 60}
+uses_image = {45, 61, 67, 68, 69, 70, 112, 99, 124, 33, 74, 90, 120, 94, 118, 62, 60, 76, 83}
+air_tiles = {32, 33, 77, 69, 83}

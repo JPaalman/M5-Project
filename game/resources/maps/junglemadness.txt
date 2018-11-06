@@ -31,13 +31,13 @@ B
 B
 B                                                                                        --------------------
 B                                                                                        ====================
-B                                                                                        FF
-B                                                                                        SF
-B                                                                                        SF
-B                 c                                                          ------------SF
-B               <--->                                                         FFFFFFFF   SF
-B                                                                                 FFFFF  SF
-B                                                                                    FFF SF
+B                                                                                        F
+B                                                                                        S
+B                                                                                        S
+B                 c                                                          ------------S
+B               <--->                                                         FFFFFFFF   S
+B                                                                                 FFFFF  S
+B                                                                                    FFF S
 B                                                                                       FS
 B                   c                                                               c
 B

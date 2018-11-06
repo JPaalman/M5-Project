@@ -161,6 +161,9 @@ class Game:
             elif t.tile_id == 120:
                 f = Platform(t.x, t.y, t.tile_id, 1, style)
                 self.all_sprites.add(f)
+            elif t.tile_id == 83:
+                s = Platform(t.x, t.y, t.tile_id, 1, style)
+                self.all_sprites.add(s)
             # the rest is assumed to be a platforms
             else:
                 # print("WARNING: Creating platform for unknown tile_id: " + str(t.tile_id))
@@ -365,7 +368,8 @@ class Game:
     def render_text(self, text, size, color):
         """ renders text to a surface """
         """ CPU INTENSIVE """
-        print("RENDERING: " + text)
+        if PROFILING:
+            print("RENDERING: " + text)
         font = pg.font.Font(self.font_name, size)
         text_surface = font.render(text, True, color)
         return text_surface
