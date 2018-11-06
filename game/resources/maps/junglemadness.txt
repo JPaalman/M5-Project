@@ -26,38 +26,38 @@ MAP_STYLE=1
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 B
 B
-B               | A    |
 B
-B               | E    |
+B
+B                                                                                            ^^^^^^^^^^^ C
 B                                                                                        --------------------
 B                                                                                        ====================
 B                                                                                        F
 B                                                                                        S
-B                                                                                        S
+B                                                                            |     E    |S
 B                 c                                                          ------------S
 B               <--->                                                         FFFF       S
 B                                                                                 FFF    S
 B                                                                                    FFF S
-B                                                                                       FS
-B                   c                                                               c    S
-B                                                                                        S
-B                                    C                                                   S
+B                                                                                       FS                    L^^L^^L^^L^^L
+B                   c                                                                    S                   ---------------
+B                                                                                     c  S                   ===============
+B                             |  E      E   |                                            S
 B                              -------------                                    DDDDDDD==
-B                                                                              DDD
-B                                                                              D
+B                              =============                                   DDDDDDD
+B                                                                              D   DD
 B                                                                             DD
-B                                                             C               D
-B            p  P                                          L-----L           DD
-B           ---------                                      =======           D
-B           =========                                                        D
-B                                                                            D
-B                                                                            D
-B                                                                 c         DD
-B                                                               -----    J DDD
+B                                  FFFFF                      C               D
+B               P                                          L-----L           DD                                                            |    E     p  |
+B           ---------                                      =======           D                                                              --------------
+B           =========                                                        D                                                              ==============
+B                                                                            D                                              DDDDDDDDDDDDDDDD
+B                                                                            D                                              DDDDDDDDDDDDDDDD
+B                                                                 c         DD                                                DDDDDDDDDDDDD
+B                                                               -----    J DDD                                                    DDDDD
 B                                                               =====   D=DDDD
 B                                                                    DDDDDDDDD
 B                                                                       DDDDD
-B!!!!!!!!!!!         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+B!!!!!!!!!!!         !!!!!!!!!!    !!!!!    !!!!!!!!!!!!!!!
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 !MAPEND
 # Tiledata: x and y coordinate of a tile, and the data that you want to add
