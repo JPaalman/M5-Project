@@ -23,6 +23,7 @@ class Map:
         self.mapName = None
         self.bgImage = None
         self.tileData = None
+        self.MAP_STYLE = None
         self.PLAYER_ACC = None
         self.PLAYER_ACC = None
         self.PLAYER_FRICTION = None
@@ -114,6 +115,9 @@ class Map:
 
         # Read platform properties
         self.PLATFORM_SPEED = float(self.getParamValue(lines[index]))
+        index += 1
+
+        self.MAP_STYLE = self.getParamValue(lines[index])
         index += 1
 
         # Load maplayout

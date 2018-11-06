@@ -144,7 +144,7 @@ class Player(pg.sprite.Sprite):
 class Platform(pg.sprite.Sprite):
     """ Platform sprite """
 
-    def __init__(self, x, y, tile_id, width):
+    def __init__(self, x, y, tile_id, width, style):
         pg.sprite.Sprite.__init__(self)
 
         if width is None:
@@ -152,7 +152,7 @@ class Platform(pg.sprite.Sprite):
 
         self.image = pg.Surface((TILESIZE * width, TILESIZE))
         if tile_id in colorMap.uses_image:
-            self.image = rM.getImageById(tile_id)
+            self.image = rM.getImageById(tile_id, style)
         else:
             c = colorMap.colours[tile_id]
             if c is not None:
@@ -220,11 +220,11 @@ class MovingPlatform(pg.sprite.Sprite):
 class GroundCrawler(pg.sprite.Sprite):
     """ Enemy sprite"""
 
-    def __init__(self, game, x, y, tile_id, speed):
+    def __init__(self, game, x, y, tile_id, speed, style):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((TILESIZE, TILESIZE))
         if tile_id in colorMap.uses_image:
-            self.image = rM.getImageById(tile_id)
+            self.image = rM.getImageById(tile_id, style)
         else:
             c = colorMap.colours[tile_id]
             if c is not None:

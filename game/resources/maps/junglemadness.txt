@@ -1,0 +1,66 @@
+# <- this character is used for comments
+# No comments can be placed inbetween the lines for the Mapdata
+# Map name
+NAME=Jungle Madness
+# Map tile dimensions (int)
+HEIGHT=36
+# AUTO makes map.py put the mapwidth as the width of the first string of the map
+WIDTH=AUTO
+# Path to background image
+BACKGROUND_IMAGE=jungle_background.png
+BACKGROUND_MUSIC=jungle_background_music.wav
+# Player properties (float)
+PLAYER_ACC=1
+PLAYER_FRICTION=0.12
+PLAYER_GRAV=0.8
+PLAYER_JUMP=20
+# Enemy properties
+ENEMY_SPEED=3
+# Platform properties
+PLATFORM_SPEED=5
+# Level syle
+MAP_STYLE=1
+# Mapdata: bytes represented by chars in ASCII encoding.
+# Characters past the height or width will be ignored
+# Missing characters before the height or width limit will be assumed as spaces (' ')
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B                   c
+B
+B                                    C
+B                               ----------
+B
+B
+B
+B
+B               P
+B           ---------
+B           =========
+B
+B
+B                                                                 p
+B                                                               -----
+B                                                               =====
+B                                              J
+B
+B!!!!!!!!!!!         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!LLLLL!!!!!!     !!!!!!!!!!!!
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+!MAPEND
+# Tiledata: x and y coordinate of a tile, and the data that you want to add
+# x,y and data are represented 4 byte integers.
+6
+
