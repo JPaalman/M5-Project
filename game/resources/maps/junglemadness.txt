@@ -17,7 +17,7 @@ PLAYER_JUMP=20
 # Enemy properties
 ENEMY_SPEED=3
 # Platform properties
-PLATFORM_SPEED=5
+PLATFORM_SPEED=2
 # Level syle
 MAP_STYLE=1
 # Mapdata: bytes represented by chars in ASCII encoding.
@@ -29,7 +29,7 @@ B
 B
 B
 B                                                                                            ^^^^^^^^^^^ C
-B                                                                                        --------------------
+B                                                                                        --------------------M               |
 B                                                                                        ====================
 B                                                                                        F
 B                                                                                        S
@@ -37,11 +37,11 @@ B                                                                            |  
 B                 c                                                          ------------S
 B               <--->                                                         FFFF       S
 B                                                                                 FFF    S
-B       |M                     |                                                     FFF S
+B                                                                                    FFF S
 B                                                                                       FS                    L^^L^^L^^L^^L
 B                   c                                                                    S                   ---------------
 B                                                                                     c  S                   ===============
-B                             |  E      E   |                                            S
+B                             |         E   |                                            S
 B                              -------------                                    DDDDDDD==
 B                              =============                                   DDDDDDD
 B                                                                              D   DD
