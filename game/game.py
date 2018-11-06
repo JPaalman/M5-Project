@@ -135,7 +135,7 @@ class Game:
             # Moving platform
             elif t.tile_id == 77:
                 print("tiledata:" + str(t.data))
-                c = MovingPlatform(self, t.x, t.y, t.tile_id, t.data)
+                c = MovingPlatform(self, t.x, t.y, t.tile_id, t.data, style)
                 self.platforms.add(c)
                 self.all_sprites.add(c)
             # AI border

@@ -183,11 +183,11 @@ class Platform(pg.sprite.Sprite):
 
 class MovingPlatform(pg.sprite.Sprite):
     """ Moving platform sprite """
-    def __init__(self, game, x, y, tile_id, width):
+    def __init__(self, game, x, y, tile_id, width, style):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((TILESIZE * width, TILESIZE))
         if tile_id in colorMap.uses_image:
-            self.image = rM.getImageById(tile_id)
+            self.image = rM.getImageById(tile_id, style)
         else:
             c = colorMap.colours[tile_id]
             if c is not None:
