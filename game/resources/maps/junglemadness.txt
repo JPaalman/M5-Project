@@ -12,7 +12,7 @@ BACKGROUND_MUSIC=jungle_background_music.wav
 # Player properties (float)
 PLAYER_ACC=1
 PLAYER_FRICTION=0.12
-PLAYER_GRAV=0.8
+PLAYER_GRAV=1
 PLAYER_JUMP=20
 # Enemy properties
 ENEMY_SPEED=3
@@ -29,20 +29,20 @@ B
 B
 B
 B
+B                                                                                        --------------------
+B                                                                                        ====================
+B                                                                                        FF
+B                                                                                        SF
+B                                                                                        SF
+B                 c                                                          ------------SF
+B               <--->                                                         FFFFFFFF   SF
+B                                                                                 FFFFF  SF
+B                                                                                    FFF SF
+B                                                                                       FS
+B                   c                                                               c
 B
-B
-B
-B
-B
-B                 c                                                          ------
-B               <--->
-B
-B
-B                                                                               FFFFFFFFF
-B                   c                                                              !!
-B                                                                                    !
-B                                    C                                                !
-B                               ----------                                      DDDDDD!
+B                                    C
+B                               ----------                                      DDDDDDD==
 B                                                                              DDD
 B                                                                              D
 B                                                                             DD
