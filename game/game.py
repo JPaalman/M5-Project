@@ -6,6 +6,7 @@ from game.sprites import *
 from game.spiconroller import SPIController
 
 PROFILING = False
+DRAW_TEXT = True
 
 
 def format_timer(seconds):
@@ -25,7 +26,7 @@ class Game:
         pg.init()
         pg.mixer.init()
         self.clock = pg.time.Clock()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.DOUBLEBUF, 16)  # (0, pg.FULLSCREEN)[FULLSCREEN]
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.font_name = pg.font.match_font(FONT_NAME)
         self.running = True
@@ -36,14 +37,7 @@ class Game:
         self.dead = True
         self.frame_count = 0
         self.total_seconds = 0
-
-        # background
-        self.bg = rM.getImage("bg.jpg", False)
-
-        # level records
         self.dir = path.dirname(__file__)
-        self.load_data()
-        self.high_score = None
 
         # init sprite Groups
         self.all_sprites = pg.sprite.Group()
@@ -87,19 +81,11 @@ class Game:
         self.overlay_lives = 0
         self.overlay_map_name = None
 
-        #
+        # rendered text info
         self.rendered_seconds = None
         self.rendered_coins = None
         self.rendered_lives = None
         self.rendered_map_name = None
-
-    def load_data(self):
-        """ load level times """
-        with open(path.join(self.dir, HIGH_SCORES), 'w') as f:
-            try:
-                self.high_score = int(f.read())
-            except IOError:
-                self.high_score = 0
 
     def init_map(self, map_tiles):
         """ Initialized all sprites from the level """
@@ -315,35 +301,34 @@ class Game:
             old_time = time.time()
 
         # for the overlayed text, check if a new render has to be made, otherwise use the exisiting text surface
-        if self.rendered_lives is None or self.lives != self.overlay_lives:
-            self.overlay_lives = self.lives
-            self.rendered_lives = self.render_text("Lives: " + str(self.lives), 24, colorMap.BLACK)
-        self.draw_text_surface(self.rendered_lives, WIDTH - 60, 20)
+        if DRAW_TEXT:
+            if self.rendered_lives is None or self.lives != self.overlay_lives:
+                self.overlay_lives = self.lives
+                self.rendered_lives = self.render_text("Lives: " + str(self.lives), 24, colorMap.BLACK)
+            self.draw_text_surface(self.rendered_lives, WIDTH - 60, 20)
 
-        if self.rendered_coins is None or self.coin_counter != self.overlay_coins:
-            self.overlay_coins = self.coin_counter
-            self.rendered_coins = self.render_text("Coins: " + str(self.coin_counter), 24, colorMap.BLACK)
-        self.draw_text_surface(self.rendered_coins, 60, 20)
+            if self.rendered_coins is None or self.coin_counter != self.overlay_coins:
+                self.overlay_coins = self.coin_counter
+                self.rendered_coins = self.render_text("Coins: " + str(self.coin_counter), 24, colorMap.BLACK)
+            self.draw_text_surface(self.rendered_coins, 60, 20)
 
-        if self.rendered_seconds is None or self.total_seconds != self.overlay_seconds:
-            self.overlay_seconds = self.total_seconds
-            self.rendered_seconds = self.render_text(format_timer(self.total_seconds), 24, colorMap.BLACK)
-        self.draw_text_surface(self.rendered_seconds, WIDTH / 2, HEIGHT - 40)
+            if self.rendered_seconds is None or self.total_seconds != self.overlay_seconds:
+                self.overlay_seconds = self.total_seconds
+                self.rendered_seconds = self.render_text(format_timer(self.total_seconds), 24, colorMap.BLACK)
+            self.draw_text_surface(self.rendered_seconds, WIDTH / 2, HEIGHT - 40)
 
-        if self.rendered_map_name is None or self.map.mapName != self.overlay_map_name:
-            self.overlay_map_name = self.map.mapName
-            self.rendered_map_name = self.render_text(self.map.mapName, 24, colorMap.BLACK)
-        self.draw_text_surface(self.rendered_map_name, WIDTH / 2, 20)
+            if self.rendered_map_name is None or self.map.mapName != self.overlay_map_name:
+                self.overlay_map_name = self.map.mapName
+                self.rendered_map_name = self.render_text(self.map.mapName, 24, colorMap.BLACK)
+            self.draw_text_surface(self.rendered_map_name, WIDTH / 2, 20)
+            if PROFILING:
+                print("    text took " + str(int((time.time() - old_time) * 1000)) + " milliseconds")
+                old_time = time.time()
 
-        if PROFILING:
-            print("    text took " + str(int((time.time() - old_time) * 1000)) + " milliseconds")
-            old_time = time.time()
-
-        pg.display.update()
+        pg.display.flip()
 
         if PROFILING:
             print("    update took " + str(int((time.time() - old_time) * 1000)) + " milliseconds")
-            old_time = time.time()
 
     def quit(self):
         """ stops the game """
