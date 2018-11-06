@@ -4,7 +4,7 @@ from game.map.map import Map
 from game.menu import Menu
 from game.sprites import *
 
-PROFILING = False
+PROFILING = True
 
 
 def format_timer(seconds):
@@ -321,7 +321,7 @@ class Game:
             print("    text took " + str(int((time.time() - old_time) * 1000)) + " milliseconds")
             old_time = time.time()
 
-        pg.display.update()
+        pg.display.flip()
 
         if PROFILING:
             print("    update took " + str(int((time.time() - old_time) * 1000)) + " milliseconds")
