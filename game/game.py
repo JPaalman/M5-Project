@@ -4,7 +4,7 @@ from game.map.map import Map
 from game.menu import Menu
 from game.sprites import *
 
-PROFILING = True
+PROFILING = False
 
 
 def format_timer(seconds):
@@ -213,8 +213,7 @@ class Game:
         """ game loop """
         self.playing = True
         while self.playing:
-            if PROFILING:
-                old_time = time.time() * 1000
+            old_time = time.time() * 1000
             self.events()
             if PROFILING:
                 print("handling events took " + str(int(time.time() * 1000 - old_time)) + " milliseconds")
@@ -298,8 +297,7 @@ class Game:
 
     def draw(self):
         """ game loop - drawing """
-        if PROFILING:
-            old_time = time.time()
+        old_time = time.time()
 
         self.screen.blit(self.map.bgImage, (0, 0))
 
