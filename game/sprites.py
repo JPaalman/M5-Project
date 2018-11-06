@@ -99,6 +99,16 @@ class Player(pg.sprite.Sprite):
                 self.image = self.FALL_IMAGE_RIGHT
             else:
                 self.runanimationright.tick()
+        elif self.vel.y > 0.5:
+            if self.last_direction_right:
+                self.image = self.JUMP_IMAGE_RIGHT
+            else:
+                self.image = self.JUMP_IMAGE_LEFT
+        elif self.vel.y < -0.5:
+            if self.last_direction_right:
+                self.image = self.FALL_IMAGE_RIGHT
+            else:
+                self.image = self.FALL_IMAGE_LEFT
         elif self.last_direction_right:
             self.image = self.IDLE_IMAGE_RIGHT
         else:
