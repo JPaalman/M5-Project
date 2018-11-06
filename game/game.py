@@ -5,7 +5,7 @@ from game.menu import Menu
 from game.sprites import *
 
 PROFILING = True
-DRAW_TEXT = True
+DRAW_TEXT = False
 
 
 def format_timer(seconds):
@@ -25,7 +25,7 @@ class Game:
         pg.init()
         pg.mixer.init()
         self.clock = pg.time.Clock()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.DOUBLEBUF, 16)  # (0, pg.FULLSCREEN)[FULLSCREEN]
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.font_name = pg.font.match_font(FONT_NAME)
         self.running = True
