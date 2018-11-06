@@ -26,7 +26,10 @@ class Game:
         pg.init()
         pg.mixer.init()
         self.clock = pg.time.Clock()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        if FULLSCREEN:
+            self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.FULLSCREEN)
+        else:
+            self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.font_name = pg.font.match_font(FONT_NAME)
         self.running = True
@@ -61,6 +64,7 @@ class Game:
         self.checkpoint_shift = 0
         self.checkpoint_coin_counter = 0
         self.shift_factor = 999
+        self.last_checkpoint_rect = None
 
         # menu
         self.menu = Menu(self.screen)
@@ -272,14 +276,15 @@ class Game:
         # check checkpoint collision
         hits = pg.sprite.spritecollide(self.player, self.checkpoints, False)
         if hits:
-            self.player_start = (hits[0].rect.x, hits[0].rect.y)
+            checkpoint_pos = (hits[0].rect.x, hits[0].rect.y)
+            # if this was not last visited checkpoint, only then play sound
+            if self.last_checkpoint_rect != hits[0].rect:
+                pg.mixer.Sound.play(self.checkpoint_sound)
+                self.last_checkpoint_rect = hits[0].rect
+
+            self.player_start = checkpoint_pos
             self.checkpoint_shift = self.total_world_shift
             self.checkpoint_coin_counter = self.coin_counter
-            if self.sound_counter == 0:
-                pg.mixer.Sound.play(self.checkpoint_sound)
-                self.sound_counter = 100
-        if self.sound_counter > 0:
-            self.sound_counter -= 1
 
         UPS = 5  # updates per second; checking sprites on screen
         if self.frame_count % (FPS // UPS) == 0:
@@ -395,6 +400,8 @@ class Game:
         self.player = None
         self.shift_factor = 999
         self.lives = PLAYER_LIVES
+        self.last_checkpoint_rect = None
+
 
     def play_level(self, level, lives, playlist_name, is_last, play_music):
         """ plays a specific level until win or no lives left """
