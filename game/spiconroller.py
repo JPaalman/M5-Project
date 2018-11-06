@@ -20,7 +20,7 @@ class SPIController:
 
     def start(self):
         t = Thread(target=self.runThread)
-        t.start()
+        #t.start()
 
     def runThread(self):
         self.run = True

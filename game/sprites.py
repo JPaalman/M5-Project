@@ -14,7 +14,7 @@ class Player(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self)
         self.game = game
         self.image = pg.Surface((w, h))
-        self.image.fill(colorMap.RED)
+        self.image = rM.getImage("idle.gif", True)
         self.rect = self.image.get_rect()
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
@@ -31,6 +31,21 @@ class Player(pg.sprite.Sprite):
 
         # sounds
         self.jump_pad_sound = rM.getSound("Trampoline2.wav")
+
+        # animations
+        self.IDLE_IMAGE = rM.getImage("idle.gif", True)
+        self.JUMP_IMAGE = rM.getImage("jump.png", True)
+        self.FALL_IMAGE = rM.getImage("mid air.gif", True)
+
+        images = []
+        for n in range(0, 8):
+            images.append(rM.getImage("character_run" + str(n) + ".gif", True))
+        self.runanimationright = TextureCycler(self, images, 0.1)
+
+        images = []
+        for n in range(0, 8):
+            images.append(rM.getImage("character_run" + str(n) + "_inverted.gif", True))
+        self.runanimationleft = TextureCycler(self, images, 0.1)
 
     def set_start(self, start):
         """ Sets player start position """
@@ -60,6 +75,18 @@ class Player(pg.sprite.Sprite):
         old_x = self.rect.x
 
         self.collisions()
+
+        # Handle player animations
+        if self.vel.y > 0.5:
+            self.image = self.JUMP_IMAGE
+        elif self.vel.y < -0.5:
+            self.image = self.FALL_IMAGE
+        elif self.vel.x < -0.5:
+            self.runanimationleft.tick()
+        elif self.vel.x > 0.5:
+            self.runanimationright.tick()
+        else:
+            self.image = self.IDLE_IMAGE
 
         self.game.shift_world(self.rect.x - old_x)
 
@@ -286,3 +313,23 @@ class Beam(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y - 1000
+
+
+class TextureCycler():
+
+    def __init__(self, sprite, images, tickrate):
+        self.sprite = sprite
+        self.images = images
+        self.timer = time.time()
+        self.tickrate = tickrate
+        self.index = 0
+
+    def tick(self):
+        dt = time.time() - self.timer
+        if dt > self.tickrate:
+            self.index += 1
+            if self.index == len(self.images):
+                self.index = 0
+            self.sprite.image = self.images[self.index]
+            self.timer = time.time()
+
