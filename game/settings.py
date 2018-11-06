@@ -16,7 +16,8 @@ LASER_DOWNITME = 2
 
 # level files
 PLAYLIST = [["oebele playlist", "Oebele_map.txt", "palette.txt"],
-            ["nils playlist", "junglemadness.txt", "jungle2.txt"]]
+            ["nils playlist", "junglemadness.txt", "jungle2.txt"],
+            ["Annefleur playlist", "annefleur_map.txt"]]
 
 dirname = os.path.dirname(__file__)
 bgImage = os.path.join(dirname, "bg.jpg")
