@@ -5,7 +5,7 @@ from game.menu import Menu
 from game.sprites import *
 
 PROFILING = True
-DRAW_TEXT = False
+DRAW_TEXT = True
 
 
 def format_timer(seconds):
