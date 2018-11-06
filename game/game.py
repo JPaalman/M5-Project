@@ -35,14 +35,7 @@ class Game:
         self.dead = True
         self.frame_count = 0
         self.total_seconds = 0
-
-        # background
-        self.bg = rM.getImage("bg.jpg", False)
-
-        # level records
         self.dir = path.dirname(__file__)
-        self.load_data()
-        self.high_score = None
 
         # init sprite Groups
         self.all_sprites = pg.sprite.Group()
@@ -84,19 +77,11 @@ class Game:
         self.overlay_lives = 0
         self.overlay_map_name = None
 
-        #
+        # rendered text info
         self.rendered_seconds = None
         self.rendered_coins = None
         self.rendered_lives = None
         self.rendered_map_name = None
-
-    def load_data(self):
-        """ load level times """
-        with open(path.join(self.dir, HIGH_SCORES), 'w') as f:
-            try:
-                self.high_score = int(f.read())
-            except IOError:
-                self.high_score = 0
 
     def init_map(self, map_tiles):
         """ Initialized all sprites from the level """
