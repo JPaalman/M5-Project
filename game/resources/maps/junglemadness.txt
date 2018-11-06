@@ -34,30 +34,30 @@ B
 B
 B
 B
+B                 c                                                          ------
+B               <--->
 B
 B
-B
-B
-B
-B                   c
-B
-B                                    C
-B                               ----------
-B
-B
-B
-B
-B               P
-B           ---------
-B           =========
-B
-B
-B                                                                 p
-B                                                               -----
-B                                                               =====
-B                                              J
-B
-B!!!!!!!!!!!         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!LLLLL!!!!!!     !!!!!!!!!!!!
+B                                                                               FFFFFFFFF
+B                   c                                                              !!
+B                                                                                    !
+B                                    C                                                !
+B                               ----------                                      DDDDDD!
+B                                                                              DDD
+B                                                                              D
+B                                                                             DD
+B                                                             C               D
+B            p  P                                          L-----L           DD
+B           ---------                                      =======           D
+B           =========                                                        D
+B                                                                            D
+B                                                                            D
+B                                                                 c         DD
+B                                                               -----    J DDD
+B                                                               =====   D=DDDD
+B                                                                    DDDDDDDDD
+B                                                                       DDDDD
+B!!!!!!!!!!!         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 !MAPEND
 # Tiledata: x and y coordinate of a tile, and the data that you want to add
