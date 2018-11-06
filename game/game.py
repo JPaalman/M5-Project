@@ -66,6 +66,7 @@ class Game:
         self.checkpoint_coin_counter = 0
         self.shift_factor = 999
         self.last_checkpoint_rect = None
+        self.map_quick_load = False
 
         # menu
         self.menu = Menu(self.screen)
@@ -214,6 +215,7 @@ class Game:
             self.player.vel.x = 0
         self.player.set_start(self.player_start)
 
+        self.map_quick_load = True
         self.run()
 
     # Game loop; run to call events, update and draw
@@ -301,7 +303,8 @@ class Game:
             self.checkpoint_coin_counter = self.coin_counter
 
         UPS = 5  # updates per second; checking sprites on screen
-        if self.frame_count % (FPS // UPS) == 0:
+        if self.map_quick_load or self.frame_count % (FPS // UPS) == 0:
+            self.map_quick_load = False
             self.set_sprites_on_screen()
 
         if self.frame_count % FPS == 0:
@@ -416,7 +419,6 @@ class Game:
         self.shift_factor = 999
         self.lives = PLAYER_LIVES
         self.last_checkpoint_rect = None
-
 
     def play_level(self, level, lives, playlist_name, is_last, play_music):
         """ plays a specific level until win or no lives left """
