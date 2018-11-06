@@ -88,7 +88,7 @@ class Menu:
             pg.event.pump()
             time.sleep(0.05)
 
-    def displayHighscores(self, playlist, offset=0):
+    def displayHighscores(self, playlist, offset=0, color=colorMap.BLACK):
         """
         Displays the highscores of a playlist in a nice format
         :param playlist: name of the target playlist
@@ -104,13 +104,13 @@ class Menu:
             scores = self.highscores[playlist]
 
         if scores is None:
-            self.draw_text("No highscores found", 30, colorMap.BLACK, settings.WIDTH / 2, (settings.HEIGHT / 2 + offset))
+            self.draw_text("No highscores found", 30, color, settings.WIDTH / 2, (settings.HEIGHT / 2 + offset))
         else:
-            self.draw_text("Highscores:", 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
+            self.draw_text("Highscores:", 30, color, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
             offset += 40
             for x in scores:
-                self.draw_text(str(x), 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
-                self.draw_text(str(count) + ": ", 30, colorMap.BLACK, (settings.WIDTH / 2 - (settings.TILESIZE * 8)), (settings.HEIGHT / 2 + offset))
+                self.draw_text(str(x), 30, color, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
+                self.draw_text(str(count) + ": ", 30, color, (settings.WIDTH / 2 - (settings.TILESIZE * 8)), (settings.HEIGHT / 2 + offset))
                 count += 1
                 offset += 40
 
@@ -121,9 +121,9 @@ class Menu:
         """
         self.display.blit(self.bg, (0, 0))
         self.selectedPlaylistName = settings.PLAYLIST[index][0]
-        self.draw_text(self.selectedPlaylistName, 30, colorMap.BLACK, settings.WIDTH / 2,
-                        settings.HEIGHT / 2.3)
-        self.displayHighscores(settings.PLAYLIST[index][0],)
+        self.draw_text(self.selectedPlaylistName, 30, colorMap.WHITE, settings.WIDTH / 2,
+                            settings.HEIGHT / 3)
+        self.displayHighscores(settings.PLAYLIST[index][0], -100, colorMap.NAVYBLUE)
         pg.display.flip()
 
     def draw_text(self, text, size, color, x, y):
@@ -178,7 +178,7 @@ class Menu:
                         if last:
                             self.display.blit(self.fi, (0,0))
                             self.draw_text("Finish!", 80, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 - 150)
-                            self.displayHighscores(playlistName, -80)
+                            self.displayHighscores(playlistName, -80,)
                             self.draw_text("Press [space] to continue, or press [esc] to quit", 25, colorMap.BLACK,
                                            settings.WIDTH / 2,
                                            settings.HEIGHT / 2 + 125)

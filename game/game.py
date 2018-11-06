@@ -12,7 +12,7 @@ DRAW_TEXT = True
 def format_timer(seconds):
     """ formates an integer seconds to a string in minutes : seconds """
     minutes = seconds // 60
-    timer_string = "Time: {:02d}:{:02d}".format(int(minutes), int(seconds))
+    timer_string = "Time: {:02d}:{:02d}".format(int(minutes), int(seconds) % 60)
     return timer_string
 
 
