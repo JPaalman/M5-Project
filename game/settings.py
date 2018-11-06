@@ -15,8 +15,8 @@ LASER_UPTIME = 1
 LASER_DOWNITME = 2
 
 # level files
-PLAYLIST = [["test playlist", "Oebele_map.txt", "palette.txt"],
-            ["yeetlist", "Oebele_map.txt"]]
+PLAYLIST = [["oebele playlist", "Oebele_map.txt", "palette.txt"],
+            ["nils playlist", "junglemadness.txt", "jungle2.txt"]]
 
 dirname = os.path.dirname(__file__)
 bgImage = os.path.join(dirname, "bg.jpg")
@@ -24,3 +24,7 @@ main_menu_image = "main_menu.png"
 highscores_file = "high_scores.json"
 game_over_image = "game_over.png"
 finish_image = "finish.png"
+
+# texture styles
+NORMAL = 0
+JUNGLE = 1

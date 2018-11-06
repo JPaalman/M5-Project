@@ -86,10 +86,12 @@ class Game:
 
     def init_map(self, map_tiles):
         """ Initialized all sprites from the level """
+        style = int(self.map.MAP_STYLE)
+        print("map style: " + str(style))
         for t in map_tiles:
             # enemy
             if t.tile_id == 69:
-                e = GroundCrawler(self, t.x, t.y, t.tile_id, self.map.ENEMY_SPEED)
+                e = GroundCrawler(self, t.x, t.y, t.tile_id, self.map.ENEMY_SPEED, style)
                 self.death_tiles.add(e)
                 self.enemies.add(e)
                 self.all_sprites.add(e)
@@ -98,7 +100,7 @@ class Game:
                 self.player_spawn = (t.x, t.y)
             # jump pad
             elif t.tile_id == 74:
-                p = Platform(t.x, t.y, t.tile_id, 1)
+                p = Platform(t.x, t.y, t.tile_id, 1, style)
                 self.platforms.add(p)
                 self.all_sprites.add(p)
                 self.jump_pads.add(p)
@@ -109,12 +111,12 @@ class Game:
                 self.all_sprites.add(l)
             # finish
             elif t.tile_id == 112:
-                f = Platform(t.x, t.y, t.tile_id, 1)
+                f = Platform(t.x, t.y, t.tile_id, 1, style)
                 self.finish = f
                 self.all_sprites.add(f)
             # checkpoint
             elif t.tile_id == 67:
-                c = Platform(t.x, t.y, t.tile_id, 1)
+                c = Platform(t.x, t.y, t.tile_id, 1, style)
                 self.checkpoints.add(c)
                 self.all_sprites.add(c)
             # Moving platform
@@ -125,34 +127,35 @@ class Game:
                 self.all_sprites.add(c)
             # AI border
             elif t.tile_id == 124:
-                a = Platform(t.x, t.y, t.tile_id, 1)
+                a = Platform(t.x, t.y, t.tile_id, 1, style)
                 self.ai_borders.add(a)
                 self.all_sprites.add(a)
             # death tile
             elif t.tile_id in colorMap.death_tiles:
-                d = Platform(t.x, t.y, t.tile_id, 1)
+                d = Platform(t.x, t.y, t.tile_id, 1, style)
                 self.death_tiles.add(d)
                 self.all_sprites.add(d)
             # coin
             elif t.tile_id == 99:
-                c = Platform(t.x, t.y, t.tile_id, 1)
+                c = Platform(t.x, t.y, t.tile_id, 1, style)
                 self.coins.add(c)
                 self.all_sprites.add(c)
             # invisible tile
             elif t.tile_id == 33:
-                i = Platform(t.x, t.y, t.tile_id, 1)
+                i = Platform(t.x, t.y, t.tile_id, 1, style)
                 self.all_sprites.add(i)
             # floor filler tile without collision
             elif t.tile_id == 120:
-                f = Platform(t.x, t.y, t.tile_id, 1)
+                f = Platform(t.x, t.y, t.tile_id, 1, style)
                 self.all_sprites.add(f)
             # the rest is assumed to be a platforms
             else:
-                p = Platform(t.x, t.y, t.tile_id, 1)
+                # print("WARNING: Creating platform for unknown tile_id: " + str(t.tile_id))
+                p = Platform(t.x, t.y, t.tile_id, 1, style)
                 self.platforms.add(p)
                 self.all_sprites.add(p)
 
-    def new(self, level):
+    def new(self, level, play_music):
         """ start new game, player lives set """
         if self.map is None:
             self.all_sprites.empty()
@@ -166,6 +169,9 @@ class Game:
             self.enemies.empty()
             self.map = Map(level)
             self.init_map(self.map.getTiles())
+            if play_music:
+                rM.loadMusic(self.map.BACKGROUND_MUSIC)
+                pg.mixer.music.play(-1)
 
         player_properties = [self.map.PLAYER_ACC,
                              self.map.PLAYER_FRICTION,
@@ -386,11 +392,11 @@ class Game:
         self.shift_factor = 999
         self.lives = PLAYER_LIVES
 
-    def play_level(self, level, lives, playlist_name, is_last):
+    def play_level(self, level, lives, playlist_name, is_last, play_music):
         """ plays a specific level until win or no lives left """
         self.lives = lives
         while self.lives >= 1 and self.running:
-            self.new(level)
+            self.new(level, play_music)
             if self.has_won:
                 break
             self.lives -= 1
@@ -400,12 +406,14 @@ class Game:
             if self.has_won:
                 print("YOU WON!")
                 if is_last:
+                    pg.mixer.music.stop()
                     pg.mixer.Sound.play(self.win_sound)
                 if not self.menu.finish(is_last, playlist_name, self.frame_count // 60, self.checkpoint_coin_counter):
                     self.quit()
                 return True
             else:
                 print("YOU LOSE!")
+                pg.mixer.music.stop()
                 pg.mixer.Sound.play(self.lose_sound)
                 if not self.menu.gameOver():
                     self.quit()
@@ -419,7 +427,7 @@ class Game:
         self.reset_level()
         while (level_index <= level_amount
                and g.play_level(PLAYLIST[playlist_index][level_index], g.lives,
-                                playlist_name, level_index == level_amount)):
+                                playlist_name, level_index == level_amount, level_index == 1)):
             self.reset_level()
             level_index += 1
         # todo: method for saving score and reset score in reset_level
