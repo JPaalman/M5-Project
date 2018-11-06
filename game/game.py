@@ -4,8 +4,8 @@ from game.map.map import Map
 from game.menu import Menu
 from game.sprites import *
 
-PROFILING = True
-DRAW_TEXT = False
+PROFILING = False
+DRAW_TEXT = True
 
 
 def format_timer(seconds):
