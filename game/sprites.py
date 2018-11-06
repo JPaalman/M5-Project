@@ -163,9 +163,11 @@ class MovingPlatform(pg.sprite.Sprite):
         """ Handles the movement """
         self.rect.x += self.speed * self.direction
         if self.rect.collidepoint(self.game.player.rect.midbottom):
-            self.game.player.rect.x += self.speed * self.direction
+            shift_x = self.speed * self.direction
+            self.game.shift_world(shift_x)
+            self.game.player.rect.x += shift_x
 
-        shift = TILESIZE * self.direction
+        shift = TILESIZE * self.direction * 0.5
         self.rect.left += shift
         if self.rect.colliderect(self.game.player.rect):
             self.direction *= -1
