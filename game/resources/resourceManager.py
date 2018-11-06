@@ -26,10 +26,11 @@ texturemap = {
     62: {s.NORMAL: "spike_right.png"},
     60: {s.NORMAL: "spike_left.png"},
     76: {s.NORMAL: "laser.png"},
-    83: {s.NORMAL: "ground2.png", s.JUNGLE: "junglefiller.png"}
+    83: {s.NORMAL: "ground2.png", s.JUNGLE: "junglefiller.png"},
+    65: {s.NORMAL: "android.png", s.JUNGLE: "android.png"}
 }
 
-uses_alpha = {33, 69, 112, 67, 99, 83, 74, 94, 118, 62, 60, 45}
+uses_alpha = {33, 69, 112, 67, 99, 83, 74, 94, 118, 62, 60, 45, 65}
 
 
 def getImageById(imgid, style):
