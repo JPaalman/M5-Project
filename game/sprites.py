@@ -33,9 +33,15 @@ class Player(pg.sprite.Sprite):
         self.jump_pad_sound = rM.getSound("Trampoline2.wav")
 
         # animations
-        self.IDLE_IMAGE = rM.getImage("idle.gif", True)
-        self.JUMP_IMAGE = rM.getImage("jump.png", True)
-        self.FALL_IMAGE = rM.getImage("mid air.gif", True)
+        self.IDLE_IMAGE_RIGHT = rM.getImage("idle.gif", True)
+        self.JUMP_IMAGE_RIGHT = rM.getImage("jump.png", True)
+        self.FALL_IMAGE_RIGHT = rM.getImage("mid air.gif", True)
+
+        self.IDLE_IMAGE_LEFT = rM.getImage("idle_inverted.gif", True)
+        self.JUMP_IMAGE_LEFT = rM.getImage("jump_inverted.png", True)
+        self.FALL_IMAGE_LEFT = rM.getImage("mid air_inverted.gif", True)
+
+        self.last_direction_right = True
 
         images = []
         for n in range(0, 8):
@@ -77,16 +83,26 @@ class Player(pg.sprite.Sprite):
         self.collisions()
 
         # Handle player animations
-        if self.vel.y > 0.5:
-            self.image = self.JUMP_IMAGE
-        elif self.vel.y < -0.5:
-            self.image = self.FALL_IMAGE
-        elif self.vel.x < -0.5:
-            self.runanimationleft.tick()
+        if self.vel.x < -0.5:
+            self.last_direction_right = False
+            if self.vel.y > 0.5:
+                self.image = self.JUMP_IMAGE_LEFT
+            elif self.vel.y < -0.5:
+                self.image = self.FALL_IMAGE_LEFT
+            else:
+                self.runanimationleft.tick()
         elif self.vel.x > 0.5:
-            self.runanimationright.tick()
+            self.last_direction_right = True
+            if self.vel.y > 0.5:
+                self.image = self.JUMP_IMAGE_RIGHT
+            elif self.vel.y < -0.5:
+                self.image = self.FALL_IMAGE_RIGHT
+            else:
+                self.runanimationright.tick()
+        elif self.last_direction_right:
+            self.image = self.IDLE_IMAGE_RIGHT
         else:
-            self.image = self.IDLE_IMAGE
+            self.image = self.IDLE_IMAGE_LEFT
 
         self.game.shift_world(self.rect.x - old_x)
 
