@@ -7,7 +7,7 @@ HEIGHT=36
 # AUTO makes map.py put the mapwidth as the width of the first string of the map
 WIDTH=AUTO
 # Path to background image
-BACKGROUND_IMAGE=jungle_background.png
+BACKGROUND_IMAGE=bg_night.png
 BACKGROUND_MUSIC=music.wav
 # Player properties (float)
 PLAYER_ACC=1

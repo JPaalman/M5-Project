@@ -3,6 +3,7 @@ from os import path
 from game.map.map import Map
 from game.menu import Menu
 from game.sprites import *
+from game.spiconroller import SPIController
 
 PROFILING = False
 DRAW_TEXT = True
@@ -63,6 +64,8 @@ class Game:
 
         # menu
         self.menu = Menu(self.screen)
+        self.spiController = SPIController()
+        self.spiController.start()
 
         # sounds
         self.sound_counter = 0
@@ -335,6 +338,7 @@ class Game:
 
     def quit(self):
         """ stops the game """
+        self.spiController.stop()
         if self.playing:
             self.playing = False
         self.running = False
