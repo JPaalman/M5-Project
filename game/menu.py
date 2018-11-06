@@ -60,7 +60,7 @@ class Menu:
                 if event.type == pg.QUIT:
                     return -1
             pg.event.pump()
-            time.sleep(0.05)
+            time.sleep(1/70)
 
     def gameOver(self):
         """
