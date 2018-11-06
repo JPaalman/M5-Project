@@ -92,8 +92,14 @@ class Game:
         style = int(self.map.MAP_STYLE)
         print("map style: " + str(style))
         for t in map_tiles:
-            # enemy
+            # ghost
             if t.tile_id == 69:
+                e = Ghost(self, t.x, t.y, t.tile_id, self.map.ENEMY_SPEED, style)
+                self.death_tiles.add(e)
+                self.enemies.add(e)
+                self.all_sprites.add(e)
+            # android
+            elif t.tile_id == 65:
                 e = GroundCrawler(self, t.x, t.y, t.tile_id, self.map.ENEMY_SPEED, style)
                 self.death_tiles.add(e)
                 self.enemies.add(e)

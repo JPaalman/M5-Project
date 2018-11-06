@@ -34,6 +34,7 @@ SPIKE_UP    = None
 SPIKE_LEFT  = None
 LASER       = None
 SPIKE_RIGHT = None
+ANDROID     = None
 
 # All byte-to-color mappings
 #
@@ -48,6 +49,7 @@ colours = {
             61: GRASS,          # "="
             62: SPIKE_RIGHT,    # ">"
             64: BLACK,          # "@"
+            65: ANDROID,        # "A"
             66: MAPBORDER,      # "B"
             67: CHECKPOINT,     # "C"
             68: DEATHTILE,      # "D"
