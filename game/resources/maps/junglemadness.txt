@@ -26,23 +26,23 @@ MAP_STYLE=1
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 B
 B
+B               | A    |
 B
-B
-B
+B               | E    |
 B                                                                                        --------------------
 B                                                                                        ====================
 B                                                                                        F
 B                                                                                        S
 B                                                                                        S
 B                 c                                                          ------------S
-B               <--->                                                         FFFFFFFF   S
-B                                                                                 FFFFF  S
+B               <--->                                                         FFFF       S
+B                                                                                 FFF    S
 B                                                                                    FFF S
 B                                                                                       FS
-B                   c                                                               c
-B
-B                                    C
-B                               ----------                                      DDDDDDD==
+B                   c                                                               c    S
+B                                                                                        S
+B                                    C                                                   S
+B                              -------------                                    DDDDDDD==
 B                                                                              DDD
 B                                                                              D
 B                                                                             DD
