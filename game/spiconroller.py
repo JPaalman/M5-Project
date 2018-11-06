@@ -17,6 +17,8 @@ class SPIController:
         self.right = False
         self.space = False
 
+        self.rms = 0
+
     def start(self):
         t = Thread(target=self.runThread)
         #t.start()
@@ -77,7 +79,8 @@ class SPIController:
         
         # split bits for RMS
         rms = self.getint(byte1[-6:])
-        print("rms: " + str(rms))
+
+        self.rms = rms
 
         if button2 == 1:
             if not self.right:
@@ -94,15 +97,6 @@ class SPIController:
         elif self.left:
             self.keyboard.release(Key.left)
             self.left = False
-
-        print(str(self.space))
-        if rms > self.JUMPTHRESHOLD:
-            if not self.space:
-                self.keyboard.press(Key.space)
-                self.space = True
-        elif self.space:
-            self.keyboard.release(Key.space)
-            self.space = False
 
     def read(self):
         if self.run:

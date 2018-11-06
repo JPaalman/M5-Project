@@ -16,9 +16,11 @@ LASER_DOWNITME = 2
 POINTS_PER_COIN = 1500
 POINTS_LOSS_PER_SECOND = 100
 BASE_POINTS = 20000
+RMS_JUMP_THRESHOLD = 20
+RMS_JUMP_DIVSOR = 45
 
 # level files
-PLAYLIST = [["oebele playlist", "Oebele_map.txt", "palette.txt"],
+PLAYLIST = [["oebele playlist", "Oebele_map.txt"],
             ["nils playlist", "junglemadness.txt", "jungle2.txt"],
             ["Annefleur playlist", "annefleur_map.txt"]]
 

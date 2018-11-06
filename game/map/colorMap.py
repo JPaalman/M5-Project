@@ -11,6 +11,7 @@ WHITE       = (255, 255, 255)
 NAVYBLUE    = (28,  52,  111)
 SKYBLUE     = (0,   148, 255)
 LIGHTGRAY   = (163, 163, 163)
+YELLOW      = (244, 235, 66 )
 
 # Game colors
 STDPLATFORM = None  # (0,   60,  99 )

@@ -57,14 +57,14 @@ class Player(pg.sprite.Sprite):
         """ Sets player start position """
         self.rect.midleft = start
 
-    def jump(self):
+    def jump(self, multiplier=1):
         """ Makes the player jump """
         # jump only if we are on a platform
         self.rect.y += 1
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         self.rect.y -= 1
         if hits:
-            self.vel.y = -self.PLAYER_JUMP
+            self.vel.y = -self.PLAYER_JUMP * multiplier
 
     def update(self):
         """ Updates the player's acceleration / velocity / etc """

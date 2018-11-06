@@ -4,6 +4,7 @@ from game.map.map import Map
 from game.menu import Menu
 from game.sprites import *
 from game.spiconroller import SPIController
+from game import settings
 
 PROFILING = False
 DRAW_TEXT = True
@@ -253,6 +254,10 @@ class Game:
                     self.quit()
                 elif event.key == pg.K_SPACE:
                     self.player.jump()
+
+        # Handle FPGA jump input
+        if self.spiController.rms > settings.RMS_JUMP_THRESHOLD:
+            self.player.jump(self.spiController.rms / settings.RMS_JUMP_DIVSOR)
 
     def update(self):
         """ update all the things! """

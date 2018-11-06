@@ -144,9 +144,11 @@ class Menu:
         :return: True if the player wants to play again, False if the player wants to quit.
         """
 
+        place = -1
+
         if last:
             print("updating highscores")
-            self.updateHighscores(gameTime, coins, playlistName)
+            place = self.updateHighscores(gameTime, coins, playlistName)
 
         self.display.blit(self.fi, (0, 0))
         self.draw_text("Finish!", 80, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 - 150)
@@ -177,6 +179,8 @@ class Menu:
                     if event.key == pg.K_SPACE:
                         if last:
                             self.display.blit(self.fi, (0,0))
+                            if place != -1:
+                                self.draw_text("You!", 30, colorMap.YELLOW, settings.WIDTH / 2 + 150, settings.HEIGHT / 2 - 10 + (place - 1) * 40)
                             self.draw_text("Finish!", 80, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 - 150)
                             self.displayHighscores(playlistName, -80,)
                             self.draw_text("Press [space] to continue, or press [esc] to quit", 25, colorMap.BLACK,
@@ -210,7 +214,7 @@ class Menu:
         offset = -50
         self.draw_text("Time score: " + str(self.calculateTimeScore(gameTime)), 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
         offset += 35
-        self.draw_text("Coins bonus: " + str(coins) + " x " + str(self.pointsPerCoin), 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
+        self.draw_text("Coins bonus: " + str(coins) + " x " + str(settings.POINTS_PER_COIN), 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
         offset += 10
         self.draw_text("____________________", 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
         offset += 35
@@ -235,8 +239,11 @@ class Menu:
     def updateHighscores(self, gametime, coins, playlist):
         score = self.calculateTimeScore(gametime) + self.calculateCoinsBonus(coins)
         print("score " + str(score))
+        out = -1
+        old = {}
         try:
             ls = self.highscores[playlist]
+            old = ls
             print("initial values: " + str(ls))
             tmp = []
 
@@ -264,3 +271,11 @@ class Menu:
         self.highscores[playlist] = res
         print(str(self.highscores[playlist]))
         resourceManager.writeHighscores(self.highscores)
+
+        if old != res:
+            index = len(res) - 1
+            while index > 0 and res[index] != score:
+                index -= 1
+            out = index + 1
+
+        return out
