@@ -18,8 +18,6 @@ class Menu:
         self.go = resourceManager.getImage(settings.game_over_image, False)
         self.fi = resourceManager.getImage(settings.finish_image, False)
 
-        self.pointsPerCoin = 500
-
         self.display.blit(self.bg, (0, 0))
         self.selectedPlaylistName = None
         pg.display.flip()
@@ -224,7 +222,7 @@ class Menu:
         :param time: playtime
         :return: the score from time
         """
-        return 50000 - time * 50
+        return settings.BASE_POINTS - time * settings.POINTS_LOSS_PER_SECOND
 
     def calculateCoinsBonus(self, coins):
         """
@@ -232,7 +230,7 @@ class Menu:
         :param coins: the amount of coins that the player collected
         :return: the amount of points gained by collecting coins
         """
-        return coins * self.pointsPerCoin
+        return coins * settings.POINTS_PER_COIN
 
     def updateHighscores(self, gametime, coins, playlist):
         score = self.calculateTimeScore(gametime) + self.calculateCoinsBonus(coins)

@@ -1,7 +1,7 @@
 import os
 
 # game options
-FULLSCREEN = True
+FULLSCREEN = False
 TITLE = "Platformer"
 WIDTH = 1280
 HEIGHT = 720
@@ -13,6 +13,9 @@ PLAYER_LIVES = 5
 DEFAULT_MOVING_PLATFORM_SIZE = 6
 LASER_UPTIME = 1
 LASER_DOWNITME = 2
+POINTS_PER_COIN = 1500
+POINTS_LOSS_PER_SECOND = 100
+BASE_POINTS = 20000
 
 # level files
 PLAYLIST = [["oebele playlist", "Oebele_map.txt", "palette.txt"],
