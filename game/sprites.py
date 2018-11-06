@@ -315,19 +315,21 @@ class Laser(pg.sprite.Sprite):
             self.state = 0
             self.image = self.images[self.state]
             self.game.death_tiles.remove(self.beam)
-            self.beam.image = pg.Surface((TILESIZE, 1000), pg.SRCALPHA, 32)
+            self.beam.image = pg.Surface((TILESIZE - (2 * self.beam.margin), 1000), pg.SRCALPHA, 32)
             self.beam.image.convert_alpha()
             self.timer = time.time()
 
 
 class Beam(pg.sprite.Sprite):
 
+    margin = 2
+
     def __init__(self, x, y):
         pg.sprite.Sprite.__init__(self)
-        self.image = pg.Surface((TILESIZE, 1000), pg.SRCALPHA, 32)
+        self.image = pg.Surface((TILESIZE - (2 * self.margin), 1000), pg.SRCALPHA, 32)
         self.image = self.image.convert_alpha()
         self.rect = self.image.get_rect()
-        self.rect.x = x
+        self.rect.x = x + self.margin
         self.rect.y = y - 1000
 
 
