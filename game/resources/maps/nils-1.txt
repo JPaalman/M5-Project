@@ -34,14 +34,14 @@ B                                                                               
 B                                                                                        F
 B                                                                                        S
 B                                                                            |     E    |S
-B                 c                                                          ------------S
-B               <--->                                                         FFFF       S
-B                                                                                 FFF    S
+B                                                                            ------------S
+B                    c                                                        FFFF       S
+B                  <--->                                                          FFF    S
 B                                                                                    FFF S
-B                                                                                       FS                    L^^L^^L^^L^^L
-B                   c                                                                    S                   ---------------
+B                                                                                       FS                   ^L^^^^^L^^^^^L^
+B                                                                                        S                   ---------------
 B                                                                                     c  S                   ===============
-B                             |         E   |                                            S
+B                    c        |         E   |                                            S
 B                              -------------                                    DDDDDDD==
 B                              =============                                   DDDDDDD
 B                                                                              D   DD
