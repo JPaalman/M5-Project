@@ -3,7 +3,7 @@
 # Map name
 NAME=Jungle Madness
 # Map tile dimensions (int)
-HEIGHT=36
+HEIGHT=38
 # AUTO makes map.py put the mapwidth as the width of the first string of the map
 WIDTH=AUTO
 # Path to background image
@@ -17,48 +17,50 @@ PLAYER_JUMP=20
 # Enemy properties
 ENEMY_SPEED=3
 # Platform properties
-PLATFORM_SPEED=4
+PLATFORM_SPEED=3
 # Level syle
 MAP_STYLE=1
 # Mapdata: bytes represented by chars in ASCII encoding.
 # Characters past the height or width will be ignored
 # Missing characters before the height or width limit will be assumed as spaces (' ')
-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-B
-B                                                                                           p
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+B                                                                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+B                                                                                                                                      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+B                                                                                                                                                         SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+B                                                                                         C                                                               SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
 B                                                                                   -------------
-B                                                                                   =============
-B
-B                                                       | M                 |
-B
-B                           | M                                |
-B
-B
-B                                        | M            |
-B                                       c
-B                               | M               |
-B                                                           c
-B                                          |           M         |
-B
-B                                   c
-B                      |  M            |
-B
-B
-B
-B
-B
+B                                                                                   =============                                                 ----- p                                                       cccccccc
+B                                                                                                                                              ---=====---                                                      cccccccc
+B                                                       | M                 |                                                                 -===     ===                                                      --------
+B                                                                                                                                             =                                                                 ========
+B                           | M                                |                                 >           <--------------
+B                                                                                                >           <==============            ----
+B                                                                                                >           <
+B                                        | M            |                                        >           <                           c
+B                                       c                                                        >           <
+B                               | M               |                                              >     c     <
+B                                                           c                                    >           <                              --
+B                                          |           M         |                               >     J     <
+B                                                                                                ^^^^^^=^^^^^^                          -
+B                                   c                                                            ------ ------
+B                      |  M            |                                                         ====== ======
+B                                                                                                                              c
+B                                                                                            FFFFF
+B                                                                                           FDDDDDFF                                      ----
+B                                                                                           DDDDDDDDFF
+B                                                                                             DDDDDDDD
 B               P
-B           ---------
-B           =========
+B           ---------                                                                                                                  --
+B           =========                                                                                                               FFF
 B
 B
 B
+B                                                                                                                           -------------LLL--
+B                                                                                                                           ==================
 B
 B
-B
-B
-B!!!!!!!!!!!         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+B!!!!!!!!!!!         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 !MAPEND
 # Tiledata: x and y coordinate of a tile, and the data that you want to add
 # x,y and data are represented 4 byte integers.
