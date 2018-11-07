@@ -3,6 +3,7 @@ from threading import Thread
 from pynput.keyboard import Key, Controller
 import wiringpi
 from bitarray import bitarray
+import settings
 
 
 class SPIController:
@@ -83,7 +84,7 @@ class SPIController:
 
         print("fftbuffer " + str(self.fftbuffer))
 
-        if len(self.fftbuffer) == 5:
+        if len(self.fftbuffer) == settings.FFT_BUFFER_SIZE:
             self.fft = sum(self.fftbuffer)/len(self.fftbuffer)
             self.fftbuffer = []
 
@@ -91,7 +92,7 @@ class SPIController:
 
         newrms = data[0] % 64
         self.rmsbuffer.append(newrms)
-        if len(self.rmsbuffer) == 5:
+        if len(self.rmsbuffer) == settings.RMS_BUFFER_SIZE:
             self.rms = sum(self.rmsbuffer) / len(self.rmsbuffer)
             self.rmsbuffer = []
 
@@ -99,7 +100,7 @@ class SPIController:
         print("fft " + str(self.fft))
         print("B1 " + str(button1))
 
-        if button2 == 1:
+        if button1 == 1:
             if not self.right:
                 self.keyboard.press(Key.right)
                 self.right = True
@@ -107,7 +108,7 @@ class SPIController:
             self.keyboard.release(Key.right)
             self.right = False
 
-        if button1 == 1:
+        if button2 == 1:
             if not self.left:
                 self.keyboard.press(Key.left)
                 self.left = True
