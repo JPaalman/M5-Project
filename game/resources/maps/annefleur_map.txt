@@ -24,40 +24,40 @@ MAP_STYLE=1
 # Characters past the height or width will be ignored
 # Missing characters before the height or width limit will be assumed as spaces (' ')
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-B                                                                    C
-B                                                                   ----
-B                                                                   ====
-B
-B
-B                                                       c        --
 B
 B
 B
 B
-B     c                                                  ---
 B
-B                                       |   E   |
-B  | E     |                                  ---------
+B
+B
+B
+B
+B
+B     c
+B
+B                                          |   E   |                                                                       p
+B  | E     |                               ---------                                                                       -
 B   -------
-B   =======                                                            --^^
+B   =======                                                                                   |                   E                 |
 B
-B
+B                                 C
 B                               <--->
-B
-B
-B
+B                                                                                      -------|E                                    |
+B                                                                                                                    J
+B                                                                                                                   ---
 B                                                     ---
-B              J   P
-B             --------                                                     --------
-B             ========                                       c
+B              J   P                                                                          |                  E                  |
+B             --------                                                    ---------
+B             ========                                                                                                     --
 B
-B
+B                                                                                             |                                   E |
 B                                                            C
-B                              c                            -----                               |  E           E       E      p|
-B                                                          =====                               -------------------------------------
-B                              J                                                                =====================================
-B                             ---                        ^^^^^
-!!!!!!!!!!!!!!        DDDDDDDD   !!!!!!!!!!!!!!!!!!!!LLLLL!!!!!        !!!!!!!!!!!!!!!!!!!!!!!
+B                              c                            -----
+B                                                           =====                             ----------------------------------------
+B                              J                                                              =======================================
+B                             ---                        ^L^^^
+!!!!!!!!!!!!!!        DDDDDDDD   !!!!!!!!!!!!!!!!!!!!!        !!!!!!!!!!!!!!!!!!!!!!!!!
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 !MAPEND
 # Tiledata: x and y coordinate of a tile, and the data that you want to add
