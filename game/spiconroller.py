@@ -2,6 +2,7 @@ import time
 from threading import Thread
 from pynput.keyboard import Key, Controller
 import wiringpi
+from bitarray import bitarray
 import game.settings as settings
 
 
