@@ -35,8 +35,8 @@ class SPIController:
             start = time.time()
 
             print(str(self.run))
-            self.data[0] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1]
-            self.data[1] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1]
+            self.data[0] = int(wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1])
+            self.data[1] = int(wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1])
             print("sent:")
             print(value)
             # value += 1
