@@ -39,17 +39,17 @@ class SPIController:
         while self.run:
             start = time.time()
 
-            print(str(self.run))
+            #print(str(self.run))
             #print(str(type(wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1])))
             self.data[0] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1][0]
             self.data[1] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1][0]
-            print("sent:")
-            print(value)
+            #print("sent:")
+            #print(value)
             # value += 1
             # to_send = [value]
-            print("response:")
-            print(str(self.data))
-            print("Timediff: " + str(time.time() - start))
+            #print("response:")
+            #print(str(self.data))
+            #print("Timediff: " + str(time.time() - start))
             self.split(self.data)
             time.sleep(1 / (self.FREQ - (time.time() - start)) + 0.01)
         print("stopped spi controller")
