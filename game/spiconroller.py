@@ -60,7 +60,7 @@ class SPIController:
 
         byte1 = bitarray(endian="little")
         byte1.frombytes(bytes([data[0]]))
-        print(str(byte1))
+        #print(str(byte1))
         
         # split bit for button 1
         tmp = int(byte1[0])
@@ -82,13 +82,13 @@ class SPIController:
         newfft = int(data[1])
         self.fftbuffer.append(newfft)
 
-        print("fftbuffer " + str(self.fftbuffer))
+        #print("fftbuffer " + str(self.fftbuffer))
 
         if len(self.fftbuffer) == settings.FFT_BUFFER_SIZE:
             self.fft = sum(self.fftbuffer)/len(self.fftbuffer)
             self.fftbuffer = []
 
-        print("fftbuffer " + str(self.fftbuffer))
+        #print("fftbuffer " + str(self.fftbuffer))
 
         newrms = data[0] % 64
         self.rmsbuffer.append(newrms)
@@ -96,9 +96,9 @@ class SPIController:
             self.rms = sum(self.rmsbuffer) / len(self.rmsbuffer)
             self.rmsbuffer = []
 
-        print("rms " + str(self.rms))
-        print("fft " + str(self.fft))
-        print("B1 " + str(button1))
+        #print("rms " + str(self.rms))
+        #print("fft " + str(self.fft))
+        #print("B1 " + str(button1))
 
         if button1 == 1:
             if not self.right:
