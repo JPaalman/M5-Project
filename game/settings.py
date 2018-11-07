@@ -22,7 +22,8 @@ RMS_JUMP_DIVSOR = 45
 # level files
 PLAYLIST = [["oebele playlist", "Oebele_map.txt"],
             ["nils playlist", "nils-1.txt", "nils-2.txt"],
-            ["Annefleur playlist", "annefleur_map.txt", "annefleur_map2.txt"]]
+            ["Annefleur playlist", "annefleur_map.txt", "annefleur_map2.txt"],
+            ["bonus", "Bepis.txt"]]
 
 dirname = os.path.dirname(__file__)
 bgImage = os.path.join(dirname, "bg.jpg")
