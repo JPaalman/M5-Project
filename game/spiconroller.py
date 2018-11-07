@@ -59,7 +59,7 @@ class SPIController:
         print(str(byte1))
         
         # split bit for button 1
-        tmp = int(byte1[0])
+        tmp = int(byte1[6])
         
         if tmp == 1:
             button1 = 0
@@ -67,7 +67,7 @@ class SPIController:
             button1 = 1
         
         # split bit for button 2
-        tmp = int(byte1[1])
+        tmp = int(byte1[7])
         
         if tmp == 1:
             button2 = 0
@@ -75,9 +75,11 @@ class SPIController:
             button2 = 1
         
         # split bits for RMS
-        rms = self.getint(byte1[-6:])
+        rms = self.getint(byte1[6:])
 
         self.rms = rms
+			print(str(rms))
+			print(str(type(rms)))
 
         print("B1 " + str(button1))
 
