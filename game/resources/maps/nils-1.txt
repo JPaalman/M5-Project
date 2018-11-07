@@ -20,9 +20,6 @@ ENEMY_SPEED=3
 PLATFORM_SPEED=2
 # Level syle
 MAP_STYLE=1
-# FFT values
-FFT_LOW=100
-FFT_HIGH=255
 # Mapdata: bytes represented by chars in ASCII encoding.
 # Characters past the height or width will be ignored
 # Missing characters before the height or width limit will be assumed as spaces (' ')
@@ -50,7 +47,7 @@ B                              =============                                   D
 B                                                                              D   DD
 B                                                                             DD
 B                                  FFFFF                      C               D
-B             p P                                          L-----L           DD                                                            |          p E|
+B               P                                          L-----L           DD                                                            |          p E|
 B           ---------                                      =======           D                                                              --------------
 B           =========                                                        D                                                              ==============
 B                                                                            D                                              DDDDDDDDDDDDDDDD
