@@ -35,8 +35,8 @@ class SPIController:
             start = time.time()
 
             print(str(self.run))
-            self.data[0] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)
-            self.data[1] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)
+            self.data[0] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[0]
+            self.data[1] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[0]
             print("sent:")
             print(value)
             # value += 1
@@ -109,7 +109,10 @@ class SPIController:
         self.keyboard.release(Key.space)
 
     def bitfield(self, n):
-        return [1 if digit == '1' else 0 for digit in bin(n)[2:]]
+        ls = [1 if digit == '1' else 0 for digit in bin(n)[2:]]
+	while len(ls) < 8:
+		ls.append(0)
+	return ls
 
     def getint(self, bitfield):
         out = 0
