@@ -27,10 +27,10 @@ BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 B==
 B
 B
-B    M                  |
+B    M                                      |
 B    -
 B
-B  
+B
 B                                                                                                                           p
 B                                                                                                                         -----
 B
