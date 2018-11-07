@@ -7,7 +7,7 @@ HEIGHT=38
 # AUTO makes map.py put the mapwidth as the width of the first string of the map
 WIDTH=AUTO
 # Path to background image
-BACKGROUND_IMAGE=bg.png
+BACKGROUND_IMAGE=bg.jpg
 BACKGROUND_MUSIC=Divenire.wav
 # Player properties (float)
 PLAYER_ACC=1
@@ -54,7 +54,7 @@ B                                           c                                   
 B                                                                                                                                                                                           c                      ---------------------
 B          P                      ------------------                                                C                                           ccc                                       <--->
 B       -------                                                                           -------------------
-B                                                           | E             |                                                       c                                         ^^^^
+B                                                           | E             |                                              J        c                                         ^^^^
 B=======================================================================================================================================================================================================================================
 B
 B
