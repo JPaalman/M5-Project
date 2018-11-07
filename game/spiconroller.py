@@ -8,7 +8,7 @@ class SPIController:
     FREQ = 48
 
     def __init__(self):
-        self.data = bytes[0,0]
+        self.data = bytes([0,0])
         self.run = False
         self.keyboard = Controller()
 
