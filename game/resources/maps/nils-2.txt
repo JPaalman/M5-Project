@@ -17,7 +17,7 @@ PLAYER_JUMP=20
 # Enemy properties
 ENEMY_SPEED=3
 # Platform properties
-PLATFORM_SPEED=5
+PLATFORM_SPEED=4
 # Level syle
 MAP_STYLE=1
 # Mapdata: bytes represented by chars in ASCII encoding.
@@ -25,23 +25,23 @@ MAP_STYLE=1
 # Missing characters before the height or width limit will be assumed as spaces (' ')
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 B
+B                                                                                           p
+B                                                                                   -------------
+B                                                                                   =============
+B
+B                                                       | M                 |
+B
+B                           | M                                |
 B
 B
+B                                        | M            |
+B                                       c
+B                               | M               |
+B                                                           c
+B                                          |           M         |
 B
-B
-B
-B
-B
-B
-B
-B
-B
-B                                           | M               |
-B
-B                                                        |M                 |
-B                   c
-B
-B                                   |  M            |
+B                                   c
+B                      |  M            |
 B
 B
 B
@@ -52,12 +52,12 @@ B           ---------
 B           =========
 B
 B
-B                                                                 p
-B                                                               -----
-B                                                               =====
-B                                              J
 B
-B!!!!!!!!!!!         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!LLLLL!!!!!!     !!!!!!!!!!!!
+B
+B
+B
+B
+B!!!!!!!!!!!         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 !MAPEND
 # Tiledata: x and y coordinate of a tile, and the data that you want to add
