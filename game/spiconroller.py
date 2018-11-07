@@ -54,12 +54,12 @@ class SPIController:
         # byte 1: button1, button2, RMS (6bit)
         # byte 2: frequency
 
-        byte1 = bitarray()
+        byte1 = bitarray(endian="little")
         byte1.frombytes(bytes([data[0]]))
         print(str(byte1))
         
         # split bit for button 1
-        tmp = int(byte1[6])
+        tmp = int(byte1[0])
         
         if tmp == 1:
             button1 = 0
@@ -67,7 +67,7 @@ class SPIController:
             button1 = 1
         
         # split bit for button 2
-        tmp = int(byte1[7])
+        tmp = int(byte1[1])
         
         if tmp == 1:
             button2 = 0
@@ -75,7 +75,7 @@ class SPIController:
             button2 = 1
         
         # split bits for RMS
-        rms = self.getint(byte1[:6])
+        rms = self.getint(byte1[-6:])
 
         self.rms = rms
         print(str(rms))
