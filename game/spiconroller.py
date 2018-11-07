@@ -59,7 +59,7 @@ class SPIController:
         print(str(byte1))
         
         # split bit for button 1
-        tmp = byte1[0]
+        tmp = int(byte1[0])
         
         if tmp == 1:
             button1 = 0
@@ -67,7 +67,7 @@ class SPIController:
             button1 = 1
         
         # split bit for button 2
-        tmp = byte1[1]
+        tmp = int(byte1[1])
         
         if tmp == 1:
             button2 = 0
@@ -78,6 +78,8 @@ class SPIController:
         rms = self.getint(byte1[-6:])
 
         self.rms = rms
+
+        print("B1 " + str(button1))
 
         if button2 == 1:
             if not self.right:
