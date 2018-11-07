@@ -258,7 +258,7 @@ class Game:
                     self.player.jump()
 
         # Handle FPGA jump input
-        if self.spiController.rms > settings.RMS_JUMP_THRESHOLD and self.spiController.fft >= 130:
+        if self.spiController.rms > settings.RMS_JUMP_THRESHOLD and self.spiController.fft >= 143:
             self.player.jump(self.spiController.rms / settings.RMS_JUMP_DIVSOR)
 
     def update(self):
