@@ -55,7 +55,7 @@ class SPIController:
         # byte 2: frequency
 
         byte1 = bitarray()
-        byte1.frombytes(bytes[data[0]])
+        byte1.frombytes(bytes([data[0]]))
         print(str(byte1))
         
         # split bit for button 1
