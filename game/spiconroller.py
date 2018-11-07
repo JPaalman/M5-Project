@@ -85,7 +85,7 @@ class SPIController:
             self.keyboard.release(Key.right)
             self.right = False
 
-        if button1:
+        if button1 == 1:
             if not self.left:
                 self.keyboard.press(Key.left)
                 self.left = True
@@ -111,8 +111,6 @@ class SPIController:
 
     def bitfield(self, n):
         ls = [1 if digit == '1' else 0 for digit in bin(n)[2:]]
-        while len(ls) < 8:
-            ls.append(0)
         return ls
 
     def getint(self, bitfield):
