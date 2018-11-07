@@ -33,6 +33,8 @@ class Map:
         self.ENEMY_SPEED = None
         self.PLATFORM_SPEED = None
         self.BACKGROUND_MUSIC = None
+        self.FFT_LOW = None
+        self.FFT_HIGH = None
         self.rawMapLines = resourceManager.getMap(mname)
         self.initMap(self.rawMapLines)
 
@@ -119,6 +121,18 @@ class Map:
 
         self.MAP_STYLE = self.getParamValue(lines[index])
         index += 1
+
+        try:
+            self.FFT_LOW = self.getParamValue(lines[index])
+            index += 1
+        except:
+            print("No FFT_LOW found")
+
+        try:
+            self.FFT_HIGH = self.getParamValue(lines[index])
+            index += 1
+        except:
+            print("No FFT_HIGH found")
 
         # Load maplayout
         self.mapLayout = self.getMapLayout(lines[index:])
