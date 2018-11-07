@@ -1,7 +1,7 @@
 import os
 
 # game options
-FULLSCREEN = True
+FULLSCREEN = False
 TITLE = "Platformer"
 WIDTH = 1280
 HEIGHT = 720
@@ -13,10 +13,16 @@ PLAYER_LIVES = 5
 DEFAULT_MOVING_PLATFORM_SIZE = 6
 LASER_UPTIME = 1
 LASER_DOWNITME = 2
+POINTS_PER_COIN = 1500
+POINTS_LOSS_PER_SECOND = 100
+BASE_POINTS = 20000
+RMS_JUMP_THRESHOLD = 20
+RMS_JUMP_DIVSOR = 45
 
 # level files
-PLAYLIST = [["oebele playlist", "Oebele_map.txt", "palette.txt"],
-            ["nils playlist", "junglemadness.txt", "jungle2.txt"]]
+PLAYLIST = [["oebele playlist", "Oebele_map.txt"],
+            ["nils playlist", "junglemadness.txt", "jungle2.txt"],
+            ["Annefleur playlist", "annefleur_map.txt", "annefleur_map2.txt"]]
 
 dirname = os.path.dirname(__file__)
 bgImage = os.path.join(dirname, "bg.jpg")

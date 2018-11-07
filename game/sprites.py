@@ -46,25 +46,25 @@ class Player(pg.sprite.Sprite):
         images = []
         for n in range(0, 8):
             images.append(rM.getImage("character_run" + str(n) + ".gif", True))
-        self.runanimationright = TextureCycler(self, images, 0.1)
+        self.runanimationright = TextureCycler(self, images, 0.07)
 
         images = []
         for n in range(0, 8):
             images.append(rM.getImage("character_run" + str(n) + "_inverted.gif", True))
-        self.runanimationleft = TextureCycler(self, images, 0.1)
+        self.runanimationleft = TextureCycler(self, images, 0.07)
 
     def set_start(self, start):
         """ Sets player start position """
         self.rect.midleft = start
 
-    def jump(self):
+    def jump(self, multiplier=1):
         """ Makes the player jump """
         # jump only if we are on a platform
         self.rect.y += 1
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         self.rect.y -= 1
         if hits:
-            self.vel.y = -self.PLAYER_JUMP
+            self.vel.y = -self.PLAYER_JUMP * multiplier
 
     def update(self):
         """ Updates the player's acceleration / velocity / etc """
@@ -99,6 +99,16 @@ class Player(pg.sprite.Sprite):
                 self.image = self.FALL_IMAGE_RIGHT
             else:
                 self.runanimationright.tick()
+        elif self.vel.y > 0.5:
+            if self.last_direction_right:
+                self.image = self.JUMP_IMAGE_RIGHT
+            else:
+                self.image = self.JUMP_IMAGE_LEFT
+        elif self.vel.y < -0.5:
+            if self.last_direction_right:
+                self.image = self.FALL_IMAGE_RIGHT
+            else:
+                self.image = self.FALL_IMAGE_LEFT
         elif self.last_direction_right:
             self.image = self.IDLE_IMAGE_RIGHT
         else:
@@ -183,11 +193,11 @@ class Platform(pg.sprite.Sprite):
 
 class MovingPlatform(pg.sprite.Sprite):
     """ Moving platform sprite """
-    def __init__(self, game, x, y, tile_id, width):
+    def __init__(self, game, x, y, tile_id, width, style):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((TILESIZE * width, TILESIZE))
         if tile_id in colorMap.uses_image:
-            self.image = rM.getImageById(tile_id)
+            self.image = rM.getImageById(tile_id, style)
         else:
             c = colorMap.colours[tile_id]
             if c is not None:
@@ -277,6 +287,60 @@ class GroundCrawler(pg.sprite.Sprite):
                     self.direction *= -1
 
 
+class Ghost(pg.sprite.Sprite):
+    """ Enemy sprite"""
+
+    def __init__(self, game, x, y, tile_id, speed, style):
+        pg.sprite.Sprite.__init__(self)
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = rM.getImage("ghost0.png", True)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y - 6
+        self.game = game
+        self.speed = speed
+        self.direction = 1  # 1 is forward, -1 is backwards
+
+        images = []
+        for n in range(0, 3):
+            images.append(rM.getImage("ghost" + str(n) + ".png", True))
+        images.append(rM.getImage("ghost1.png", True))
+        self.runanimationright = TextureCycler(self, images, 0.5)
+
+        images = []
+        for n in range(0, 3):
+            images.append(rM.getImage("ghost" + str(n) + "_inverted.png", True))
+        images.append(rM.getImage("ghost1_inverted.png", True))
+        self.runanimationleft = TextureCycler(self, images, 0.5)
+
+    def update(self):
+        """ Handles the movement """
+        self.rect.x += self.speed * self.direction
+        hits = pg.sprite.spritecollide(self, self.game.platforms, False)
+        self.handle_hits(hits)
+        hits = pg.sprite.spritecollide(self, self.game.ai_borders, False)
+        self.handle_hits(hits)
+        hits = pg.sprite.spritecollide(self, self.game.enemies, False)
+        self.handle_hits(hits)
+
+        if self.direction == 1:
+            self.runanimationright.tick()
+        else:
+            self.runanimationleft.tick()
+
+    def handle_hits(self, hits):
+        """ When the enemy collides with something, turn its direction the other way """
+        if hits:
+            for hit in hits:
+                if hit.rect is not self.rect:
+                    if hit.rect.collidepoint(self.rect.midright):
+                        self.rect.right = hit.rect.left
+                    if hit.rect.collidepoint(self.rect.midleft):
+                        self.rect.left = hit.rect.right
+                    self.direction *= -1
+                    return
+
+
 class Laser(pg.sprite.Sprite):
     """Laser of death"""
 
@@ -333,7 +397,29 @@ class Beam(pg.sprite.Sprite):
         self.rect.y = y - 1000
 
 
-class TextureCycler():
+class Coin(pg.sprite.Sprite):
+    """ Coin sprite """
+
+    def __init__(self, x, y):
+        pg.sprite.Sprite.__init__(self)
+
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.images = []
+        for n in range(1, 9):
+            self.images.append(rM.getImage("coin_frame" + str(n) + ".png", True))
+        self.tc = TextureCycler(self, self.images, 1 / len(self.images))
+
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def update(self, *args):
+        """ Updates coin animation """
+        self.tc.tick()
+
+
+class TextureCycler:
+    """ Used for animated textures """
 
     def __init__(self, sprite, images, tickrate):
         self.sprite = sprite

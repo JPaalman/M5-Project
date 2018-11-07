@@ -4,6 +4,7 @@ from game.map.map import Map
 from game.menu import Menu
 from game.sprites import *
 from game.spiconroller import SPIController
+from game import settings
 
 PROFILING = False
 DRAW_TEXT = True
@@ -12,7 +13,7 @@ DRAW_TEXT = True
 def format_timer(seconds):
     """ formates an integer seconds to a string in minutes : seconds """
     minutes = seconds // 60
-    timer_string = "Time: {:02d}:{:02d}".format(int(minutes), int(seconds))
+    timer_string = "Time: {:02d}:{:02d}".format(int(minutes), int(seconds) % 60)
     return timer_string
 
 
@@ -26,7 +27,10 @@ class Game:
         pg.init()
         pg.mixer.init()
         self.clock = pg.time.Clock()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        if FULLSCREEN:
+            self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.FULLSCREEN)
+        else:
+            self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.font_name = pg.font.match_font(FONT_NAME)
         self.running = True
@@ -61,6 +65,8 @@ class Game:
         self.checkpoint_shift = 0
         self.checkpoint_coin_counter = 0
         self.shift_factor = 999
+        self.last_checkpoint_rect = None
+        self.map_quick_load = False
 
         # menu
         self.menu = Menu(self.screen)
@@ -92,8 +98,14 @@ class Game:
         style = int(self.map.MAP_STYLE)
         print("map style: " + str(style))
         for t in map_tiles:
-            # enemy
+            # ghost
             if t.tile_id == 69:
+                e = Ghost(self, t.x, t.y, t.tile_id, self.map.ENEMY_SPEED, style)
+                self.death_tiles.add(e)
+                self.enemies.add(e)
+                self.all_sprites.add(e)
+            # android
+            elif t.tile_id == 65:
                 e = GroundCrawler(self, t.x, t.y, t.tile_id, self.map.ENEMY_SPEED, style)
                 self.death_tiles.add(e)
                 self.enemies.add(e)
@@ -125,7 +137,7 @@ class Game:
             # Moving platform
             elif t.tile_id == 77:
                 print("tiledata:" + str(t.data))
-                c = MovingPlatform(self, t.x, t.y, t.tile_id, t.data)
+                c = MovingPlatform(self, t.x, t.y, t.tile_id, t.data, style)
                 self.platforms.add(c)
                 self.all_sprites.add(c)
             # AI border
@@ -140,7 +152,7 @@ class Game:
                 self.all_sprites.add(d)
             # coin
             elif t.tile_id == 99:
-                c = Platform(t.x, t.y, t.tile_id, 1, style)
+                c = Coin(t.x, t.y)
                 self.coins.add(c)
                 self.all_sprites.add(c)
             # invisible tile
@@ -151,6 +163,9 @@ class Game:
             elif t.tile_id == 120:
                 f = Platform(t.x, t.y, t.tile_id, 1, style)
                 self.all_sprites.add(f)
+            elif t.tile_id == 83:
+                s = Platform(t.x, t.y, t.tile_id, 1, style)
+                self.all_sprites.add(s)
             # the rest is assumed to be a platforms
             else:
                 # print("WARNING: Creating platform for unknown tile_id: " + str(t.tile_id))
@@ -200,6 +215,7 @@ class Game:
             self.player.vel.x = 0
         self.player.set_start(self.player_start)
 
+        self.map_quick_load = True
         self.run()
 
     # Game loop; run to call events, update and draw
@@ -241,6 +257,10 @@ class Game:
                 elif event.key == pg.K_SPACE:
                     self.player.jump()
 
+        # Handle FPGA jump input
+        if self.spiController.rms > settings.RMS_JUMP_THRESHOLD:
+            self.player.jump(self.spiController.rms / settings.RMS_JUMP_DIVSOR)
+
     def update(self):
         """ update all the things! """
         # game loop updates
@@ -272,17 +292,19 @@ class Game:
         # check checkpoint collision
         hits = pg.sprite.spritecollide(self.player, self.checkpoints, False)
         if hits:
-            self.player_start = (hits[0].rect.x, hits[0].rect.y)
+            checkpoint_pos = (hits[0].rect.x, hits[0].rect.y)
+            # if this was not last visited checkpoint, only then play sound
+            if self.last_checkpoint_rect != hits[0].rect:
+                pg.mixer.Sound.play(self.checkpoint_sound)
+                self.last_checkpoint_rect = hits[0].rect
+
+            self.player_start = checkpoint_pos
             self.checkpoint_shift = self.total_world_shift
             self.checkpoint_coin_counter = self.coin_counter
-            if self.sound_counter == 0:
-                pg.mixer.Sound.play(self.checkpoint_sound)
-                self.sound_counter = 100
-        if self.sound_counter > 0:
-            self.sound_counter -= 1
 
         UPS = 5  # updates per second; checking sprites on screen
-        if self.frame_count % (FPS // UPS) == 0:
+        if self.map_quick_load or self.frame_count % (FPS // UPS) == 0:
+            self.map_quick_load = False
             self.set_sprites_on_screen()
 
         if self.frame_count % FPS == 0:
@@ -354,7 +376,8 @@ class Game:
     def render_text(self, text, size, color):
         """ renders text to a surface """
         """ CPU INTENSIVE """
-        print("RENDERING: " + text)
+        if PROFILING:
+            print("RENDERING: " + text)
         font = pg.font.Font(self.font_name, size)
         text_surface = font.render(text, True, color)
         return text_surface
@@ -395,6 +418,7 @@ class Game:
         self.player = None
         self.shift_factor = 999
         self.lives = PLAYER_LIVES
+        self.last_checkpoint_rect = None
 
     def play_level(self, level, lives, playlist_name, is_last, play_music):
         """ plays a specific level until win or no lives left """

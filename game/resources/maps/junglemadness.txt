@@ -12,12 +12,12 @@ BACKGROUND_MUSIC=jungle_background_music.wav
 # Player properties (float)
 PLAYER_ACC=1
 PLAYER_FRICTION=0.12
-PLAYER_GRAV=0.8
+PLAYER_GRAV=1
 PLAYER_JUMP=20
 # Enemy properties
 ENEMY_SPEED=3
 # Platform properties
-PLATFORM_SPEED=5
+PLATFORM_SPEED=2
 # Level syle
 MAP_STYLE=1
 # Mapdata: bytes represented by chars in ASCII encoding.
@@ -28,36 +28,36 @@ B
 B
 B
 B
-B
-B
-B
-B
-B
-B
-B
-B
-B
-B
-B
-B                   c
-B
-B                                    C
-B                               ----------
-B
-B
-B
-B
-B               P
-B           ---------
-B           =========
-B
-B
-B                                                                 p
-B                                                               -----
-B                                                               =====
-B                                              J
-B
-B!!!!!!!!!!!         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!LLLLL!!!!!!     !!!!!!!!!!!!
+B                                                                                            ^^^^^^^^^^^ C
+B                                                                                        --------------------M                     |
+B                                                                                        ====================
+B                                                                                        F
+B                                                                                        S
+B                                                                            |     E    |S
+B                 c                                                          ------------S
+B               <--->                                                         FFFF       S
+B                                                                                 FFF    S
+B                                                                                    FFF S
+B                                                                                       FS                    L^^L^^L^^L^^L
+B                   c                                                                    S                   ---------------
+B                                                                                     c  S                   ===============
+B                             |         E   |                                            S
+B                              -------------                                    DDDDDDD==
+B                              =============                                   DDDDDDD
+B                                                                              D   DD
+B                                                                             DD
+B                                  FFFFF                      C               D
+B               P                                          L-----L           DD                                                            |          p E|
+B           ---------                                      =======           D                                                              --------------
+B           =========                                                        D                                                              ==============
+B                                                                            D                                              DDDDDDDDDDDDDDDD
+B                                                                            D                                              DDDDDDDDDDDDDDDD
+B                                                                 c         DD                                                DDDDDDDDDDDDD
+B                                                               -----    J DDD                                                    DDDDD
+B                                                               =====   D=DDDD
+B                                                                    DDDDDDDDD
+B                                                                       DDDDD
+B!!!!!!!!!!!         !!!!!!!!!!    !!!!!    !!!!!!!!!!!!!!!
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 !MAPEND
 # Tiledata: x and y coordinate of a tile, and the data that you want to add

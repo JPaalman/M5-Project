@@ -16,7 +16,7 @@ texturemap = {
     61: {s.NORMAL: "gras-ground2.png", s.JUNGLE: "junglegrass.png"},
     70: {s.NORMAL: "ground2.png", s.JUNGLE: "junglefiller.png"},
     99: {s.NORMAL: "coin.png"},
-    45: {s.NORMAL: "platform-middle.png", s.JUNGLE: "jungleplatform.png"},
+    45: {s.NORMAL: "newplatform.png", s.JUNGLE: "jungleplatform.png"},
     74: {s.NORMAL: "jump_pad.png"},
     256: {s.NORMAL: "laser.png"},
     90: {s.NORMAL: "gras.png"},
@@ -25,10 +25,13 @@ texturemap = {
     118: {s.NORMAL: "spike_down.png"},
     62: {s.NORMAL: "spike_right.png"},
     60: {s.NORMAL: "spike_left.png"},
-    76: {s.NORMAL: "laser.png"}
+    76: {s.NORMAL: "laser.png"},
+    83: {s.NORMAL: "ground2.png", s.JUNGLE: "junglefiller.png"},
+    65: {s.NORMAL: "android.png", s.JUNGLE: "android.png"},
+    77: {s.NORMAL: "moving_platform.png", s.JUNGLE: "jungle_moving_platform.png"}
 }
 
-uses_alpha = {33, 69, 112, 67, 99, 83, 74, 94, 118, 62, 60, 45}
+uses_alpha = {33, 69, 112, 67, 99, 83, 74, 94, 118, 62, 60, 45, 65, 77}
 
 
 def getImageById(imgid, style):

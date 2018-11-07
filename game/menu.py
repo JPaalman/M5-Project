@@ -18,8 +18,6 @@ class Menu:
         self.go = resourceManager.getImage(settings.game_over_image, False)
         self.fi = resourceManager.getImage(settings.finish_image, False)
 
-        self.pointsPerCoin = 500
-
         self.display.blit(self.bg, (0, 0))
         self.selectedPlaylistName = None
         pg.display.flip()
@@ -90,7 +88,7 @@ class Menu:
             pg.event.pump()
             time.sleep(0.05)
 
-    def displayHighscores(self, playlist, offset=0):
+    def displayHighscores(self, playlist, offset=0, color=colorMap.BLACK):
         """
         Displays the highscores of a playlist in a nice format
         :param playlist: name of the target playlist
@@ -106,13 +104,13 @@ class Menu:
             scores = self.highscores[playlist]
 
         if scores is None:
-            self.draw_text("No highscores found", 30, colorMap.BLACK, settings.WIDTH / 2, (settings.HEIGHT / 2 + offset))
+            self.draw_text("No highscores found", 30, color, settings.WIDTH / 2, (settings.HEIGHT / 2 + offset))
         else:
-            self.draw_text("Highscores:", 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
+            self.draw_text("Highscores:", 30, color, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
             offset += 40
             for x in scores:
-                self.draw_text(str(x), 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
-                self.draw_text(str(count) + ": ", 30, colorMap.BLACK, (settings.WIDTH / 2 - (settings.TILESIZE * 8)), (settings.HEIGHT / 2 + offset))
+                self.draw_text(str(x), 30, color, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
+                self.draw_text(str(count) + ": ", 30, color, (settings.WIDTH / 2 - (settings.TILESIZE * 8)), (settings.HEIGHT / 2 + offset))
                 count += 1
                 offset += 40
 
@@ -123,9 +121,9 @@ class Menu:
         """
         self.display.blit(self.bg, (0, 0))
         self.selectedPlaylistName = settings.PLAYLIST[index][0]
-        self.draw_text(self.selectedPlaylistName, 30, colorMap.BLACK, settings.WIDTH / 2,
-                        settings.HEIGHT / 2.3)
-        self.displayHighscores(settings.PLAYLIST[index][0],)
+        self.draw_text(self.selectedPlaylistName, 30, colorMap.WHITE, settings.WIDTH / 2,
+                            settings.HEIGHT / 3)
+        self.displayHighscores(settings.PLAYLIST[index][0], -100, colorMap.NAVYBLUE)
         pg.display.flip()
 
     def draw_text(self, text, size, color, x, y):
@@ -146,9 +144,11 @@ class Menu:
         :return: True if the player wants to play again, False if the player wants to quit.
         """
 
+        place = -1
+
         if last:
             print("updating highscores")
-            self.updateHighscores(gameTime, coins, playlistName)
+            place = self.updateHighscores(gameTime, coins, playlistName)
 
         self.display.blit(self.fi, (0, 0))
         self.draw_text("Finish!", 80, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 - 150)
@@ -179,8 +179,10 @@ class Menu:
                     if event.key == pg.K_SPACE:
                         if last:
                             self.display.blit(self.fi, (0,0))
+                            if place != -1:
+                                self.draw_text("You!", 30, colorMap.YELLOW, settings.WIDTH / 2 + 150, settings.HEIGHT / 2 - 10 + (place - 1) * 40)
                             self.draw_text("Finish!", 80, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 - 150)
-                            self.displayHighscores(playlistName, -80)
+                            self.displayHighscores(playlistName, -80,)
                             self.draw_text("Press [space] to continue, or press [esc] to quit", 25, colorMap.BLACK,
                                            settings.WIDTH / 2,
                                            settings.HEIGHT / 2 + 125)
@@ -212,7 +214,7 @@ class Menu:
         offset = -50
         self.draw_text("Time score: " + str(self.calculateTimeScore(gameTime)), 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
         offset += 35
-        self.draw_text("Coins bonus: " + str(coins) + " x " + str(self.pointsPerCoin), 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
+        self.draw_text("Coins bonus: " + str(coins) + " x " + str(settings.POINTS_PER_COIN), 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
         offset += 10
         self.draw_text("____________________", 30, colorMap.BLACK, settings.WIDTH / 2, settings.HEIGHT / 2 + offset)
         offset += 35
@@ -224,7 +226,7 @@ class Menu:
         :param time: playtime
         :return: the score from time
         """
-        return 50000 - time * 50
+        return settings.BASE_POINTS - time * settings.POINTS_LOSS_PER_SECOND
 
     def calculateCoinsBonus(self, coins):
         """
@@ -232,13 +234,16 @@ class Menu:
         :param coins: the amount of coins that the player collected
         :return: the amount of points gained by collecting coins
         """
-        return coins * self.pointsPerCoin
+        return coins * settings.POINTS_PER_COIN
 
     def updateHighscores(self, gametime, coins, playlist):
         score = self.calculateTimeScore(gametime) + self.calculateCoinsBonus(coins)
         print("score " + str(score))
+        out = -1
+        old = {}
         try:
             ls = self.highscores[playlist]
+            old = ls
             print("initial values: " + str(ls))
             tmp = []
 
@@ -266,3 +271,11 @@ class Menu:
         self.highscores[playlist] = res
         print(str(self.highscores[playlist]))
         resourceManager.writeHighscores(self.highscores)
+
+        if old != res:
+            index = len(res) - 1
+            while index > 0 and res[index] != score:
+                index -= 1
+            out = index + 1
+
+        return out
