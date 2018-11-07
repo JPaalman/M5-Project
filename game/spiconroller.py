@@ -83,7 +83,7 @@ class SPIController:
 
         print("fftbuffer " + str(self.fftbuffer))
 
-        if len(self.fftbuffer) == 10:
+        if len(self.fftbuffer) == 5:
             self.fft = sum(self.fftbuffer)/len(self.fftbuffer)
             self.fftbuffer = []
 
