@@ -12,7 +12,7 @@ BACKGROUND_MUSIC=jungle_background_music.wav
 # Player properties (float)
 PLAYER_ACC=1
 PLAYER_FRICTION=0.12
-PLAYER_GRAV=1.1
+PLAYER_GRAV=1
 PLAYER_JUMP=20
 # Enemy properties
 ENEMY_SPEED=3
@@ -34,30 +34,30 @@ B
 B
 B
 B
-B     c                                                  ---
+B                                                      ---
 B
 B                                       |   E   |
-B  | E     |                                  ---------
-B   -------
-B   =======                                                            --^^
+B                                       ---------
+B
+B                                                               --^^
 B
 B
-B                               <--->
+B                               ---
 B
 B
 B
-B                                                     ---
-B              J   P
-B             --------                                                     --------
-B             ========                                       c
+B  c                                                   ---
+B                 P
+B  -          --------                                                     --------
+B  =          ========                                       c
 B
 B
 B                                                            C
-B                              c                            -----                               |  E           E       E      p|
+B                                                          -----                               |  E           E       E      p|
 B                                                          =====                               -------------------------------------
-B                              J                                                                =====================================
-B                             ---                        ^^^^^
-!!!!!!!!!!!!!!        DDDDDDDD   !!!!!!!!!!!!!!!!!!!!LLLLL!!!!!        !!!!!!!!!!!!!!!!!!!!!!!
+B                                                                                              =====================================
+B                                                     ^^^^^
+!!!!!!!!!!!!!!        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!LLLLL!!!!!        !!!!!!!!!!!!!!!!!!!!!!!
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 !MAPEND
 # Tiledata: x and y coordinate of a tile, and the data that you want to add
