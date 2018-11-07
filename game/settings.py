@@ -20,7 +20,7 @@ RMS_JUMP_THRESHOLD = 20
 RMS_JUMP_DIVSOR = 45
 
 # level files
-PLAYLIST = [["oebele playlist", "Oebele_map.txt"],
+PLAYLIST = [["oebele playlist", "Oebele_map.txt", "palette.txt"],
             ["nils playlist", "junglemadness.txt", "jungle2.txt"],
             ["Annefleur playlist", "annefleur_map.txt"]]
 

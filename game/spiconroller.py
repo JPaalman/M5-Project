@@ -1,6 +1,7 @@
 import time
 from threading import Thread
 from pynput.keyboard import Key, Controller
+import wiringpi
 
 
 class SPIController:
@@ -21,15 +22,15 @@ class SPIController:
 
     def start(self):
         t = Thread(target=self.runThread)
-        #t.start()
+        t.start()
 
     def runThread(self):
         self.run = True
         SPIchannel = 0  # SPI Channel (CE0)
         SPIspeed = 1000000  # Clock Speed in Hz
-        #wiringpi.wiringPiSetupGpio()
-        #wiringpi.wiringPiSPISetup(SPIchannel, SPIspeed)
-        value = 0
+        wiringpi.wiringPiSetupGpio()
+        wiringpi.wiringPiSPISetup(SPIchannel, SPIspeed)
+        value = 1
         to_send = bytes([value])
         while self.run:
             start = time.time()
@@ -37,20 +38,16 @@ class SPIController:
             global count
             self.count += 1
 
-            #print(str(self.run))
-            #self.data[0] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)
-            #self.data[1] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)
-            if self.space:
-                self.data = bytearray([192, 0])
-            else:
-                self.data = bytearray([224, 0])
-            #print("sent:")
-            #print(value)
+            print(str(self.run))
+            self.data[0] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)
+            self.data[1] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)
+            print("sent:")
+            print(value)
             # value += 1
             # to_send = [value]
-            #print("response:")
-            #print(str(self.data))
-            #print("Timediff: " + str(time.time() - start))
+            print("response:")
+            print(str(self.data))
+            print("Timediff: " + str(time.time() - start))
             self.split(self.data)
             time.sleep(1 / (self.FREQ - (time.time() - start)) + 0.01)
 

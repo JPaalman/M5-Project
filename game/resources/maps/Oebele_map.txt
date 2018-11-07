@@ -27,30 +27,30 @@ BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 B==
 B
 B
-B    M                  |
+B
 B    -
 B
-B  p
 B
+B                                                                                                                           p
 B                                                                                                                         -----
 B
 B   P                                           C
 B  ====                                   ============
-B                                       ==            =                                                                       --
+B                                       ==            =                                                                       ---
 B                           |E       |
 B                            --------===                  E                           |
-B                                                                                                           --                       ----
-B       J   |       |
+B                                                                                                           ----                      ----
+B       J   |     E  |
 B      ===   -------              ===                  =                        E|
 B
 B
-B                                                       E                              |                                     --
+B                                                       E                              |                                    ---
 B
 B                                                                            E     |                              -----
-B                                                                                                                                   -
+B                                                                                                                                   ---
 B                                                              E                     |
 B                                                                                                                                        c
-B                   c  L                                                          E|                  ----                              ----
+B                   c  L                                                          E|                 -----                              ----
 B               ---------                               =
 B
 B         DDDDDDDDDDDDDDDDDDDDDDDD                       ==
