@@ -8,7 +8,7 @@ class SPIController:
     FREQ = 48
 
     def __init__(self):
-        self.data = [0,0]
+        self.data = bytes[0,0]
         self.run = False
         self.keyboard = Controller()
 
@@ -35,8 +35,9 @@ class SPIController:
             start = time.time()
 
             print(str(self.run))
-            self.data[0] = int(wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1], 16)
-            self.data[1] = int(wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1], 16)
+            val1 = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1]
+            val2 = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1]
+            self.data = [val1, val2]
             print("sent:")
             print(value)
             # value += 1
