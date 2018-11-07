@@ -2,7 +2,6 @@ import time
 from threading import Thread
 from pynput.keyboard import Key, Controller
 import wiringpi
-from bitstring import BitArray
 
 
 class SPIController:
