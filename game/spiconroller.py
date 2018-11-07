@@ -19,6 +19,7 @@ class SPIController:
 
         self.rms = 0
         self.fft = 0
+        self.fftbuffer = []
 
     def start(self):
         t = Thread(target=self.runThread)
@@ -76,9 +77,15 @@ class SPIController:
             button2 = 1
         
         # split bits for RMS
-
         self.rms = data[0] % 64
-        self.fft = int(data[1])
+        newfft = int(data[1])
+        self.fftbuffer.append(newfft)
+
+        print("fftbuffer " + str(self.fftbuffer))
+
+        if len(self.fftbuffer) == 10:
+            self.fft = sum(self.fftbuffer)/len(self.fftbuffer)
+            self.fftbuffer = []
 
         print("rms " + str(self.rms))
         print("fft " + str(self.fft))
