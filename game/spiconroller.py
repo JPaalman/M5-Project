@@ -40,8 +40,8 @@ class SPIController:
             self.count += 1
 
             print(str(self.run))
-            self.data[0] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)
-            self.data[1] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)
+            self.data[0] = wiringpi.wiringPiSPIDataRW(SPIchannel, value)
+            self.data[1] = wiringpi.wiringPiSPIDataRW(SPIchannel, value)
             print("sent:")
             print(value)
             # value += 1
