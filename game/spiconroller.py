@@ -25,6 +25,7 @@ class SPIController:
         t.start()
 
     def runThread(self):
+        print("started spi controller")
         self.run = True
         SPIchannel = 0  # SPI Channel (CE0)
         SPIspeed = 1000000  # Clock Speed in Hz
@@ -50,6 +51,7 @@ class SPIController:
             print("Timediff: " + str(time.time() - start))
             self.split(self.data)
             time.sleep(1 / (self.FREQ - (time.time() - start)) + 0.01)
+        print("stopped spi controller")
 
     def split(self, data):
         # byte 1: button1, button2, RMS (6bit)
