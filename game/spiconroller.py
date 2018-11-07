@@ -2,6 +2,7 @@ import time
 from threading import Thread
 from pynput.keyboard import Key, Controller
 import wiringpi
+from bitstring import BitArray
 
 
 class SPIController:
@@ -53,7 +54,7 @@ class SPIController:
         # byte 1: button1, button2, RMS (6bit)
         # byte 2: frequency
 
-        byte1 = self.bitfield(data[0])
+        byte1 = bin(int(data[0], 16))
         print(str(byte1))
         
         # split bit for button 1
