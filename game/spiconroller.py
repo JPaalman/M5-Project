@@ -6,7 +6,7 @@ from bitarray import bitarray
 
 
 class SPIController:
-    FREQ = 48
+    FREQ = 24
 
     def __init__(self):
         self.data = [0,0]
@@ -80,7 +80,8 @@ class SPIController:
         self.rms = data[0] % 64
         self.fft = int(data[1])
 
-        print(str(self.rms))
+        print("rms " + str(self.rms))
+        print("fft " + str(self.fft))
         print("B1 " + str(button1))
 
         if button2 == 1:
