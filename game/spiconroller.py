@@ -75,7 +75,7 @@ class SPIController:
             button2 = 1
         
         # split bits for RMS
-        rms = self.getint(byte1[6:])
+        rms = self.getint(byte1[:6])
 
         self.rms = rms
         print(str(rms))
