@@ -5,6 +5,7 @@ from game.menu import Menu
 from game.sprites import *
 from game.spiconroller import SPIController
 from game import settings
+import time
 
 PROFILING = False
 DRAW_TEXT = True
@@ -260,7 +261,7 @@ class Game:
                     self.player.jump()
 
         # Handle FPGA jump input
-        if self.spiController.rms > settings.RMS_JUMP_THRESHOLD:
+        if self.spiController.rms > settings.RMS_JUMP_THRESHOLD and self.spiController.fft >= 120:
             self.player.jump(self.spiController.rms / settings.RMS_JUMP_DIVSOR)
 
     def update(self):

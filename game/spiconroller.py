@@ -1,15 +1,15 @@
 import time
 from threading import Thread
 from pynput.keyboard import Key, Controller
+import wiringpi
+from bitarray import bitarray
 
 
 class SPIController:
-    FREQ = 48
-    count = 0
-    JUMPTHRESHOLD = 10
+    FREQ = 24
 
     def __init__(self):
-        self.data = bytearray([0,0])
+        self.data = [0,0]
         self.run = False
         self.keyboard = Controller()
 
@@ -18,51 +18,51 @@ class SPIController:
         self.space = False
 
         self.rms = 0
+        self.fft = 0
+        self.fftbuffer = []
+        self.rmsbuffer = []
 
     def start(self):
         t = Thread(target=self.runThread)
-        #t.start()
+        t.start()
 
     def runThread(self):
+        print("started spi controller")
         self.run = True
         SPIchannel = 0  # SPI Channel (CE0)
         SPIspeed = 1000000  # Clock Speed in Hz
-        #wiringpi.wiringPiSetupGpio()
-        #wiringpi.wiringPiSPISetup(SPIchannel, SPIspeed)
-        value = 0
+        wiringpi.wiringPiSetupGpio()
+        wiringpi.wiringPiSPISetup(SPIchannel, SPIspeed)
+        value = 1
         to_send = bytes([value])
         while self.run:
             start = time.time()
 
-            global count
-            self.count += 1
-
-            #print(str(self.run))
-            #self.data[0] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)
-            #self.data[1] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)
-            if self.space:
-                self.data = bytearray([192, 0])
-            else:
-                self.data = bytearray([224, 0])
-            #print("sent:")
-            #print(value)
+            print(str(self.run))
+            #print(str(type(wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1])))
+            self.data[0] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1][0]
+            self.data[1] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1][0]
+            print("sent:")
+            print(value)
             # value += 1
             # to_send = [value]
-            #print("response:")
-            #print(str(self.data))
-            #print("Timediff: " + str(time.time() - start))
+            print("response:")
+            print(str(self.data))
+            print("Timediff: " + str(time.time() - start))
             self.split(self.data)
             time.sleep(1 / (self.FREQ - (time.time() - start)) + 0.01)
+        print("stopped spi controller")
 
     def split(self, data):
         # byte 1: button1, button2, RMS (6bit)
         # byte 2: frequency
 
-        byte1 = self.bitfield(data[0])
+        byte1 = bitarray(endian="little")
+        byte1.frombytes(bytes([data[0]]))
         print(str(byte1))
         
         # split bit for button 1
-        tmp = byte1[0]
+        tmp = int(byte1[0])
         
         if tmp == 1:
             button1 = 0
@@ -70,7 +70,7 @@ class SPIController:
             button1 = 1
         
         # split bit for button 2
-        tmp = byte1[1]
+        tmp = int(byte1[1])
         
         if tmp == 1:
             button2 = 0
@@ -78,9 +78,26 @@ class SPIController:
             button2 = 1
         
         # split bits for RMS
-        rms = self.getint(byte1[-6:])
+        newfft = int(data[1])
+        self.fftbuffer.append(newfft)
 
-        self.rms = rms
+        print("fftbuffer " + str(self.fftbuffer))
+
+        if len(self.fftbuffer) == 5:
+            self.fft = sum(self.fftbuffer)/len(self.fftbuffer)
+            self.fftbuffer = []
+
+        print("fftbuffer " + str(self.fftbuffer))
+
+        newrms = data[0] % 64
+        self.rmsbuffer.append(newrms)
+        if len(self.rmsbuffer) == 5:
+            self.rms = sum(self.rmsbuffer) / len(self.rmsbuffer)
+            self.rmsbuffer = []
+
+        print("rms " + str(self.rms))
+        print("fft " + str(self.fft))
+        print("B1 " + str(button1))
 
         if button2 == 1:
             if not self.right:
@@ -90,7 +107,7 @@ class SPIController:
             self.keyboard.release(Key.right)
             self.right = False
 
-        if button1:
+        if button1 == 1:
             if not self.left:
                 self.keyboard.press(Key.left)
                 self.left = True
@@ -115,7 +132,10 @@ class SPIController:
         self.keyboard.release(Key.space)
 
     def bitfield(self, n):
-        return [1 if digit == '1' else 0 for digit in bin(n)[2:]]
+        ls = [1 if digit == '1' else 0 for digit in bin(n)[2:]]
+        while len(ls) < 8:
+            ls.append(0)
+        return ls
 
     def getint(self, bitfield):
         out = 0
