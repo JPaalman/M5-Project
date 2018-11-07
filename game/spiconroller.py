@@ -3,6 +3,7 @@ from threading import Thread
 from pynput.keyboard import Key, Controller
 import wiringpi
 from bitarray import bitarray
+import game.settings as settings
 
 
 class SPIController:
@@ -38,17 +39,17 @@ class SPIController:
         while self.run:
             start = time.time()
 
-            print(str(self.run))
+            #print(str(self.run))
             #print(str(type(wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1])))
             self.data[0] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1][0]
             self.data[1] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)[1][0]
-            print("sent:")
-            print(value)
+            #print("sent:")
+            #print(value)
             # value += 1
             # to_send = [value]
-            print("response:")
-            print(str(self.data))
-            print("Timediff: " + str(time.time() - start))
+            #print("response:")
+            #print(str(self.data))
+            #print("Timediff: " + str(time.time() - start))
             self.split(self.data)
             time.sleep(1 / (self.FREQ - (time.time() - start)) + 0.01)
         print("stopped spi controller")
@@ -59,7 +60,7 @@ class SPIController:
 
         byte1 = bitarray(endian="little")
         byte1.frombytes(bytes([data[0]]))
-        print(str(byte1))
+        #print(str(byte1))
         
         # split bit for button 1
         tmp = int(byte1[0])
@@ -81,25 +82,25 @@ class SPIController:
         newfft = int(data[1])
         self.fftbuffer.append(newfft)
 
-        print("fftbuffer " + str(self.fftbuffer))
+        #print("fftbuffer " + str(self.fftbuffer))
 
-        if len(self.fftbuffer) == 5:
+        if len(self.fftbuffer) == settings.FFT_BUFFER_SIZE:
             self.fft = sum(self.fftbuffer)/len(self.fftbuffer)
             self.fftbuffer = []
 
-        print("fftbuffer " + str(self.fftbuffer))
+        #print("fftbuffer " + str(self.fftbuffer))
 
         newrms = data[0] % 64
         self.rmsbuffer.append(newrms)
-        if len(self.rmsbuffer) == 5:
+        if len(self.rmsbuffer) == settings.RMS_BUFFER_SIZE:
             self.rms = sum(self.rmsbuffer) / len(self.rmsbuffer)
             self.rmsbuffer = []
 
-        print("rms " + str(self.rms))
-        print("fft " + str(self.fft))
-        print("B1 " + str(button1))
+        #print("rms " + str(self.rms))
+        #print("fft " + str(self.fft))
+        #print("B1 " + str(button1))
 
-        if button2 == 1:
+        if button1 == 1:
             if not self.right:
                 self.keyboard.press(Key.right)
                 self.right = True
@@ -107,7 +108,7 @@ class SPIController:
             self.keyboard.release(Key.right)
             self.right = False
 
-        if button1 == 1:
+        if button2 == 1:
             if not self.left:
                 self.keyboard.press(Key.left)
                 self.left = True

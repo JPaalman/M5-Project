@@ -189,6 +189,10 @@ class Game:
             self.finishes.empty()
             self.map = Map(level)
             self.init_map(self.map.getTiles())
+            if self.map.FFT_HIGH is None:
+                self.map.FFT_HIGH = settings.DEFAULT_FFT_HIGH
+            if self.map.FFT_LOW is None:
+                self.map.FFT_LOW = settings.DEFAULT_FFT_LOW
 
             if play_music:
                 rM.loadMusic(self.map.BACKGROUND_MUSIC)
@@ -261,7 +265,7 @@ class Game:
                     self.player.jump()
 
         # Handle FPGA jump input
-        if self.spiController.rms > settings.RMS_JUMP_THRESHOLD and self.spiController.fft >= 120:
+        if self.map.FFT_LOW <= self.spiController.fft <= self.map.FFT_HIGH and self.spiController.rms >= settings.RMS_JUMP_THRESHOLD:
             self.player.jump(self.spiController.rms / settings.RMS_JUMP_DIVSOR)
 
     def update(self):
