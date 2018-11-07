@@ -18,6 +18,7 @@ class SPIController:
         self.space = False
 
         self.rms = 0
+        self.fft = 0
 
     def start(self):
         t = Thread(target=self.runThread)
@@ -77,6 +78,7 @@ class SPIController:
         # split bits for RMS
 
         self.rms = data[0] % 64
+        self.fft = int(data[1])
 
         print(str(self.rms))
         print("B1 " + str(button1))
