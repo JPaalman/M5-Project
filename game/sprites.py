@@ -397,7 +397,29 @@ class Beam(pg.sprite.Sprite):
         self.rect.y = y - 1000
 
 
-class TextureCycler():
+class Coin(pg.sprite.Sprite):
+    """ Coin sprite """
+
+    def __init__(self, x, y):
+        pg.sprite.Sprite.__init__(self)
+
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.images = []
+        for n in range(1, 9):
+            self.images.append(rM.getImage("coin_frame" + str(n) + ".png", True))
+        self.tc = TextureCycler(self, self.images, 1 / len(self.images))
+
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def update(self, *args):
+        """ Updates coin animation """
+        self.tc.tick()
+
+
+class TextureCycler:
+    """ Used for animated textures """
 
     def __init__(self, sprite, images, tickrate):
         self.sprite = sprite

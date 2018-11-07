@@ -152,7 +152,7 @@ class Game:
                 self.all_sprites.add(d)
             # coin
             elif t.tile_id == 99:
-                c = Platform(t.x, t.y, t.tile_id, 1, style)
+                c = Coin(t.x, t.y)
                 self.coins.add(c)
                 self.all_sprites.add(c)
             # invisible tile

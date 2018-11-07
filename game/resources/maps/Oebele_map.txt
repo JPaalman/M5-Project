@@ -28,10 +28,10 @@ B==
 B
 B
 B    M                  |
-B    -
+B  ---
 B
-B  p
 B
+B                                                                                                                           p
 B                                                                                                                         -----
 B
 B   P                                           C
