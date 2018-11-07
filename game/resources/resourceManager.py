@@ -16,7 +16,7 @@ texturemap = {
     61: {s.NORMAL: "gras-ground2.png", s.JUNGLE: "junglegrass.png"},
     70: {s.NORMAL: "ground2.png", s.JUNGLE: "junglefiller.png"},
     99: {s.NORMAL: "coin.png"},
-    45: {s.NORMAL: "platform-middle.png", s.JUNGLE: "jungleplatform.png"},
+    45: {s.NORMAL: "newplatform.png", s.JUNGLE: "jungleplatform.png"},
     74: {s.NORMAL: "jump_pad.png"},
     256: {s.NORMAL: "laser.png"},
     90: {s.NORMAL: "gras.png"},
