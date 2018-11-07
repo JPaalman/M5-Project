@@ -78,8 +78,8 @@ class SPIController:
         rms = self.getint(byte1[6:])
 
         self.rms = rms
-			print(str(rms))
-			print(str(type(rms)))
+        print(str(rms))
+        print(str(type(rms)))
 
         print("B1 " + str(button1))
 
