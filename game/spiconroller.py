@@ -6,11 +6,9 @@ import wiringpi
 
 class SPIController:
     FREQ = 48
-    count = 0
-    JUMPTHRESHOLD = 10
 
     def __init__(self):
-        self.data = bytearray([0,0])
+        self.data = [0,0]
         self.run = False
         self.keyboard = Controller()
 
@@ -36,12 +34,9 @@ class SPIController:
         while self.run:
             start = time.time()
 
-            global count
-            self.count += 1
-
             print(str(self.run))
-            self.data[0] = wiringpi.wiringPiSPIDataRW(SPIchannel, value)
-            self.data[1] = wiringpi.wiringPiSPIDataRW(SPIchannel, value)
+            self.data[0] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)
+            self.data[1] = wiringpi.wiringPiSPIDataRW(SPIchannel, to_send)
             print("sent:")
             print(value)
             # value += 1
