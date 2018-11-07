@@ -20,6 +20,9 @@ ENEMY_SPEED=3
 PLATFORM_SPEED=2
 # Level syle
 MAP_STYLE=1
+# FFT values
+FFT_LOW=100
+FFT_HIGH=255
 # Mapdata: bytes represented by chars in ASCII encoding.
 # Characters past the height or width will be ignored
 # Missing characters before the height or width limit will be assumed as spaces (' ')
@@ -34,20 +37,20 @@ B                                                                               
 B                                                                                        F
 B                                                                                        S
 B                                                                            |     E    |S
-B                 c                                                          ------------S
-B               <--->                                                         FFFF       S
-B                                                                                 FFF    S
+B                                                                            ------------S
+B                    c                                                        FFFF       S
+B                  <--->                                                          FFF    S
 B                                                                                    FFF S
-B                                                                                       FS                    L^^L^^L^^L^^L
-B                   c                                                                    S                   ---------------
+B                                                                                       FS                   ^L^^^^^L^^^^^L^
+B                                                                                        S                   ---------------
 B                                                                                     c  S                   ===============
-B                             |         E   |                                            S
+B                    c        |         E   |                                            S
 B                              -------------                                    DDDDDDD==
 B                              =============                                   DDDDDDD
 B                                                                              D   DD
 B                                                                             DD
 B                                  FFFFF                      C               D
-B               P                                          L-----L           DD                                                            |          p E|
+B             p P                                          L-----L           DD                                                            |          p E|
 B           ---------                                      =======           D                                                              --------------
 B           =========                                                        D                                                              ==============
 B                                                                            D                                              DDDDDDDDDDDDDDDD

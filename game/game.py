@@ -54,11 +54,11 @@ class Game:
         self.jump_pads = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
         self.sprites_on_screen = pg.sprite.Group()
+        self.finishes = pg.sprite.Group()
 
         # map
         self.player = None
         self.map = None
-        self.finish = None
         self.player_start = None
         self.player_spawn = None
         self.total_world_shift = 0
@@ -127,7 +127,7 @@ class Game:
             # finish
             elif t.tile_id == 112:
                 f = Platform(t.x, t.y, t.tile_id, 1, style)
-                self.finish = f
+                self.finishes.add(f)
                 self.all_sprites.add(f)
             # checkpoint
             elif t.tile_id == 67:
@@ -185,8 +185,10 @@ class Game:
             self.sprites_on_screen.empty()
             self.jump_pads.empty()
             self.enemies.empty()
+            self.finishes.empty()
             self.map = Map(level)
             self.init_map(self.map.getTiles())
+
             if play_music:
                 rM.loadMusic(self.map.BACKGROUND_MUSIC)
                 pg.mixer.music.play(-1)
@@ -283,7 +285,8 @@ class Game:
             self.coin_counter += 1
 
         # check win conditions
-        if self.player.rect.colliderect(self.finish.rect):
+        hits = pg.sprite.spritecollide(self.player, self.finishes, True)
+        if hits:
             self.has_won = True
             self.playing = False
             self.checkpoint_coin_counter = self.coin_counter
