@@ -24,7 +24,7 @@ DEFAULT_FFT_LOW = 100
 DEFAULT_FFT_HIGH = 255
 
 # level files
-PLAYLIST = [["Oebele playlist", "Oebele_map.txt"],
+PLAYLIST = [["Oebele playlist", "simple.txt", "Oebele_map.txt"],
             ["Nils playlist", "nils-1.txt", "nils-2.txt"],
             ["Annefleur playlist", "annefleur_map.txt", "annefleur_map2.txt"],
             ["Jair bonus", "Bepis.txt"]]
