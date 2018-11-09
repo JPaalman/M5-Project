@@ -4,6 +4,7 @@ from game.map.map import Map
 from game.menu import Menu
 from game.sprites import *
 from game import settings
+from game.spiconroller import SPIController
 import time
 
 PROFILING = False
@@ -90,6 +91,9 @@ class Game:
         self.rendered_coins = None
         self.rendered_lives = None
         self.rendered_map_name = None
+
+        self.spiController = SPIController()
+        self.spiController.start()
 
     def init_map(self, map_tiles):
         """ Initialized all sprites from the level """
@@ -261,11 +265,9 @@ class Game:
                 elif event.key == pg.K_SPACE:
                     self.player.jump()
 
-        """
         # Handle FPGA jump input
         if self.map.FFT_LOW <= self.spiController.fft <= self.map.FFT_HIGH and self.spiController.rms >= settings.RMS_JUMP_THRESHOLD:
             self.player.jump(self.spiController.rms / settings.RMS_JUMP_DIVSOR)
-        """
 
     def update(self):
         """ update all the things! """
@@ -366,6 +368,7 @@ class Game:
             print("    update took " + str(int((time.time() - old_time) * 1000)) + " milliseconds")
 
     def quit(self):
+        self.spiController.stop()
         """ stops the game """
         if self.playing:
             self.playing = False
