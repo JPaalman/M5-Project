@@ -3,7 +3,6 @@ from os import path
 from game.map.map import Map
 from game.menu import Menu
 from game.sprites import *
-from game.spiconroller import SPIController
 from game import settings
 import time
 
@@ -71,8 +70,6 @@ class Game:
 
         # menu
         self.menu = Menu(self.screen)
-        self.spiController = SPIController()
-        self.spiController.start()
 
         # sounds
         self.sound_counter = 0
@@ -264,9 +261,11 @@ class Game:
                 elif event.key == pg.K_SPACE:
                     self.player.jump()
 
+        """
         # Handle FPGA jump input
         if self.map.FFT_LOW <= self.spiController.fft <= self.map.FFT_HIGH and self.spiController.rms >= settings.RMS_JUMP_THRESHOLD:
             self.player.jump(self.spiController.rms / settings.RMS_JUMP_DIVSOR)
+        """
 
     def update(self):
         """ update all the things! """
@@ -368,7 +367,6 @@ class Game:
 
     def quit(self):
         """ stops the game """
-        self.spiController.stop()
         if self.playing:
             self.playing = False
         self.running = False
